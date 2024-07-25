@@ -66,7 +66,7 @@ public class ModuleIOReal implements ModuleIO {
 
   private final boolean turnInverted;
   private final RelativeEncoder turnRelativeEncoder;
-  private final AnalogEncoder turnAbsoluteEncoder;
+  private final AnalogEncoder absoluteEncoder;
   private final SparkPIDController turnController;
 
   private final Queue<Double> timestampQueue;
@@ -89,7 +89,7 @@ public class ModuleIOReal implements ModuleIO {
         driveTalon = new TalonFX(RobotMap.Drive.frontLeftDrive);
         turnSparkMax = new CANSparkMax(RobotMap.Drive.frontLeftTurn, MotorType.kBrushless);
         turnInverted = RobotMap.Drive.frontLeftTurnInvert;
-        turnAbsoluteEncoder = new AnalogEncoder(RobotMap.Drive.frontLeftEncoder);
+        absoluteEncoder = new AnalogEncoder(RobotMap.Drive.frontLeftEncoder);
         absoluteEncoderOffset = new Rotation2d(RobotMap.Drive.frontLeftOffset); // MUST BE CALIBRATED
         name = "FrontLeft";
         break;
@@ -97,7 +97,7 @@ public class ModuleIOReal implements ModuleIO {
         driveTalon = new TalonFX(RobotMap.Drive.frontRightDrive);
         turnSparkMax = new CANSparkMax(RobotMap.Drive.frontRightTurn, MotorType.kBrushless);
         turnInverted = RobotMap.Drive.frontRightTurnInvert;
-        turnAbsoluteEncoder = new AnalogEncoder(RobotMap.Drive.frontRightEncoder);
+        absoluteEncoder = new AnalogEncoder(RobotMap.Drive.frontRightEncoder);
         absoluteEncoderOffset = new Rotation2d(RobotMap.Drive.frontRightOffset); // MUST BE CALIBRATED
         name = "FrontRight";
         break;
@@ -105,7 +105,7 @@ public class ModuleIOReal implements ModuleIO {
         driveTalon = new TalonFX(RobotMap.Drive.backLeftDrive);
         turnSparkMax = new CANSparkMax(RobotMap.Drive.backLeftTurn, MotorType.kBrushless);
         turnInverted = RobotMap.Drive.backLeftTurnInvert;
-        turnAbsoluteEncoder = new AnalogEncoder(RobotMap.Drive.backLeftEncoder);
+        absoluteEncoder = new AnalogEncoder(RobotMap.Drive.backLeftEncoder);
         absoluteEncoderOffset = new Rotation2d(RobotMap.Drive.backLeftOffset); // MUST BE CALIBRATED
         name = "BackLeft";
         break;
@@ -113,7 +113,7 @@ public class ModuleIOReal implements ModuleIO {
         driveTalon = new TalonFX(RobotMap.Drive.backRightDrive);
         turnSparkMax = new CANSparkMax(RobotMap.Drive.backRightTurn, MotorType.kBrushless);
         turnInverted = RobotMap.Drive.backRightTurnInvert;
-        turnAbsoluteEncoder = new AnalogEncoder(RobotMap.Drive.backRightEncoder);
+        absoluteEncoder = new AnalogEncoder(RobotMap.Drive.backRightEncoder);
         absoluteEncoderOffset = new Rotation2d(RobotMap.Drive.backRightOffset); // MUST BE CALIBRATED
         name = "BackRight";
         break;
@@ -150,6 +150,10 @@ public class ModuleIOReal implements ModuleIO {
     setDriveBrakeMode(true);
 
     turnRelativeEncoder = turnSparkMax.getEncoder();
+    turnRelativeEncoder.setPositionConversionFactor(DriveConstants.turnConversion);
+    absoluteEncoder.setDistancePerRotation(2 * Math.PI);
+    
+    turnRelativeEncoder.setVelocityConversionFactor(DriveConstants.turnConversion * 60);
     turnController = turnSparkMax.getPIDController();
 
     turnSparkMax.restoreFactoryDefaults();
@@ -157,7 +161,7 @@ public class ModuleIOReal implements ModuleIO {
 
     for (int i = 0; i < 30; i ++) {
       turnController.setFeedbackDevice(turnRelativeEncoder);
-      turnRelativeEncoder.setPositionConversionFactor(2 * Math.PI);
+      turnRelativeEncoder.setPositionConversionFactor(DriveConstants.turnConversion);
       turnRelativeEncoder.setVelocityConversionFactor((2 * Math.PI) / 60.0);
       
       turnSparkMax.setInverted(turnInverted);
@@ -173,11 +177,14 @@ public class ModuleIOReal implements ModuleIO {
     }
 
     turnController.setPositionPIDWrappingEnabled(true);
-    turnController.setPositionPIDWrappingMinInput(-180);
-    turnController.setPositionPIDWrappingMaxInput(180);
+    turnController.setPositionPIDWrappingMinInput(-Math.PI);
+    turnController.setPositionPIDWrappingMaxInput(Math.PI);
 
     turnSparkMax.burnFlash();
     turnSparkMax.setCANTimeout(0);
+
+    turnRelativeEncoder.setPosition(getAbsoluteEncoder());
+
 
     timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
     drivePosition = driveTalon.getPosition();
@@ -219,12 +226,10 @@ public class ModuleIOReal implements ModuleIO {
     inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};
 
     inputs.turnAbsolutePosition =
-      Rotation2d.fromRotations(turnAbsoluteEncoder.getAbsolutePosition()).minus(absoluteEncoderOffset);
+      Rotation2d.fromRadians(absoluteEncoder.get());  
     inputs.turnPosition =
-        Rotation2d.fromRotations(turnRelativeEncoder.getPosition() / DriveConstants.turnRatio);
-    inputs.turnVelocityRadPerSec =
-        Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity())
-            / DriveConstants.turnRatio;
+        Rotation2d.fromRadians(turnRelativeEncoder.getPosition());
+    inputs.turnVelocityRadPerSec = turnRelativeEncoder.getVelocity();
     inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
     inputs.turnCurrentAmps = new double[] {turnSparkMax.getOutputCurrent()};
 
@@ -287,7 +292,7 @@ public class ModuleIOReal implements ModuleIO {
   @Override
   public void runTurnPositionSetpoint(double angleRads) {
     // inputs.targetPosition = getAdjustedAngle(angleRads);
-    turnController.setReference(angleRads, ControlType.kPosition, 0);
+    turnController.setReference(angleRads, ControlType.kPosition);
   }
 
   @Override
@@ -309,25 +314,8 @@ public class ModuleIOReal implements ModuleIO {
     turnSparkMax.burnFlash();
   }
 
-  public void initializeEncoder() {
-    turnRelativeEncoder.setPosition((turnAbsoluteEncoder.getAbsolutePosition() - absoluteEncoderOffset.getDegrees()) * (2.0 * Math.PI));
-}
-
-  public double getHeading() {
-    return turnRelativeEncoder.getPosition()%(2.0 * Math.PI);
-  }
-
-  public double getAdjustedAngle(double angle) {
-    double theta = getHeading() - angle;
-
-    if (theta >= Math.PI) {
-        theta-=(2.0 * Math.PI);
-    }
-    if (theta <= -Math.PI) {
-        theta+=(2.0 * Math.PI);
-    }
-
-    return turnRelativeEncoder.getPosition() - theta;
+  public double getAbsoluteEncoder() {
+    return (absoluteEncoder.getAbsolutePosition() * 2*Math.PI) - absoluteEncoderOffset.getRadians();
   }
 
   @Override
@@ -336,7 +324,7 @@ public class ModuleIOReal implements ModuleIO {
         if(driveRequest instanceof VoltageOut) {
             driveTalon.setControl(new NeutralOut());
         }
-        runTurnVolts(0);
+    runTurnVolts(0);
   }
 
 }

@@ -25,7 +25,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static final double loopPeriodSecs = 0.02;
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -61,10 +61,10 @@ public final class Constants {
       public static final int backLeftEncoder = 1;
       public static final int backRightEncoder = 0;
 
-      public static final double frontLeftOffset = -1.578941;
-      public static final double frontRightOffset = 2.631504;
-      public static final double backLeftOffset = 1.092558;
-      public static final double backRightOffset = -3.042969;
+      public static final double frontLeftOffset = .749787;
+      public static final double frontRightOffset = -0.509314;
+      public static final double backLeftOffset = .173251 + 0.914402;
+      public static final double backRightOffset = 0.093198;
 
       public static final int gyro = 0;
     }
@@ -104,6 +104,8 @@ public final class Constants {
     public static final double turnInertia = 0.004;
 
     public static final double driveConversion = (driveRatio) * (1.0 / (wheelRadius * 2 * Math.PI));
+    public static final double turnConversion = 2 * Math.PI / turnRatio;
+    public static final double turnVelocityConversion = turnConversion / 60;
 
     public static final int driveSupplyCurrent = 10; // 70
     public static final int driveStatorCurrent = 15; // 120

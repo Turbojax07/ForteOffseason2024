@@ -137,9 +137,6 @@ public class Module {
         String.format("Drive/%s Module/Voltage Available", io.getModuleName()),
         Math.abs(inputs.driveAppliedVolts - RoboRioDataJNI.getVInVoltage()));
 
-    if (turnRelativeOffset == null && inputs.turnAbsolutePosition.getRadians() != 0.0) {
-      turnRelativeOffset = inputs.turnAbsolutePosition.minus(inputs.turnPosition);
-    }
 
 
     // Calculate positions for odometry
