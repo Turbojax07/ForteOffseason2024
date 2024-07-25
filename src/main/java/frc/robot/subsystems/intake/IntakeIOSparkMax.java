@@ -5,4 +5,24 @@
 package frc.robot.subsystems.intake;
 
 /** Add your docs here. */
-public class IntakeIOSparkMax {}
+public class IntakeIOSparkMax implements IntakeIO {
+
+	@Override
+	public void processInputs(IntakeIOInputsAutoLogged inputs) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void setRollerPercent(double percent) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void setTargetDegrees(double angle) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void resetAngle() {
+		// TODO Auto-generated method stub
+	}}

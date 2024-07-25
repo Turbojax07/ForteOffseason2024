@@ -14,14 +14,13 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.hal.simulation.RoboRioDataJNI;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.util.Alert;
-import frc.robot.util.LoggedTunableNumber;
+import frc.util.Alert;
+import frc.util.LoggedTunableNumber;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -33,7 +32,7 @@ public class Module {
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
   private final int index;
 
-  private SimpleMotorFeedforward driveFeedforward;
+  // private SimpleMotorFeedforward driveFeedforward;
   
   private Rotation2d angleSetpoint = null; // Setpoint for closed loop control, null for open loop
   private Double velocitySetpoint = null; // Setpoint for closed loop control, null for open loop
@@ -45,6 +44,7 @@ public class Module {
   private LoggedTunableNumber kDDrive = new LoggedTunableNumber("Drive/kDDrive");
   private LoggedTunableNumber kSDrive = new LoggedTunableNumber("Drive/kSDrive");
   private LoggedTunableNumber kVDrive = new LoggedTunableNumber("Drive/kVDrive");
+  private LoggedTunableNumber kADrive = new LoggedTunableNumber("Drive/kADrive");
 
   private LoggedTunableNumber kPTurn = new LoggedTunableNumber("Drive/kPTurn");
   private LoggedTunableNumber kDTurn = new LoggedTunableNumber("Drive/kDTurn");
@@ -71,6 +71,7 @@ public class Module {
         kDDrive.initDefault(DriveConstants.kDDriveReal);
         kSDrive.initDefault(DriveConstants.kSDriveReal);
         kVDrive.initDefault(DriveConstants.kVDriveReal);
+        kADrive.initDefault(DriveConstants.kADriveReal);
 
         kPTurn.initDefault(DriveConstants.kPTurnReal);
         kDTurn.initDefault(DriveConstants.kDTurnReal);
@@ -81,6 +82,7 @@ public class Module {
         kDDrive.initDefault(DriveConstants.kDDriveReplay);
         kSDrive.initDefault(DriveConstants.kSDriveReplay);
         kVDrive.initDefault(DriveConstants.kVDriveReplay);
+        kADrive.initDefault(DriveConstants.kADriveReplay);
 
         kPTurn.initDefault(DriveConstants.kPTurnReplay);
         kDTurn.initDefault(DriveConstants.kDTurnReplay);
@@ -91,6 +93,7 @@ public class Module {
         kDDrive.initDefault(DriveConstants.kDDriveSim);
         kSDrive.initDefault(DriveConstants.kSDriveSim);
         kVDrive.initDefault(DriveConstants.kVDriveSim);
+        kADrive.initDefault(DriveConstants.kADriveSim);
 
         kPTurn.initDefault(DriveConstants.kPTurnSim);
         kDTurn.initDefault(DriveConstants.kDTurnSim);
@@ -101,11 +104,15 @@ public class Module {
         kDDrive.initDefault(0.0);
         kSDrive.initDefault(0.0);
         kVDrive.initDefault(0.0);
+        kADrive.initDefault(0.0);
 
         kPTurn.initDefault(0.0);
         kDTurn.initDefault(0.0);
         break;
     }    
+
+    io.setDrivePIDFF(kPDrive.get(), 0, kDDrive.get(), kSDrive.get(), kVDrive.get(), kADrive.get());
+    io.setTurnPID(kPTurn.get(), 0, kDTurn.get());
   }
 
   /**
@@ -114,15 +121,9 @@ public class Module {
    */
   public void updateInputs() {
     io.updateInputs(inputs);
-    Logger.processInputs("Drive/Module" + index, inputs);
 
     LoggedTunableNumber.ifChanged(
-        hashCode(),
-        () -> driveFeedforward = new SimpleMotorFeedforward(kSDrive.get(), kVDrive.get(), 0),
-        kSDrive,
-        kVDrive);
-    LoggedTunableNumber.ifChanged(
-        hashCode(), () -> io.setDrivePID(kPDrive.get(), 0, kDDrive.get()), kPDrive, kDDrive);
+        hashCode(), () -> io.setDrivePIDFF(kPDrive.get(), 0, kDDrive.get(), kSDrive.get(), kVDrive.get(), kADrive.get()), kPDrive, kDDrive, kSDrive, kVDrive, kADrive);
     LoggedTunableNumber.ifChanged(
         hashCode(), () -> io.setTurnPID(kPTurn.get(), 0, kDTurn.get()), kPTurn, kDTurn);
 
@@ -157,7 +158,7 @@ public class Module {
   public SwerveModuleState runSetpoint(SwerveModuleState setpoint) {
 
     final var optimizedState = SwerveModuleState.optimize(setpoint, getAngle());
-
+    inputs.targetPosition = optimizedState.angle;
     io.runTurnPositionSetpoint(optimizedState.angle.getRadians());
     io.runDriveVelocitySetpoint(optimizedState.speedMetersPerSecond * Math.cos(optimizedState.angle.minus(inputs.turnPosition).getRadians()), (optimizedState.speedMetersPerSecond - lastSetpoint.speedMetersPerSecond) / 0.02);
 

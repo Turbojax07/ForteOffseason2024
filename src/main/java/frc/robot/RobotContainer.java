@@ -25,15 +25,23 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOReplay;
 import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIOPigeon2;
-import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.GyroIOPigeon2Phoenix6;
+import frc.robot.subsystems.drive.GyroIOReplay;
 import frc.robot.subsystems.drive.ModuleIOReal;
+import frc.robot.subsystems.drive.ModuleIOReplay;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIOReplay;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -43,8 +51,11 @@ import frc.robot.subsystems.drive.ModuleIOSim;
  */
 public class RobotContainer {
   // Subsystems
-  private final Drive drive;
-  private final Climber climber;
+  private final Drive m_drive;
+  private final Climber m_climber;
+  private final Intake m_intake;
+  private final Shooter m_shooter;
+  private final Visualizer m_visualizer;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -54,40 +65,49 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        drive =
+        m_drive =
             new Drive(
-                new GyroIOPigeon2(false),
+                new GyroIOPigeon2Phoenix6(),
                 new ModuleIOReal(0),
                 new ModuleIOReal(1),
                 new ModuleIOReal(2),
-                new ModuleIOReal(3));
-        climber = new Climber(new ClimberIOSparkMax());
+                new ModuleIOReal(3)
+                );
+        m_climber = new Climber(new ClimberIOSparkMax());
+        m_intake = new Intake(new IntakeIOSparkMax());
+        m_shooter = new Shooter(new ShooterIOSparkMax());
         break;
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        drive =
+        m_drive =
             new Drive(
-                new GyroIO() {},
+                new GyroIOReplay() {},
                 new ModuleIOSim("FrontLeft"),
                 new ModuleIOSim("FrontRight"),
                 new ModuleIOSim("BackLeft"),
                 new ModuleIOSim("BackRight"));
-        climber = new Climber(new ClimberIOSim());
+        m_climber = new Climber(new ClimberIOSim());
+        m_intake = new Intake(new IntakeIOSim());
+        m_shooter = new Shooter(new ShooterIOSim());
         break;
 
       default:
         // Replayed robot, disable IO implementations
-        drive =
+        m_drive =
             new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {});
-        climber = new Climber(new ClimberIO() {});
+                new GyroIOReplay() {},
+                new ModuleIOReplay() {},
+                new ModuleIOReplay() {},
+                new ModuleIOReplay() {},
+                new ModuleIOReplay() {});
+        m_climber = new Climber(new ClimberIOReplay());
+        m_intake = new Intake(new IntakeIOReplay());
+        m_shooter = new Shooter(new ShooterIO() {});
         break;
+
     }
+    m_visualizer = new Visualizer(m_climber, m_intake, m_shooter);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -100,36 +120,41 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    drive.setDefaultCommand(
-        drive.runVoltageTeleopFieldRelative(
+    m_drive.setDefaultCommand(
+        m_drive.runVoltageTeleopFieldRelative(
             () ->
                 new ChassisSpeeds(
                     -teleopAxisAdjustment(controller.getLeftY()) * DriveConstants.maxLinearVelocity,
                     -teleopAxisAdjustment(controller.getLeftX()) * DriveConstants.maxLinearVelocity,
                     -teleopAxisAdjustment(controller.getRightX())
                         * DriveConstants.maxLinearVelocity)));
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    controller.x().onTrue(Commands.runOnce(m_drive::stopWithX, m_drive));
     controller
         .b()
         .onTrue(
             Commands.runOnce(
                     () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                    drive)
+                        m_drive.setPose(
+                            new Pose2d(m_drive.getPose().getTranslation(), new Rotation2d())),
+                    m_drive)
                 .ignoringDisable(true));
     
       
-        controller.start().whileTrue(climber.runCurrentHoming());
+        controller.start().whileTrue(m_climber.runCurrentHoming());
         controller
           .leftBumper()
           .onTrue(
-            climber.setExtensionCmd(() -> ClimberConstants.maxHeight));
+            m_climber.setExtensionCmd(() -> ClimberConstants.maxHeight));
         controller
           .leftTrigger(0.1)
           .onTrue(
-            climber.setExtensionCmd(() -> ClimberConstants.minHeight));
+            m_climber.setExtensionCmd(() -> ClimberConstants.minHeight));
       }
+
+
+  public void robotPeriodic() {
+    m_visualizer.periodic();
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

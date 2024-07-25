@@ -6,16 +6,11 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import frc.robot.util.LoggedTunableNumber;
-
 import static frc.robot.Constants.*;
 
 public class ClimberIOSparkMax implements ClimberIO {
     private final CANSparkMax motor = new CANSparkMax(RobotMap.Climber.climber, MotorType.kBrushless);
     private final RelativeEncoder encoder = motor.getEncoder();
-    private LoggedTunableNumber kP = new LoggedTunableNumber("Climber/kP", ClimberConstants.kPReal);
-    private LoggedTunableNumber kD = new LoggedTunableNumber("Climber/kD", ClimberConstants.kDReal);
-    private LoggedTunableNumber kFF = new LoggedTunableNumber("Climber/kFF", ClimberConstants.kFFReal);
     
     private final SparkPIDController pid = motor.getPIDController();
 
@@ -30,9 +25,10 @@ public class ClimberIOSparkMax implements ClimberIO {
         encoder.setPositionConversionFactor(ClimberConstants.encoderConversion);
         encoder.setVelocityConversionFactor(ClimberConstants.encoderConversion / 60);
 
-        pid.setP(kP.get());
-        pid.setD(kD.get());
-        pid.setFF(kFF.get());
+        pid.setP(ClimberConstants.kPReal);
+        pid.setI(ClimberConstants.kIReal);
+        pid.setD(ClimberConstants.kDReal);
+        pid.setFF(ClimberConstants.kFFReal);
         pid.setOutputRange(-1, 1);
 
         motor.burnFlash();
@@ -48,7 +44,7 @@ public class ClimberIOSparkMax implements ClimberIO {
     }
 
     @Override
-    public void setTarget(final double meters) {
+    public void setTargetMeters(final double meters) {
         pid.setReference(meters, ControlType.kPosition);
     }
 
@@ -60,5 +56,32 @@ public class ClimberIOSparkMax implements ClimberIO {
     @Override
     public void resetEncoder(final double position) {
         encoder.setPosition(position);
+    }
+
+	@Override
+	public void stop() {
+		motor.setVoltage(0);
+	}
+
+	@Override
+	public void setPID(double kP, double kI, double kD) {
+		pid.setP(kP);
+        pid.setI(kI);
+        pid.setD(kD);
+	}
+
+	@Override
+	public void setSimpleFF(double kFF) {
+		pid.setFF(kFF);
+	}
+
+	@Override
+	public void resetEncoder() {
+		// TODO Auto-generated method stub
+	}
+
+    @Override
+    public void setFF(double kS, double kG, double kV, double kA) {
+        // TODO Auto-generated method stub
     }
 }

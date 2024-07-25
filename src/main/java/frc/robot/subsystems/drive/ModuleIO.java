@@ -31,9 +31,13 @@ public interface ModuleIO {
 
     public Rotation2d turnAbsolutePosition = new Rotation2d();
     public Rotation2d turnPosition = new Rotation2d();
+    public Rotation2d targetPosition = new Rotation2d();
     public double turnVelocityRadPerSec = 0.0;
     public double turnAppliedVolts = 0.0;
     public double[] turnCurrentAmps = new double[] {};
+
+    public Rotation2d absoluteEncoderPosition = new Rotation2d();
+    public double absoluteEncoderReadingVolts = 0.0;
 
     public double[] odometryTimestamps = new double[] {};
     public double[] odometryDrivePositionsRad = new double[] {};
@@ -41,34 +45,34 @@ public interface ModuleIO {
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(ModuleIOInputsAutoLogged inputs) {}
+  public abstract void updateInputs(ModuleIOInputsAutoLogged inputs);
 
   /** Run the drive motor at the specified voltage. */
-  public default void runDriveVolts(double volts) {}
+  public abstract void runDriveVolts(double volts);
 
   /** Run the turn motor at the specified voltage. */
-  public default void runTurnVolts(double volts) {}
+  public abstract void runTurnVolts(double volts);
 
   /** Run to drive velocity setpoint with feedforward */
-  default void runDriveVelocitySetpoint(double velocityRadsPerSec, double feedForward) {}
+  public abstract void runDriveVelocitySetpoint(double velocityRadsPerSec, double feedForward);
 
   /** Run to turn position setpoint */
-  default void runTurnPositionSetpoint(double angleRads) {}
+  public abstract void runTurnPositionSetpoint(double angleRads);
 
   /** Configure drive PID */
-  default void setDrivePID(double kP, double kI, double kD) {}
+  public abstract void setDrivePIDFF(double kP, double kI, double kD, double kS, double kV, double kA);
 
   /** Configure turn PID */
-  default void setTurnPID(double kP, double kI, double kD) {}
+  public abstract void setTurnPID(double kP, double kI, double kD);
 
   /** Enable or disable brake mode on the drive motor. */
-  public default void setDriveBrakeMode(boolean enable) {}
+  public abstract void setDriveBrakeMode(boolean enable);
 
   /** Enable or disable brake mode on the turn motor. */
-  public default void setTurnBrakeMode(boolean enable) {}
+  public abstract void setTurnBrakeMode(boolean enable);
 
   /** Disable output to all motors */
-  public default void stop() {}
+  public abstract void stop();
 
-  public default String getModuleName() { return null; }
+  public abstract String getModuleName();
 }

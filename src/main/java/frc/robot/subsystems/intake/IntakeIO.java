@@ -11,24 +11,24 @@ public interface IntakeIO {
     @AutoLog
     public static class IntakeIOInputs {
         public double pivotAngleDegrees = 0.0;
-        public double pivotSetpointDegrees = 0.0;
+        public double pivotTargetDegrees = 0.0;
         public double pivotVelocityDegreesPerSecond = 0.0;
         public double pivotAppliedVolts = 0.0;
         public double pivotCurrentAmps = 0.0;
         public double pivotTempCelsius = 0.0;
 
         public double rollerSpeedRPM = 0.0;
-        public double rollerSetpointRPM = 0.0;
+        public double rollerTargetRPM = 0.0;
         public double rollerAppliedVolts = 0.0;
         public double rollerCurrentAmps = 0.0;
         public double rollerTempCelsius = 0.0;
     }
 
-    public default void updateInputs(final IntakeIOInputsAutoLogged inputs) {} 
+    public abstract void processInputs(final IntakeIOInputsAutoLogged inputs);
 
-    public default void setRollerPercent(double percent) {}
+    public abstract void setRollerPercent(double percent);
 
-    public default void setDeployAngle(double angle) {}
+    public abstract void setTargetDegrees(double angle);
 
-    public default void resetAngle() {}
+    public abstract void resetAngle();
 }

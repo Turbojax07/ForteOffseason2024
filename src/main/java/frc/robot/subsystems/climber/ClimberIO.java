@@ -11,26 +11,29 @@ public interface ClimberIO {
     @AutoLog
     public static class ClimberIOInputs {
         public double climberPositionMeters = 0.0;
+        public double climberTargetMeters = 0.0;
         public double climberVelocityMetersPerSecond = 0.0;
         public double climberAppliedVolts = 0.0;
         public double climberCurrentAmps = 0.0;
         public double climberTempCelsius = 0.0;
     }
 
-    public default void updateInputs(final ClimberIOInputsAutoLogged inputs) {}
+    public abstract void updateInputs(final ClimberIOInputsAutoLogged inputs);
 
-    public default void setTarget(final double meters) {}
+    public abstract void setTargetMeters(final double meters);
 
-    public default void setVoltage(final double voltage) {}
+    public abstract void setVoltage(final double voltage);
 
-    public default void stop() {
-        setVoltage(0);
-    }
+    public abstract void stop();
 
-    public default void resetEncoder(final double position) {}
+    public abstract void setPID(double kP, double kI, double kD);
 
-    public default void resetEncoder() {
-        resetEncoder(0.0);
-    }
+    public void setSimpleFF(double kFF);
+
+    public void setFF(double kS, double kG, double kV, double kA);
+
+    public abstract void resetEncoder(final double position);
+
+    public abstract void resetEncoder();
     
 }

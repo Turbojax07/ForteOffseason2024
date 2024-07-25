@@ -38,7 +38,7 @@ public final class Constants {
     REPLAY
   }
 
-  public static final boolean isTuning = true;
+  public static final boolean isTuning = false;
 
   public static class RobotMap {
     public static class Drive {
@@ -51,15 +51,20 @@ public final class Constants {
       public static final int backRightDrive = 7;
       public static final int backRightTurn = 8;
 
-      public static final int frontLeftEncoder = 0;
-      public static final int frontRightEncoder = 1;
-      public static final int backLeftEncoder = 2;
-      public static final int backRightEncoder = 3;
+      public static final boolean frontLeftTurnInvert = false;
+      public static final boolean frontRightTurnInvert = false;
+      public static final boolean backLeftTurnInvert = false;
+      public static final boolean backRightTurnInvert = false;
 
-      public static final double frontLeftOffset = 0.905356;
-      public static final double frontRightOffset = 0.409189;
-      public static final double backLeftOffset = 0.0;
-      public static final double backRightOffset = 0.507382;
+      public static final int frontLeftEncoder = 2;
+      public static final int frontRightEncoder = 3;
+      public static final int backLeftEncoder = 1;
+      public static final int backRightEncoder = 0;
+
+      public static final double frontLeftOffset = -1.578941;
+      public static final double frontRightOffset = 2.631504;
+      public static final double backLeftOffset = 1.092558;
+      public static final double backRightOffset = -3.042969;
 
       public static final int gyro = 0;
     }
@@ -76,7 +81,7 @@ public final class Constants {
       public static final int shooterRight = 24;
 
       public static final int feederBeambreak = 0;
-      public static final int shooterBeambreak = 0;
+      public static final int shooterBeambreak = 1;
     }
 
     public static class Climber {
@@ -98,44 +103,48 @@ public final class Constants {
     public static final double turnRatio = 12.8;
     public static final double turnInertia = 0.004;
 
-    public static final int driveCurrent = 70;
-    public static final int turnCurrent = 30;
+    public static final double driveConversion = (driveRatio) * (1.0 / (wheelRadius * 2 * Math.PI));
+
+    public static final int driveSupplyCurrent = 10; // 70
+    public static final int driveStatorCurrent = 15; // 120
+    public static final int turnCurrent = 10; // 30
 
     public static final double odometeryFrequency = 250;
     public static final double updateFrequency = 100;
 
-    public static final double maxLinearVelocity = Units.feetToMeters(20.4);
-    public static final double maxAngularVelocity = maxLinearVelocity / (Math.hypot(trackWidth / 2.0, trackWidth / 2.0));
-    
-    public static double kPDriveReal = 0.01;
-    public static double kIDriveReal = 0.0;
-    public static double kDDriveReal = 0.0;
-    public static double kSDriveReal = 0.0;
-    public static double kVDriveReal = 0.0;
+    // public static final double maxLinearVelocity = Units.feetToMeters(20.4);
+     public static final double maxLinearVelocity = Units.feetToMeters(1);
+    public static final double maxLinearAccel = 8.0;
 
-    public static double kPTurnReal = 1.5;
-    public static double kITurnReal = 0.0;
+    public static final double maxAngularVelocity = maxLinearVelocity / (Math.hypot(trackWidth / 2.0, trackWidth / 2.0));
+    public static final double maxAngularAccel = maxLinearAccel / (Math.hypot(trackWidth / 2.0, trackWidth / 2.0));
+
+    public static double kPDriveReal = 2.0;
+    public static double kDDriveReal = 0.2;
+    public static double kSDriveReal = 0.04;
+    public static double kVDriveReal = 2.381;
+    public static double kADriveReal = 0.65;
+
+    public static double kPTurnReal = .1; // 1.5?
     public static double kDTurnReal = 0.0;
 
     public static double kPDriveSim = 0.3;
-    public static double kIDriveSim = 0.0;
     public static double kDDriveSim = 0.0;
     public static double kSDriveSim = 0.0;
     public static double kVDriveSim = 2.0;
+    public static double kADriveSim = 0.0;
 
-    public static double kPTurnSim = 100;
-    public static double kITurnSim = 0.0;
+    public static double kPTurnSim = 100.0;
     public static double kDTurnSim = 0.0;
 
     public static double kPDriveReplay = 0.0;
-    public static double kIDriveReplay = 0.0;
     public static double kDDriveReplay = 0.0;
     public static double kSDriveReplay = 0.0;
     public static double kVDriveReplay = 0.0;
+    public static double kADriveReplay = 0.0;
     
     public static double kPTurnReplay = 0.0;
-    public static double kITurnReplay = 0.0;
-    public static double kDTurnReplay = 0.0;    
+    public static double kDTurnReplay = 0.0;
   }
 
   public static class ClimberConstants {
@@ -158,14 +167,48 @@ public final class Constants {
     public static double kIReal = 0.0;
     public static double kDReal = 0.0;
 
+    public static double kPReplay = 0.0;
+    public static double kIReplay = 0.0;
+    public static double kDReplay = 0.0;
+
+    public static double kFFSim = 0.0;
+    public static double kFFReal = 0.0;
+    public static double kFFReplay = 0.0;
+
     public static double kSSim = 0.0;
     public static double kGSim = 0.0;
     public static double kVSim = 0.0;
-    public static double kASim = 0.09;
-
-    public static double kFFReal = 0.0;
+    public static double kASim = 0.0;
 }
 
+  public static class IntakeConstants {
+    public static double kPPivotReal = 0.01;
+    public static double kIPivotReal = 0.0;
+    public static double kDPivotReal = 0.0;
+
+    public static double kPRollerReal = 1.5;
+    public static double kIRollerReal = 0.0;
+    public static double kDRollerReal = 0.0;
+    public static double kFFRollerReal = 0.0;
+
+    public static double kPPivotSim = 0.3;
+    public static double kIPivotSim = 0.0;
+    public static double kDPivotSim = 0.0;
+
+    public static double kPRollerSim = 10;
+    public static double kIRollerSim = 0.0;
+    public static double kDRollerSim = 0.0;
+    public static double kFFRollerSim = 0.0;
+
+    public static double kPPivotReplay = 0.3;
+    public static double kIPivotReplay = 0.0;
+    public static double kDPivotReplay = 0.0;
+
+    public static double kPRollerReplay = 10;
+    public static double kIRollerReplay = 0.0;
+    public static double kDRollerReplay = 0.0;
+    public static double kFFRollerReplay = 0.0;
+  }
   public static class SimConstants {
     public static final double loopTime = 0.02;
   }

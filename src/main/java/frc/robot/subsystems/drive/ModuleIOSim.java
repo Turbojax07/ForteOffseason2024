@@ -15,6 +15,7 @@ package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Timer;
@@ -36,6 +37,9 @@ public class ModuleIOSim implements ModuleIO {
   
   private final PIDController driveFeedback =
       new PIDController(0.0, 0.0, 0.0, SimConstants.loopTime);
+  private SimpleMotorFeedforward driveFeedforward =
+      new SimpleMotorFeedforward(0, 0, 0);
+
   private final PIDController turnFeedback =
       new PIDController(0.0, 0.0, 0.0, SimConstants.loopTime);
 
@@ -44,6 +48,7 @@ public class ModuleIOSim implements ModuleIO {
   private final Rotation2d turnAbsoluteInitPosition = new Rotation2d(Math.random() * 2.0 * Math.PI);
 
   private boolean driveCoast = false;
+  private boolean turnCoast = false;
 
   public ModuleIOSim(final String name) {
     this.name = name;
@@ -86,8 +91,8 @@ public class ModuleIOSim implements ModuleIO {
   @Override
   public void runDriveVelocitySetpoint(double velocityRadsPerSec, double feedForward) {
     runDriveVolts(
-        driveFeedback.calculate(driveSim.getAngularVelocityRadPerSec(), velocityRadsPerSec)
-            + feedForward);
+        feedForward + driveFeedback.calculate(driveSim.getAngularVelocityRadPerSec(), velocityRadsPerSec)
+        );
   }
 
   @Override
@@ -96,7 +101,7 @@ public class ModuleIOSim implements ModuleIO {
   }
 
   @Override
-  public void setDrivePID(double kP, double kI, double kD) {
+  public void setDrivePIDFF(double kP, double kI, double kD, double kS, double kV, double kA) {
     driveFeedback.setPID(kP, kI, kD);
   }
 
@@ -111,6 +116,11 @@ public class ModuleIOSim implements ModuleIO {
   }
 
   @Override
+  public void setTurnBrakeMode(boolean enable) {
+    turnCoast = !enable;
+  }
+
+  @Override
   public void stop() {
     runDriveVolts(0.0);
     runTurnVolts(0.0);
@@ -120,4 +130,6 @@ public class ModuleIOSim implements ModuleIO {
   public String getModuleName() {
     return name;
   }
+
+  
 }

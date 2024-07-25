@@ -53,7 +53,7 @@ public class ClimberIOSim implements ClimberIO {
    }
 
    @Override
-   public void setTarget(final double meters) {
+   public void setTargetMeters(final double meters) {
        setVoltage(
         pid.calculate(sim.getPositionMeters(), meters)
         + ff.calculate(pid.getSetpoint().velocity)
@@ -70,5 +70,31 @@ public class ClimberIOSim implements ClimberIO {
    public void resetEncoder(final double position) {
        sim.setState(position, 0.0);
    }
+
+@Override
+public void stop() {
+    // TODO Auto-generated method stub
+}
+
+@Override
+public void setPID(double kP, double kI, double kD) {
+    // TODO Auto-generated method stub
+}
+
+
+@Override
+public void resetEncoder() {
+    // TODO Auto-generated method stub
+}
+
+@Override
+public void setSimpleFF(double kFF) {
+    // TODO Auto-generated method stub
+}
+
+@Override
+public void setFF(double kS, double kG, double kV, double kA) {
+    // TODO Auto-generated method stub
+}
 
 }

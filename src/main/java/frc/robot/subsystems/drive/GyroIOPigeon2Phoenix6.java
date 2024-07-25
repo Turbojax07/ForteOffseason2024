@@ -21,19 +21,20 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.RobotMap;
 
 import java.util.OptionalDouble;
 import java.util.Queue;
 
 /** IO implementation for Pigeon2 */
-public class GyroIOPigeon2 implements GyroIO {
-  private final Pigeon2 pigeon = new Pigeon2(20);
+public class GyroIOPigeon2Phoenix6 implements GyroIO {
+  private final Pigeon2 pigeon = new Pigeon2(RobotMap.Drive.gyro);
   private final StatusSignal<Double> yaw = pigeon.getYaw();
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
   private final StatusSignal<Double> yawVelocity = pigeon.getAngularVelocityZWorld();
 
-  public GyroIOPigeon2(boolean phoenixDrive) {
+  public GyroIOPigeon2Phoenix6() {
     pigeon.getConfigurator().apply(new Pigeon2Configuration());
     pigeon.getConfigurator().setYaw(0.0);
     yaw.setUpdateFrequency(DriveConstants.odometeryFrequency);
