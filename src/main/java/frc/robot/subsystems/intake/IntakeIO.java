@@ -6,13 +6,17 @@ package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
+
 /** Add your docs here. */
 public interface IntakeIO {
     @AutoLog
     public static class IntakeIOInputs {
-        public double pivotAngleDegrees = 0.0;
-        public double pivotTargetDegrees = 0.0;
-        public double pivotVelocityDegreesPerSecond = 0.0;
+        public Rotation2d pivotPosition = new Rotation2d();
+        public Rotation2d pivotTargetPosition = new Rotation2d();
+        public double pivotVelocityRadPerSec = 0.0;
         public double pivotAppliedVolts = 0.0;
         public double pivotCurrentAmps = 0.0;
         public double pivotTempCelsius = 0.0;
@@ -26,9 +30,15 @@ public interface IntakeIO {
 
     public abstract void processInputs(final IntakeIOInputsAutoLogged inputs);
 
-    public abstract void setRollerPercent(double percent);
+    public abstract void setPivotVoltage(double volts);
 
-    public abstract void setTargetDegrees(double angle);
+    public abstract void setRollerVoltage(double volts);
 
-    public abstract void resetAngle();
+    public abstract void setPivotTarget(double angle, ArmFeedforward ff);
+
+    public abstract void setRollerRPM(int rpm, SimpleMotorFeedforward ff);
+
+    public abstract void setPivotPID(double kP, double kI, double kD);
+
+    public abstract void setRollerPID(double kP, double kI, double kD);
 }

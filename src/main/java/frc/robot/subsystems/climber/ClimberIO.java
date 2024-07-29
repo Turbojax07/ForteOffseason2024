@@ -18,7 +18,7 @@ public interface ClimberIO {
         public double climberTempCelsius = 0.0;
     }
 
-    public abstract void updateInputs(final ClimberIOInputsAutoLogged inputs);
+    public abstract void processInputs(final ClimberIOInputsAutoLogged inputs);
 
     public abstract void setTargetMeters(final double meters);
 

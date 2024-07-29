@@ -100,9 +100,9 @@ public class Drive extends SubsystemBase {
 
   public void periodic() {
     odometryLock.lock(); // Prevents odometry updates while reading data
-    gyroIO.updateInputs(gyroInputs);
+    gyroIO.processInputs(gyroInputs);
     for (var module : modules) {
-      module.updateInputs();
+      module.processInputs();
     }
     odometryLock.unlock();
     Logger.processInputs("Drive/Gyro", gyroInputs);
@@ -352,4 +352,14 @@ public class Drive extends SubsystemBase {
     return new ChassisSpeeds(
         speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
   }
+
+  public void resetOffsets() {
+    for (int i = 0; i < 4; i++) {
+      modules[i].resetOffset();
+    }
+  }
+
+  public Command resetOffsetsCmd() {
+    return run(() -> resetOffsets());
+}
 }

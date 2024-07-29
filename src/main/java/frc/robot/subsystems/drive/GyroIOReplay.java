@@ -13,11 +13,7 @@
 
 package frc.robot.subsystems.drive;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-
-import org.littletonrobotics.junction.AutoLog;
-
 public class GyroIOReplay implements GyroIO {
 
-  public void updateInputs(GyroIOInputsAutoLogged inputs) {}
+  public void processInputs(GyroIOInputsAutoLogged inputs) {}
 }

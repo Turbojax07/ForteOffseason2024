@@ -1,7 +1,7 @@
 package frc.robot.subsystems.climber;
 
 public class ClimberIOReplay implements ClimberIO {
-    public void updateInputs(final ClimberIOInputsAutoLogged inputs) {}
+    public void processInputs(final ClimberIOInputsAutoLogged inputs) {}
 
     public void setTargetMeters(final double meters) {}
 

@@ -4,7 +4,10 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.math.MathUtil;
 
 import static frc.robot.Constants.*;
 
@@ -17,6 +20,7 @@ public class ClimberIOSparkMax implements ClimberIO {
     public ClimberIOSparkMax() {
 
         motor.restoreFactoryDefaults();
+        motor.setIdleMode(IdleMode.kBrake);
         motor.setCANTimeout(250);
         motor.setInverted(false);
         motor.enableVoltageCompensation(12.0);
@@ -35,7 +39,7 @@ public class ClimberIOSparkMax implements ClimberIO {
     }
 
     @Override
-    public void updateInputs(final ClimberIOInputsAutoLogged inputs) {
+    public void processInputs(final ClimberIOInputsAutoLogged inputs) {
         inputs.climberPositionMeters = encoder.getPosition();
         inputs.climberVelocityMetersPerSecond = encoder.getVelocity();
         inputs.climberAppliedVolts = motor.getBusVoltage() * motor.getAppliedOutput(); 
@@ -49,8 +53,8 @@ public class ClimberIOSparkMax implements ClimberIO {
     }
 
     @Override
-    public void setVoltage(final double voltage) {
-        motor.setVoltage(voltage);
+    public void setVoltage(final double volts) {
+        motor.setVoltage(MathUtil.clamp(volts, -12, 12));
     }
 
     @Override
@@ -77,7 +81,7 @@ public class ClimberIOSparkMax implements ClimberIO {
 
 	@Override
 	public void resetEncoder() {
-		// TODO Auto-generated method stub
+		resetEncoder(0.0);
 	}
 
     @Override

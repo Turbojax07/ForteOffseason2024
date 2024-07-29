@@ -4,13 +4,28 @@
 
 package frc.robot.subsystems.intake;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+
 /** Add your docs here. */
 public class IntakeIOReplay implements IntakeIO {
     public void processInputs(final IntakeIOInputsAutoLogged inputs) {} 
 
-    public void setRollerPercent(double percent) {}
+    @Override
+    public void setPivotPID(double kP, double kI, double kD) {}
 
-    public void setTargetDegrees(double angle) {}
+    @Override
+    public void setRollerPID(double kP, double kI, double kD) {}
 
-    public void resetAngle() {}
+	@Override
+	public void setPivotVoltage(double volts) {}
+
+	@Override
+	public void setRollerVoltage(double volts) {}
+
+	@Override
+	public void setPivotTarget(double angle, ArmFeedforward ff) {}
+
+    public void setRollerRPM(int rpm, SimpleMotorFeedforward ff) {}
+
 }

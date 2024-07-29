@@ -2,10 +2,83 @@
   "NTProvider": {
     "types": {
       "/AdvantageKit/RealOutputs/Climber/Mechanism2d": "Mechanism2d",
-      "/FMSInfo": "FMSInfo"
+      "/AdvantageKit/RealOutputs/Visualizer/FullRobot": "Mechanism2d",
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Climb Down": "Command",
+      "/SmartDashboard/Climb Up": "Command",
+      "/SmartDashboard/Intake Down": "Command",
+      "/SmartDashboard/Intake Up": "Command",
+      "/SmartDashboard/Shooter 0": "Command",
+      "/SmartDashboard/Shooter 15": "Command",
+      "/SmartDashboard/Shooter 30": "Command",
+      "/SmartDashboard/Shooter 45": "Command",
+      "/SmartDashboard/Shooter 60": "Command",
+      "/SmartDashboard/Shooter 75": "Command",
+      "/SmartDashboard/Shooter 90": "Command",
+      "/SmartDashboard/Test": "Command"
     },
     "windows": {
-      "/AdvantageKit/RealOutputs/Climber/Mechanism2d": {
+      "/AdvantageKit/RealOutputs/Visualizer/FullRobot": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Climb Down": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Climb Up": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Intake Down": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Intake Up": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shooter 0": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shooter 15": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shooter 30": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shooter 45": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shooter 60": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shooter 75": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shooter 90": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Test": {
         "window": {
           "visible": true
         }
@@ -36,5 +109,8 @@
   },
   "NetworkTables Info": {
     "visible": true
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

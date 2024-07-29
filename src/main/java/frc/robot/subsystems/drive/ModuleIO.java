@@ -45,13 +45,13 @@ public interface ModuleIO {
   }
 
   /** Updates the set of loggable inputs. */
-  public abstract void updateInputs(ModuleIOInputsAutoLogged inputs);
+  public abstract void processInputs(ModuleIOInputsAutoLogged inputs);
 
   /** Run the drive motor at the specified voltage. */
-  public abstract void runDriveVolts(double volts);
+  public abstract void runDriveVoltage(double volts);
 
   /** Run the turn motor at the specified voltage. */
-  public abstract void runTurnVolts(double volts);
+  public abstract void runTurnVoltage(double volts);
 
   /** Run to drive velocity setpoint with feedforward */
   public abstract void runDriveVelocitySetpoint(double velocityRadsPerSec, double feedForward);
@@ -75,4 +75,6 @@ public interface ModuleIO {
   public abstract void stop();
 
   public abstract String getModuleName();
+
+  public abstract void resetOffset();
 }

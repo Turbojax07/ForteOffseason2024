@@ -2,13 +2,13 @@ package frc.robot.subsystems.drive;
 
 public class ModuleIOReplay implements ModuleIO {
     /** Updates the set of loggable inputs. */
-  public void updateInputs(ModuleIOInputsAutoLogged inputs) {}
+  public void processInputs(ModuleIOInputsAutoLogged inputs) {}
 
   /** Run the drive motor at the specified voltage. */
-  public void runDriveVolts(double volts) {}
+  public void runDriveVoltage(double volts) {}
 
   /** Run the turn motor at the specified voltage. */
-  public void runTurnVolts(double volts) {}
+  public void runTurnVoltage(double volts) {}
 
   /** Run to drive velocity setpoint with feedforward */
   public void runDriveVelocitySetpoint(double velocityRadsPerSec, double feedForward) {}
@@ -32,4 +32,6 @@ public class ModuleIOReplay implements ModuleIO {
   public void stop() {}
 
   public String getModuleName() { return null; } 
+
+  public void resetOffset() {}
 }

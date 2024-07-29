@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
@@ -72,7 +73,7 @@ public class Climber extends SubsystemBase {
 
     @Override
     public void periodic() {
-        io.updateInputs(inputs);
+        io.processInputs(inputs);
         Logger.processInputs("Climber", inputs);
 
         LoggedTunableNumber.ifChanged(
@@ -81,19 +82,22 @@ public class Climber extends SubsystemBase {
             hashCode(), () -> io.setSimpleFF(kFF.get()), kFF);
     }
 
+    public void setTargetMeters(double meters) {
+        io.setTargetMeters(meters);
+        inputs.climberTargetMeters = meters;
+    }
+
     public Command setExtensionCmd(DoubleSupplier meters) {
-        return this.run(
-            () -> {
-                io.setTargetMeters(meters.getAsDouble());
-                inputs.climberTargetMeters = meters.getAsDouble();
-            }
-        );
+        return run(() -> setTargetMeters(meters.getAsDouble()));
     }
 
     public Command runCurrentHoming() {
-        return this.run(() -> io.setVoltage(-1.0))
-        .until(() -> inputs.climberCurrentAmps > 40.0)
-        .finallyDo(() -> io.resetEncoder(0.0));
+        return Commands.runOnce(
+            () -> io.setVoltage(-1.0)
+            )
+            .until(() -> inputs.climberCurrentAmps > 40.0)
+            .finallyDo(() -> io.resetEncoder(0.0)
+            );
     }
 
     public double getExtensionMeters() {

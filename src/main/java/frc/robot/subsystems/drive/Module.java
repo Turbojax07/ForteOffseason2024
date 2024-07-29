@@ -25,9 +25,6 @@ import frc.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
-  public record ModuleConstants(
-      String prefix, int driveID, int turnID, int cancoderID, Rotation2d cancoderOffset) {}
-
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
   private final int index;
@@ -119,8 +116,8 @@ public class Module {
    * Update inputs without running the rest of the periodic logic. This is useful since these
    * updates need to be properly thread-locked.
    */
-  public void updateInputs() {
-    io.updateInputs(inputs);
+  public void processInputs() {
+    io.processInputs(inputs);
 
     LoggedTunableNumber.ifChanged(
         hashCode(), () -> io.setDrivePIDFF(kPDrive.get(), 0, kDDrive.get(), kSDrive.get(), kVDrive.get(), kADrive.get()), kPDrive, kDDrive, kSDrive, kVDrive, kADrive);
@@ -172,14 +169,14 @@ public class Module {
     angleSetpoint = new Rotation2d();
 
     // Open loop drive control
-    io.runDriveVolts(volts);
+    io.runDriveVoltage(volts);
     velocitySetpoint = null;
   }
 
   /** Disables all outputs to motors. */
   public void stop() {
-    io.runTurnVolts(0.0);
-    io.runDriveVolts(0.0);
+    io.runTurnVoltage(0.0);
+    io.runDriveVoltage(0.0);
 
     // Disable closed loop control for turn and drive
     angleSetpoint = null;
@@ -230,5 +227,9 @@ public class Module {
   /** Returns the drive velocity in radians/sec. */
   public double getCharacterizationVelocity() {
     return inputs.driveVelocityRadPerSec;
+  }
+
+  public void resetOffset() {
+    io.resetOffset();
   }
 }

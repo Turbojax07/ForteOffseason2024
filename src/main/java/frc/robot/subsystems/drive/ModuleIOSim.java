@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.SimConstants;
 
 /**
@@ -32,8 +33,8 @@ import frc.robot.Constants.SimConstants;
 public class ModuleIOSim implements ModuleIO {
   private final String name;
 
-  private DCMotorSim driveSim = new DCMotorSim(DCMotor.getKrakenX60(1), 5.14, 0.025);
-  private DCMotorSim turnSim = new DCMotorSim(DCMotor.getNEO(1), 150.0 / 7.0, 0.004);
+  private DCMotorSim driveSim = new DCMotorSim(DCMotor.getKrakenX60(1), DriveConstants.driveRatio, DriveConstants.driveMOI);
+  private DCMotorSim turnSim = new DCMotorSim(DCMotor.getNEO(1), DriveConstants.turnRatio, DriveConstants.turnMOI);
   
   private final PIDController driveFeedback =
       new PIDController(0.0, 0.0, 0.0, SimConstants.loopTime);
@@ -55,7 +56,7 @@ public class ModuleIOSim implements ModuleIO {
   }
 
   @Override
-  public void updateInputs(ModuleIOInputsAutoLogged inputs) {
+  public void processInputs(ModuleIOInputsAutoLogged inputs) {
     driveSim.update(SimConstants.loopTime);
     turnSim.update(SimConstants.loopTime);
 
@@ -77,27 +78,27 @@ public class ModuleIOSim implements ModuleIO {
   }
 
   @Override
-  public void runDriveVolts(double volts) {
+  public void runDriveVoltage(double volts) {
     driveAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
     driveSim.setInputVoltage(driveAppliedVolts);
   }
 
   @Override
-  public void runTurnVolts(double volts) {
+  public void runTurnVoltage(double volts) {
     turnAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
     turnSim.setInputVoltage(turnAppliedVolts);
   }
 
   @Override
   public void runDriveVelocitySetpoint(double velocityRadsPerSec, double feedForward) {
-    runDriveVolts(
+    runDriveVoltage(
         feedForward + driveFeedback.calculate(driveSim.getAngularVelocityRadPerSec(), velocityRadsPerSec)
         );
   }
 
   @Override
   public void runTurnPositionSetpoint(double angleRads) {
-    runTurnVolts(turnFeedback.calculate(turnSim.getAngularPositionRad(), angleRads));
+    runTurnVoltage(turnFeedback.calculate(turnSim.getAngularPositionRad(), angleRads));
   }
 
   @Override
@@ -122,8 +123,8 @@ public class ModuleIOSim implements ModuleIO {
 
   @Override
   public void stop() {
-    runDriveVolts(0.0);
-    runTurnVolts(0.0);
+    runDriveVoltage(0.0);
+    runTurnVoltage(0.0);
   }
 
   @Override
@@ -131,5 +132,6 @@ public class ModuleIOSim implements ModuleIO {
     return name;
   }
 
+  public void resetOffset() {}
   
 }

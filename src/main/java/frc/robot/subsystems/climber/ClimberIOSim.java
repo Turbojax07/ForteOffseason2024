@@ -40,7 +40,7 @@ public class ClimberIOSim implements ClimberIO {
         );
 
    @Override
-   public void updateInputs(final ClimberIOInputsAutoLogged inputs) {
+   public void processInputs(final ClimberIOInputsAutoLogged inputs) {
        if (DriverStation.isDisabled()) {
         stop();
        }
