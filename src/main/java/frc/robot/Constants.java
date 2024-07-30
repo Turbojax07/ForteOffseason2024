@@ -33,7 +33,7 @@ public final class Constants {
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
 
 
-  public static final Mode currentMode = Mode.REAL;
+  public static final Mode currentMode = Mode.SIM;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -88,16 +88,16 @@ public final class Constants {
     public static class Intake {
       public static final int pivot = 11;
       public static final int roller = 12;
+      public static final int feeder = 21;
     }
 
     public static class Shooter {
-      public static final int feeder = 21;
       public static final int pivot = 22;
       public static final int left = 23;
       public static final int right = 24;
 
-      public static final int feederBeambreak = 0;
-      public static final int shooterBeambreak = 1;
+      public static final int feederBeambreak = 1;
+      public static final int shooterBeambreak = 0;
     }
 
     public static class Climber {
@@ -228,23 +228,39 @@ public final class Constants {
     public static final double kVPivot = 1.06;
     public static final double kAPivot = 0.02;
 
-    public static final double kVRoller = 0.13;
-    public static final double kARoller = 2.22;
+    public static final double kVRoller = 0.0029;
+    public static final double kARoller = 0;
     
     public static double kPPivotReal = .7;
 
-    public static double kPRollerReal = 1.5;
+    public static double kPRollerReal = 0.0000;
     public static double kSRollerReal = 0.0;
 
     public static double kPPivotSim = 1.25;
 
-    public static double kPRollerSim = 10;
+    public static double kPRollerSim = 0.0005;
     public static double kSRollerSim = 0.0;
 
     public static double kPPivotReplay = 0.3;
 
     public static double kPRollerReplay = 10;
-    public static double kSRollerReplay = 0.0;
+    public static double kSRollerReplay = 0.0;    
+  }
+
+  public static class FeederConstants {
+    public static final double ratio = 30.0 / 18.0;
+    public static final double MOI = 0.0109330333;
+
+    public static final int currentLimit = 30;
+
+    public static double kPReal = 0.0001;
+    public static double kVReal = 0.0;
+
+    public static final double kPSim = 0.1;
+    public static final double kVSim = 0.12;
+
+    public static final double kPReplay = 0.0;
+    public static final double kVReplay = 0.0;
   }
 
   public static class ShooterConstants {
@@ -257,18 +273,14 @@ public final class Constants {
 
     public static final double pivotAbsConversion = Math.PI * 2.0 / (33.0 / 34.0);
     public static final double pivotEncConversion = 2.0 * Math.PI / pivotRatio;
-    public static final double pivotOffset = 1.96801379;
+    public static final double pivotOffset = 2*Math.PI-0.26;
 
-    public static final double down = 0.191986218;
-    public static final double up = 1.76278254;
-
-    public static final double feederRatio = 30.0 / 18.0;
-    public static final double feederMOI = 0.0109330333;
+    public static final double down = 0.191986218 + Units.degreesToRadians(11);
+    public static final double up = 1.19;
     
     public static final double shooterMOI = 0.00920287973;
 
     public static final int pivotCurrentLimit = 40;
-    public static final int feederCurrentLimit = 30;
 
     public static final double kGPivot = 1.51;
     public static final double kVPivot = 0.94;
@@ -277,26 +289,17 @@ public final class Constants {
     public static final double kVShooter = 0.38;
     public static final double kAShooter = 0.25;
 
+    public static final double kPShooterReal = 0.5;
+    public static final double kSShooterReal = 0.5;
+
+
     public static final double kPPivotReal = 0.01;
-    
-    public static final double kPFeederReal = 0.0;
-    public static final double kVFeederReal = 0.0;
-
-    public static final double kPShooterReal = 0.0;
-    public static final double kSShooterReal = 0.0;
-
     public static final double kPPivotSim = 1.0;
-    
-    public static final double kPFeederSim = 0.1;
-    public static final double kVFeederSim = 0.12;
     
     public static final double kPShooterSim = 0.5;
     public static final double kSShooterSim = 0.5;
 
     public static final double kPPivotReplay = 0.0;
-    
-    public static final double kPFeederReplay = 0.0;
-    public static final double kVFeederReplay = 0.0;
     
     public static final double kPShooterReplay = 0.0;
     public static final double kSShooterReplay = 0.0;

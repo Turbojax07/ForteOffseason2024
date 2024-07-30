@@ -21,9 +21,12 @@ import frc.robot.Constants.IntakeConstants;
 /** Add your docs here. */
 public class IntakeIOSim implements IntakeIO {
 	private FlywheelSim rollerSim = new FlywheelSim(DCMotor.getNEO(1), 1, IntakeConstants.rollerMOI);
+
 	private SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getNEO(1), IntakeConstants.pivotRatio, IntakeConstants.pivotMOI, Units.inchesToMeters(IntakeConstants.pivotLength), IntakeConstants.up, IntakeConstants.down, true, IntakeConstants.up);
 	private ProfiledPIDController pivotPID = new ProfiledPIDController(IntakeConstants.kPPivotSim, 0.0, 0.0, new TrapezoidProfile.Constraints(IntakeConstants.maxPivotVelocity, IntakeConstants.maxPivotAccel));
+
 	private PIDController rollerPID = new PIDController(IntakeConstants.kPRollerSim, 0.0, 0);
+
 	
 
 	@Override
@@ -46,7 +49,7 @@ public class IntakeIOSim implements IntakeIO {
 
 	@Override
 	public void setRollerRPM(int rpm, SimpleMotorFeedforward ff) {
-		setRollerVoltage(rollerPID.calculate(rollerSim.getAngularVelocityRadPerSec() / (Math.PI * 2), rpm) + ff.calculate(rpm));
+		setRollerVoltage(ff.calculate(rpm));
 	}
 
 	@Override

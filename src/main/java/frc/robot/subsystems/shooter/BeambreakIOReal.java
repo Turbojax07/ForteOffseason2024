@@ -10,7 +10,7 @@ public class BeambreakIOReal implements BeambreakIO {
     }
 
     @Override
-    public void updateInputs(BeambreakIOInputs inputs) {
+    public void processInputs(BeambreakIOInputs inputs) {
         inputs.isObstructed = !beambreak.get();
     }
 }

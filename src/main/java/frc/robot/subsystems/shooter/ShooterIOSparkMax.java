@@ -27,10 +27,6 @@ public class ShooterIOSparkMax implements ShooterIO {
     private final RelativeEncoder pivotEnc = pivot.getEncoder();
     private final SparkAbsoluteEncoder pivotAbs = pivot.getAbsoluteEncoder(Type.kDutyCycle);
     private final SparkPIDController pivotPID = pivot.getPIDController();
-
-    private final CANSparkMax feeder = new CANSparkMax(RobotMap.Shooter.feeder, MotorType.kBrushless);
-    private final RelativeEncoder feederEnc = feeder.getEncoder();
-    private final SparkPIDController feederPID = feeder.getPIDController();
     
     private final CANSparkMax left = new CANSparkMax(RobotMap.Shooter.left, MotorType.kBrushless);
     private final RelativeEncoder leftEnc = left.getEncoder();
@@ -42,20 +38,18 @@ public class ShooterIOSparkMax implements ShooterIO {
 
     public ShooterIOSparkMax() {
         pivot.restoreFactoryDefaults();
-        feeder.restoreFactoryDefaults();
         left.restoreFactoryDefaults();
         right.restoreFactoryDefaults();
 
         pivot.setSmartCurrentLimit(ShooterConstants.pivotCurrentLimit);
-        feeder.setSmartCurrentLimit(ShooterConstants.feederCurrentLimit);
 
         pivot.setIdleMode(IdleMode.kBrake);
-        feeder.setIdleMode(IdleMode.kBrake);
         left.setIdleMode(IdleMode.kCoast);
         right.setIdleMode(IdleMode.kCoast);
 
         pivotPID.setFeedbackDevice(pivotAbs);
         pivotAbs.setInverted(true);
+		pivot.setInverted(true);
         pivotAbs.setPositionConversionFactor(ShooterConstants.pivotAbsConversion);
         pivotAbs.setVelocityConversionFactor(ShooterConstants.pivotAbsConversion / 60.0);
         pivotAbs.setZeroOffset(ShooterConstants.pivotOffset);
@@ -63,7 +57,6 @@ public class ShooterIOSparkMax implements ShooterIO {
         pivotEnc.setPosition(pivotAbs.getPosition());
 
         pivot.burnFlash();
-        feeder.burnFlash();
         left.burnFlash();
         right.burnFlash();
     }
@@ -83,11 +76,6 @@ public class ShooterIOSparkMax implements ShooterIO {
 		pivot.setVoltage(MathUtil.clamp(volts, -12, 12));
 	}
 
-    @Override
-    public void setFeederVoltage(double volts) {
-        feeder.setVoltage(MathUtil.clamp(volts, -12, 12));
-    }
-
 	@Override
 	public void setLeftVoltage(double volts) {
 		left.setVoltage(MathUtil.clamp(volts, -12, 12));
@@ -102,12 +90,6 @@ public class ShooterIOSparkMax implements ShooterIO {
 	public void setPivotTarget(double angle, ArmFeedforward ff) {
 		pivotPID.setReference(angle, ControlType.kPosition, 0, ff.calculate(angle, 0));
 	}
-
-    @Override
-    public void setFeederRPM(int rpm, SimpleMotorFeedforward ff) {
-        rpm = MathUtil.clamp(rpm, 0, 5880);
-		feederPID.setReference(rpm, ControlType.kVelocity, 0, ff.calculate(rpm), ArbFFUnits.kVoltage);
-    }
 
 	@Override
 	public void setLeftRPM(int rpm, SimpleMotorFeedforward ff) {
@@ -127,14 +109,6 @@ public class ShooterIOSparkMax implements ShooterIO {
 		pivotPID.setI(kI);
 		pivotPID.setD(kD);
 		pivot.burnFlash();
-	}
-
-	@Override
-	public void setFeederPID(double kP, double kI, double kD) {
-		feederPID.setP(kP);
-		feederPID.setI(kI);
-		feederPID.setD(kD);
-		feeder.burnFlash();
 	}
 
 	@Override

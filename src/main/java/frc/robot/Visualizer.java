@@ -72,8 +72,8 @@ public class Visualizer extends SubsystemBase {
         SmartDashboard.putData("Shooter 60", (Sendable) m_shooter.setPivotTarget(() -> ShooterConstants.down + Units.degreesToRadians(60)));
         SmartDashboard.putData("Shooter 75", (Sendable) m_shooter.setPivotTarget(() -> ShooterConstants.down + Units.degreesToRadians(75)));
         SmartDashboard.putData("Shooter 90", (Sendable) m_shooter.setPivotTarget(() -> ShooterConstants.up));
-        SmartDashboard.putData("Test", (Sendable) m_shooter.setPivotVoltage(() -> 3));
-        SmartDashboard.putData("NegTest", (Sendable) m_shooter.setPivotVoltage(() -> -3));
+        SmartDashboard.putData("Test", (Sendable) m_intake.setRollerRPM(() -> 2000));
+        SmartDashboard.putData("NegTest", (Sendable) m_intake.setRollerRPM(() -> -2000));
 
     }
     

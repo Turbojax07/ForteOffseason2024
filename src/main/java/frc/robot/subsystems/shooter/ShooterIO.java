@@ -22,12 +22,6 @@ public interface ShooterIO {
         public double pivotCurrentAmps = 0.0;
         public double pivotTempCelsius = 0.0;
 
-        public double feederSpeedRPM = 0.0;
-        public double feederTargetRPM = 0.0;
-        public double feederAppliedVolts = 0.0;
-        public double feederCurrentAmps = 0.0;
-        public double feederTempCelsius = 0.0;
-
         public double leftSpeedRPM = 0.0;
         public double leftTargetRPM = 0.0;
         public double leftAppliedVolts = 0.0;
@@ -45,23 +39,17 @@ public interface ShooterIO {
 
     public abstract void setPivotVoltage(double volts);
 
-    public abstract void setFeederVoltage(double volts);
-
     public abstract void setLeftVoltage(double volts);
 
     public abstract void setRightVoltage(double volts);
 
     public abstract void setPivotTarget(double angle, ArmFeedforward ff);
 
-    public abstract void setFeederRPM(int asInt, SimpleMotorFeedforward feederFF);
-
     public abstract void setLeftRPM(int rpm, SimpleMotorFeedforward ff);
 
     public abstract void setRightRPM(int rpm, SimpleMotorFeedforward ff);
 
     public abstract void setPivotPID(double kP, double kI, double kD);
-
-    public abstract void setFeederPID(double kP, double kI, double kD);
 
     public abstract void setShooterPID(double kP, double kI, double kD);
 

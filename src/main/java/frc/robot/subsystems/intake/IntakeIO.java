@@ -37,8 +37,9 @@ public interface IntakeIO {
     public abstract void setPivotTarget(double angle, ArmFeedforward ff);
 
     public abstract void setRollerRPM(int rpm, SimpleMotorFeedforward ff);
-
+    
     public abstract void setPivotPID(double kP, double kI, double kD);
 
     public abstract void setRollerPID(double kP, double kI, double kD);
+
 }

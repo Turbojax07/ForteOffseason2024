@@ -17,9 +17,6 @@ public class ShooterIOReplay implements ShooterIO {
     public void setPivotVoltage(double volts) {}
 
     @Override
-	public void setFeederVoltage(double volts) {}
-
-    @Override
     public void setLeftVoltage(double volts) {}
 
     @Override
@@ -29,9 +26,6 @@ public class ShooterIOReplay implements ShooterIO {
     public void setPivotTarget(double angle, ArmFeedforward ff) {}
 
     @Override
-    public void setFeederRPM(int asInt, SimpleMotorFeedforward feederFF) {}
-
-    @Override
     public void setLeftRPM(int rpm, SimpleMotorFeedforward ff) {}
 
     @Override
@@ -39,9 +33,6 @@ public class ShooterIOReplay implements ShooterIO {
 
     @Override
     public void setPivotPID(double kP, double kI, double kD) {}
-
-    @Override
-    public void setFeederPID(double kP, double kI, double kD) {}
 
     @Override
     public void setShooterPID(double kP, double kI, double kD) {}

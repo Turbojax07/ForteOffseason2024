@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.util.LoggedTunableNumber;
 
 public class Intake extends SubsystemBase {
@@ -26,10 +27,9 @@ public class Intake extends SubsystemBase {
   private SimpleMotorFeedforward rollerFF;
 
   private LoggedTunableNumber kPPivot = new LoggedTunableNumber("Intake/kPPivot");
-  
+
   private LoggedTunableNumber kPRoller = new LoggedTunableNumber("Intake/kPRoller");
   private LoggedTunableNumber kSRoller = new LoggedTunableNumber("Intake/kSRoller");
-
 
   /** Creates a new Intake. */
   public Intake(IntakeIO io) {
@@ -67,6 +67,7 @@ public class Intake extends SubsystemBase {
     io.setPivotPID(kPPivot.getAsDouble(), 0.0, 0.0);
     pivotFF = new ArmFeedforward(0.0, IntakeConstants.kGPivot, IntakeConstants.kVPivot, IntakeConstants.kAPivot);
 
+
     io.setRollerPID(kPRoller.getAsDouble(), 0.0, 0.0);
     rollerFF = new SimpleMotorFeedforward(kSRoller.getAsDouble(), IntakeConstants.kVRoller, IntakeConstants.kARoller);
   }
@@ -82,21 +83,48 @@ public class Intake extends SubsystemBase {
   }
 
   public Command setPivotTarget(DoubleSupplier radians) {
-          return this.run(
-              () -> {
-                  io.setPivotTarget(radians.getAsDouble(), pivotFF);
-                  inputs.pivotTargetPosition = Rotation2d.fromRadians(radians.getAsDouble() + IntakeConstants.simOffset);
-              }
-          );
-      }
+    return this.run(
+        () -> {
+          io.setPivotTarget(radians.getAsDouble(), pivotFF);
+          inputs.pivotTargetPosition = Rotation2d.fromRadians(radians.getAsDouble() + IntakeConstants.simOffset);
+        });
+  }
 
   public Command setRollerRPM(IntSupplier rpm) {
     return this.run(
-      () -> {
-        io.setRollerRPM(rpm.getAsInt(), rollerFF);
-        inputs.rollerTargetRPM = rpm.getAsInt();
-      }
-    );
+        () -> {
+          io.setRollerRPM(rpm.getAsInt(), rollerFF);
+          inputs.rollerTargetRPM = rpm.getAsInt();
+        });
+  }
+
+  public Command setRollerVoltage(DoubleSupplier volts) {
+    return this.run(
+        () -> {
+          io.setRollerVoltage(volts.getAsDouble());
+        });
+  }
+
+  public Command setIntakeDown(boolean reverse) {
+    return this.run(
+        () -> {
+          io.setPivotTarget(IntakeConstants.down, pivotFF);
+          inputs.pivotTargetPosition = Rotation2d.fromRadians(IntakeConstants.down + IntakeConstants.simOffset);
+          
+          io.setRollerRPM(2000 * (reverse ? -1 : 1), rollerFF);
+          inputs.rollerTargetRPM = 2000 * (reverse ? -1 : 1);
+        });
+  }
+
+  public Command setIntakeUp() {
+    return this.run(
+        () -> {
+          io.setPivotTarget(IntakeConstants.up, pivotFF);
+          inputs.pivotTargetPosition = Rotation2d.fromRadians(IntakeConstants.up + IntakeConstants.simOffset);
+
+          io.setRollerRPM(0, rollerFF);
+          inputs.rollerTargetRPM = 0;
+        });
   }
 
   public double getAngleRadians() {
@@ -113,10 +141,9 @@ public class Intake extends SubsystemBase {
 
   public Command setPivotVoltage(DoubleSupplier volts) {
     return this.run(
-      () -> {
-        io.setPivotVoltage(volts.getAsDouble());
-        inputs.pivotAppliedVolts = volts.getAsDouble();
-      }
-    );
+        () -> {
+          io.setPivotVoltage(volts.getAsDouble());
+          inputs.pivotAppliedVolts = volts.getAsDouble();
+        });
   }
 }

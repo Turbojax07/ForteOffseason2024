@@ -24,19 +24,15 @@ public class Shooter extends SubsystemBase {
     public ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
     public BeambreakIO feederBeambreak;
-    public BeambreakIOInputsAutoLogged feederBeambreakInputs;
+    public BeambreakIOInputsAutoLogged feederBeambreakInputs = new BeambreakIOInputsAutoLogged();
     public BeambreakIO shooterBeambreak;
-    public BeambreakIOInputsAutoLogged shooterBeambreakInputs;
+    public BeambreakIOInputsAutoLogged shooterBeambreakInputs = new BeambreakIOInputsAutoLogged();
 
     private ArmFeedforward pivotFF;
-    private SimpleMotorFeedforward feederFF;
     private SimpleMotorFeedforward leftFF;
     private SimpleMotorFeedforward rightFF;
 
     private LoggedTunableNumber kPPivot = new LoggedTunableNumber("Shooter/kPPivot");
-
-    private LoggedTunableNumber kPFeeder = new LoggedTunableNumber("Shooter/kPFeeder");
-    private LoggedTunableNumber kVFeeder = new LoggedTunableNumber("Shooter/kVFeeder");
 
     private LoggedTunableNumber kPShooter = new LoggedTunableNumber("Shooter/kPShooter");
     private LoggedTunableNumber kSShooter = new LoggedTunableNumber("Shooter/kSShooter");
@@ -44,13 +40,12 @@ public class Shooter extends SubsystemBase {
 
     public Shooter(ShooterIO io, BeambreakIO feederBeambreak, BeambreakIO shooterBeambreak) {
       this.io = io;
+      this.feederBeambreak = feederBeambreak;
+      this.shooterBeambreak = shooterBeambreak;
 
       switch (Constants.currentMode) {
         case REAL:
           kPPivot.initDefault(ShooterConstants.kPPivotReal);
-
-          kPFeeder.initDefault(ShooterConstants.kPFeederReal);
-          kVFeeder.initDefault(ShooterConstants.kVFeederReal);
 
           kPShooter.initDefault(ShooterConstants.kPShooterReal);
           kSShooter.initDefault(ShooterConstants.kSShooterReal);
@@ -58,17 +53,11 @@ public class Shooter extends SubsystemBase {
         case SIM:
           kPPivot.initDefault(ShooterConstants.kPPivotSim);
 
-          kPFeeder.initDefault(ShooterConstants.kPFeederSim);
-          kVFeeder.initDefault(ShooterConstants.kVFeederSim);
-
           kPShooter.initDefault(ShooterConstants.kPShooterSim);
           kSShooter.initDefault(ShooterConstants.kSShooterSim);
           break;
         case REPLAY:
           kPPivot.initDefault(ShooterConstants.kPPivotReplay);
-
-          kPFeeder.initDefault(ShooterConstants.kPFeederReplay);
-          kVFeeder.initDefault(ShooterConstants.kVFeederReplay);
 
           kPShooter.initDefault(ShooterConstants.kPShooterReplay);
           kSShooter.initDefault(ShooterConstants.kSShooterReplay);
@@ -76,17 +65,13 @@ public class Shooter extends SubsystemBase {
         default:
           kPPivot.initDefault(0.0);
 
-          kPFeeder.initDefault(0.0);
-          kVFeeder.initDefault(0.0);
-
           kPShooter.initDefault(0.0);
           kSShooter.initDefault(0.0);
       }
         io.setPivotPID(kPPivot.getAsDouble(), 0.0, 0.0);
         pivotFF = new ArmFeedforward(0.0, ShooterConstants.kGPivot, ShooterConstants.kVPivot, ShooterConstants.kAPivot);
 
-        io.setFeederPID(kPFeeder.getAsDouble(), 0.0, 0.0);
-        feederFF = new SimpleMotorFeedforward(0.0, kVFeeder.getAsDouble());
+        
 
         io.setShooterPID(kPShooter.getAsDouble(), 0.0, 0.0);
         leftFF = new SimpleMotorFeedforward(kSShooter.getAsDouble(), ShooterConstants.kVShooter, ShooterConstants.kAShooter);
@@ -96,7 +81,12 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     io.processInputs(inputs);
+    feederBeambreak.processInputs(feederBeambreakInputs);
+    shooterBeambreak.processInputs(shooterBeambreakInputs);
+
     Logger.processInputs("Shooter", inputs);
+    Logger.processInputs("Shooter/FeederBeambreak", feederBeambreakInputs);
+    Logger.processInputs("Shooter/ShooterBeambreak", shooterBeambreakInputs);
   }
 
   public Command setPivotTarget(DoubleSupplier radians) {
@@ -104,15 +94,6 @@ public class Shooter extends SubsystemBase {
       () -> {
         io.setPivotTarget(radians.getAsDouble(), pivotFF);
         inputs.pivotTargetPosition = Rotation2d.fromRadians(radians.getAsDouble());
-      }
-    );
-  }
-
-  public Command setFeederRPM(IntSupplier rpm) {
-    return this.run(
-      () -> {
-        io.setFeederRPM(rpm.getAsInt(), feederFF);
-        inputs.feederTargetRPM = rpm.getAsInt();
       }
     );
   }
@@ -150,5 +131,14 @@ public class Shooter extends SubsystemBase {
         inputs.pivotAppliedVolts = volts.getAsDouble();
       }
     );
+  }
+
+  public boolean feederBeambreakObstructed() {
+    return feederBeambreakInputs.isObstructed;
+  }
+
+  public boolean shooterBeambreakObstructed() {
+        return shooterBeambreakInputs.isObstructed;
+
   }
 }

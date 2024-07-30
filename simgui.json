@@ -6,8 +6,11 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Climb Down": "Command",
       "/SmartDashboard/Climb Up": "Command",
+      "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Intake Down": "Command",
       "/SmartDashboard/Intake Up": "Command",
+      "/SmartDashboard/NegTest": "Command",
+      "/SmartDashboard/Pigeon 2 (v6) [10]": "Gyro",
       "/SmartDashboard/Shooter 0": "Command",
       "/SmartDashboard/Shooter 15": "Command",
       "/SmartDashboard/Shooter 30": "Command",
@@ -33,47 +36,12 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Intake Down": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Intake Up": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Shooter 0": {
         "window": {
           "visible": true
         }
       },
       "/SmartDashboard/Shooter 15": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Shooter 30": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Shooter 45": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Shooter 60": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Shooter 75": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Shooter 90": {
         "window": {
           "visible": true
         }

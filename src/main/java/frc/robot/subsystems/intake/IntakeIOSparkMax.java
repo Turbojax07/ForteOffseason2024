@@ -76,6 +76,8 @@ public class IntakeIOSparkMax implements IntakeIO {
         inputs.rollerAppliedVolts = roller.getAppliedOutput() * roller.getBusVoltage();
         inputs.rollerCurrentAmps = roller.getOutputCurrent();
         inputs.rollerTempCelsius = roller.getMotorTemperature();
+
+		
 	}
 
 	public void setPivotTarget(double angle, ArmFeedforward ff) {
@@ -84,7 +86,7 @@ public class IntakeIOSparkMax implements IntakeIO {
 
 	@Override
 	public void setRollerRPM(int rpm, SimpleMotorFeedforward ff) {
-		rpm = MathUtil.clamp(rpm, 0, 5880);
+		rpm = MathUtil.clamp(rpm, -5880, 5880);
 		rollerPID.setReference(rpm, ControlType.kVelocity, 0, ff.calculate(rpm), ArbFFUnits.kVoltage);
 	}
 
