@@ -33,7 +33,7 @@ public final class Constants {
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
 
 
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -75,10 +75,10 @@ public final class Constants {
       public static final int backLeftEncoder = 1;
       public static final int backRightEncoder = 0;
 
-      public static final double frontLeftOffset = -0.911622941493988;
-      public static final double frontRightOffset = 5.787103176116943;
-      public static final double backLeftOffset = 1.104540467262268;
-      public static final double backRightOffset = 0.07666073739528656;
+      public static final double frontLeftOffset = 0.74771-2.3328;
+      public static final double frontRightOffset = 0.91836-1.43127;
+      public static final double backLeftOffset = 0.17289+0.91218;
+      public static final double backRightOffset = 0.01142+0.058;
 
 
 
@@ -133,7 +133,7 @@ public final class Constants {
     public static final double updateFrequency = 100;
 
     // public static final double maxLinearVelocity = Units.feetToMeters(20.4);
-     public static final double maxLinearVelocity = Units.feetToMeters(3);
+     public static final double maxLinearVelocity = Units.feetToMeters(20.4);
     public static final double maxLinearAccel = 8.0;
 
     public static final double maxAngularVelocity = maxLinearVelocity / (Math.hypot(trackWidth / 2.0, trackWidth / 2.0));
@@ -273,9 +273,10 @@ public final class Constants {
 
     public static final double pivotAbsConversion = Math.PI * 2.0 / (33.0 / 34.0);
     public static final double pivotEncConversion = 2.0 * Math.PI / pivotRatio;
-    public static final double pivotOffset = 2*Math.PI-0.26;
+    public static final double pivotOffset = 3.5780138;
+    public static final double simOffset = 0.0;
 
-    public static final double down = 0.191986218 + Units.degreesToRadians(11);
+    public static final double down = 0.191986218;
     public static final double up = 1.19;
     
     public static final double shooterMOI = 0.00920287973;
@@ -293,8 +294,8 @@ public final class Constants {
     public static final double kSShooterReal = 0.5;
 
 
-    public static final double kPPivotReal = 0.01;
-    public static final double kPPivotSim = 1.0;
+    public static final double kPPivotReal = 0.1;
+    public static final double kPPivotSim = 3.0;  
     
     public static final double kPShooterSim = 0.5;
     public static final double kSShooterSim = 0.5;

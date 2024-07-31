@@ -13,7 +13,20 @@
 
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class GyroIOReplay implements GyroIO {
 
   public void processInputs(GyroIOInputsAutoLogged inputs) {}
+
+  @Override
+  public void setYaw(double yaw) {}
+
+  @Override
+  public Rotation2d getYaw() {
+    return new Rotation2d();
+  }
+
+  @Override
+  public void reset() {}
 }

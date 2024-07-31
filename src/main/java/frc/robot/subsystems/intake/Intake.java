@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.util.LoggedTunableNumber;
 
 public class Intake extends SubsystemBase {
@@ -70,16 +69,14 @@ public class Intake extends SubsystemBase {
 
     io.setRollerPID(kPRoller.getAsDouble(), 0.0, 0.0);
     rollerFF = new SimpleMotorFeedforward(kSRoller.getAsDouble(), IntakeConstants.kVRoller, IntakeConstants.kARoller);
+
+    setIntakeUp();
   }
 
   @Override
   public void periodic() {
     io.processInputs(inputs);
     Logger.processInputs("Intake", inputs);
-
-    if (inputs.pivotCurrentAmps > 55) {
-      stopPivot();
-    }
   }
 
   public Command setPivotTarget(DoubleSupplier radians) {
@@ -133,10 +130,6 @@ public class Intake extends SubsystemBase {
 
   public double getTargetRadians() {
     return inputs.pivotTargetPosition.getRadians();
-  }
-
-  public void stopPivot() {
-    io.setPivotVoltage(0);
   }
 
   public Command setPivotVoltage(DoubleSupplier volts) {

@@ -23,6 +23,8 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotMap;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import java.util.OptionalDouble;
 import java.util.Queue;
 
@@ -70,5 +72,30 @@ public class GyroIOPigeon2Phoenix6 implements GyroIO {
             .toArray(Rotation2d[]::new);
     yawTimestampQueue.clear();
     yawPositionQueue.clear();
+  }
+
+
+  @Override
+  public void setYaw(double yaw) {
+    pigeon.setYaw(yaw, 0.1);
+  }
+
+
+  @Override
+  public Rotation2d getYaw() {
+    return Rotation2d.fromDegrees(yaw.getValueAsDouble());
+  }
+
+
+  @Override
+  public void reset() {
+    setYaw(0.0);
+  }
+
+  public Rotation2d normalizeAngle(Rotation2d yaw) {
+    while (yaw.getRadians() < Math.PI * 2) {
+      yaw.plus(Rotation2d.fromRadians(Math.PI));
+     }
+    return Rotation2d.fromRadians(yaw.getRadians() % (Math.PI * 2));
   }
 }

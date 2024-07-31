@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.util.LoggedTunableNumber;
 
@@ -29,8 +30,7 @@ public class Shooter extends SubsystemBase {
     public BeambreakIOInputsAutoLogged shooterBeambreakInputs = new BeambreakIOInputsAutoLogged();
 
     private ArmFeedforward pivotFF;
-    private SimpleMotorFeedforward leftFF;
-    private SimpleMotorFeedforward rightFF;
+    private SimpleMotorFeedforward shooterFF;
 
     private LoggedTunableNumber kPPivot = new LoggedTunableNumber("Shooter/kPPivot");
 
@@ -71,29 +71,20 @@ public class Shooter extends SubsystemBase {
         io.setPivotPID(kPPivot.getAsDouble(), 0.0, 0.0);
         pivotFF = new ArmFeedforward(0.0, ShooterConstants.kGPivot, ShooterConstants.kVPivot, ShooterConstants.kAPivot);
 
-        
-
         io.setShooterPID(kPShooter.getAsDouble(), 0.0, 0.0);
-        leftFF = new SimpleMotorFeedforward(kSShooter.getAsDouble(), ShooterConstants.kVShooter, ShooterConstants.kAShooter);
-        rightFF = new SimpleMotorFeedforward(kSShooter.getAsDouble(), ShooterConstants.kVShooter, ShooterConstants.kAShooter);
+        shooterFF = new SimpleMotorFeedforward(kSShooter.getAsDouble(), ShooterConstants.kVShooter, ShooterConstants.kAShooter);
   }
 
-  @Override
   public void periodic() {
     io.processInputs(inputs);
-    feederBeambreak.processInputs(feederBeambreakInputs);
-    shooterBeambreak.processInputs(shooterBeambreakInputs);
-
     Logger.processInputs("Shooter", inputs);
-    Logger.processInputs("Shooter/FeederBeambreak", feederBeambreakInputs);
-    Logger.processInputs("Shooter/ShooterBeambreak", shooterBeambreakInputs);
   }
 
   public Command setPivotTarget(DoubleSupplier radians) {
     return this.run(
       () -> {
         io.setPivotTarget(radians.getAsDouble(), pivotFF);
-        inputs.pivotTargetPosition = Rotation2d.fromRadians(radians.getAsDouble());
+        inputs.pivotTargetPosition = Rotation2d.fromRadians(radians.getAsDouble() + ShooterConstants.simOffset);
       }
     );
   }
@@ -101,8 +92,24 @@ public class Shooter extends SubsystemBase {
   public Command setLeftRPM(IntSupplier rpm) {
     return this.run(
       () -> {
-        io.setLeftRPM(rpm.getAsInt(), leftFF);
+        io.setLeftRPM(rpm.getAsInt(), shooterFF);
         inputs.leftTargetRPM = rpm.getAsInt();
+      }
+    );
+  }
+
+  public Command setLeftVoltage(DoubleSupplier volts) {
+    return this.run(
+      () -> {
+        io.setLeftVoltage(volts.getAsDouble());
+      }
+    );
+  }
+
+  public Command setRightVoltage(DoubleSupplier volts) {
+    return this.run(
+      () -> {
+        io.setRightVoltage(volts.getAsDouble());
       }
     );
   }
@@ -110,35 +117,25 @@ public class Shooter extends SubsystemBase {
   public Command setRightRPM(IntSupplier rpm) {
     return this.run(
       () -> {
-        io.setRightRPM(rpm.getAsInt(), rightFF);
+        io.setRightRPM(rpm.getAsInt(), shooterFF);
         inputs.rightTargetRPM = rpm.getAsInt();
       }
     );
-  }
-
-  public double getAngleRadians() {
-    return inputs.pivotPosition.getRadians();
-  }
-
-  public double getTargetRadians() {
-    return inputs.pivotTargetPosition.getRadians();
   }
 
   public Command setPivotVoltage(DoubleSupplier volts) {
     return this.run(
       () -> {
         io.setPivotVoltage(volts.getAsDouble());
-        inputs.pivotAppliedVolts = volts.getAsDouble();
       }
     );
   }
 
-  public boolean feederBeambreakObstructed() {
-    return feederBeambreakInputs.isObstructed;
+  public double getAngleRadians() {
+    return inputs.pivotPosition.getRadians() + ShooterConstants.simOffset;
   }
 
-  public boolean shooterBeambreakObstructed() {
-        return shooterBeambreakInputs.isObstructed;
-
+  public double getTargetRadians() {
+    return inputs.pivotTargetPosition.getRadians();
   }
 }

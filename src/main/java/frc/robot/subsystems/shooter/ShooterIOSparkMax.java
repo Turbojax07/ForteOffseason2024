@@ -18,6 +18,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.ShooterConstants;
 
@@ -48,12 +49,18 @@ public class ShooterIOSparkMax implements ShooterIO {
         right.setIdleMode(IdleMode.kCoast);
 
         pivotPID.setFeedbackDevice(pivotAbs);
+		pivotPID.setOutputRange(-12, 12);
+
+		pivotPID.setPositionPIDWrappingEnabled(false);
         pivotAbs.setInverted(true);
 		pivot.setInverted(true);
         pivotAbs.setPositionConversionFactor(ShooterConstants.pivotAbsConversion);
         pivotAbs.setVelocityConversionFactor(ShooterConstants.pivotAbsConversion / 60.0);
         pivotAbs.setZeroOffset(ShooterConstants.pivotOffset);
 
+
+		pivotEnc.setPositionConversionFactor(ShooterConstants.pivotEncConversion);
+        pivotEnc.setVelocityConversionFactor(ShooterConstants.pivotEncConversion / 60.0);
         pivotEnc.setPosition(pivotAbs.getPosition());
 
         pivot.burnFlash();
@@ -61,15 +68,24 @@ public class ShooterIOSparkMax implements ShooterIO {
         right.burnFlash();
     }
 
-    @Override
-    public void processInputs(ShooterIOInputsAutoLogged inputs) {
-        inputs.pivotPosition = Rotation2d.fromRadians(pivotAbs.getPosition());
-        inputs.pivotRelativeEncoder = pivotEnc.getPosition();
-        inputs.pivotVelocityRadPerSec = pivotEnc.getVelocity();
-        inputs.pivotAppliedVolts = pivot.getAppliedOutput() * pivot.getBusVoltage();
-        inputs.pivotCurrentAmps = pivot.getOutputCurrent();
-        inputs.pivotTempCelsius = pivot.getMotorTemperature();
-    }
+	@Override
+	public void processInputs(ShooterIOInputsAutoLogged inputs) {
+		inputs.pivotPosition = Rotation2d.fromRadians(pivotAbs.getPosition());
+		inputs.pivotVelocityRadPerSec = pivotEnc.getVelocity();
+		inputs.pivotAppliedVolts = pivot.getAppliedOutput() * pivot.getBusVoltage();
+		inputs.pivotCurrentAmps = pivot.getOutputCurrent();
+		inputs.pivotTempCelsius = pivot.getMotorTemperature();
+
+		inputs.leftSpeedRPM = leftEnc.getVelocity();
+		inputs.leftAppliedVolts = left.getAppliedOutput() * left.getBusVoltage();
+		inputs.leftCurrentAmps = left.getOutputCurrent();
+		inputs.leftTempCelsius = left.getMotorTemperature();
+
+		inputs.rightSpeedRPM = rightEnc.getVelocity();
+		inputs.rightAppliedVolts = right.getAppliedOutput() * left.getBusVoltage();
+		inputs.rightCurrentAmps = right.getOutputCurrent();
+		inputs.rightTempCelsius = right.getMotorTemperature();
+	}
 
 	@Override
 	public void setPivotVoltage(double volts) {
@@ -93,14 +109,16 @@ public class ShooterIOSparkMax implements ShooterIO {
 
 	@Override
 	public void setLeftRPM(int rpm, SimpleMotorFeedforward ff) {
-		rpm = MathUtil.clamp(rpm, 0, 5880);
+		rpm = MathUtil.clamp(rpm, -5880, 5880);
 		leftPID.setReference(rpm, ControlType.kVelocity, 0, ff.calculate(rpm), ArbFFUnits.kVoltage);
+
 	}
 
 	@Override
 	public void setRightRPM(int rpm, SimpleMotorFeedforward ff) {
-		rpm = MathUtil.clamp(rpm, 0, 5880);
+		rpm = MathUtil.clamp(rpm, -5880, 5880);
 		rightPID.setReference(rpm, ControlType.kVelocity, 0, ff.calculate(rpm), ArbFFUnits.kVoltage);
+
 	}
 
 	@Override
@@ -109,7 +127,7 @@ public class ShooterIOSparkMax implements ShooterIO {
 		pivotPID.setI(kI);
 		pivotPID.setD(kD);
 		pivot.burnFlash();
-	}
+		}
 
 	@Override
 	public void setShooterPID(double kP, double kI, double kD) {
@@ -118,10 +136,10 @@ public class ShooterIOSparkMax implements ShooterIO {
 		leftPID.setD(kD);
 		left.burnFlash();
 
-        rightPID.setP(kP);
+		rightPID.setP(kP);
 		rightPID.setI(kI);
 		rightPID.setD(kD);
 		right.burnFlash();
-	}    
+	}
 
 }

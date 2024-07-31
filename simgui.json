@@ -36,12 +36,22 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Shooter 0": {
+      "/SmartDashboard/Intake Down": {
         "window": {
           "visible": true
         }
       },
-      "/SmartDashboard/Shooter 15": {
+      "/SmartDashboard/Intake Up": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/NegTest": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shooter 30": {
         "window": {
           "visible": true
         }

@@ -16,18 +16,28 @@ package frc.robot;
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.RobotMap;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIOReplay;
 import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.climber.ClimberIOSparkMax;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.GyroIOPigeon2Phoenix6;
+import frc.robot.subsystems.drive.GyroIOReplay;
+import frc.robot.subsystems.drive.ModuleIOReal;
+import frc.robot.subsystems.drive.ModuleIOReplay;
+import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive4.SwerveSubsystem;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIOReplay;
@@ -42,7 +52,9 @@ import frc.robot.subsystems.shooter.BeambreakIOReplay;
 import frc.robot.subsystems.shooter.BeambreakIOSim;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIOReplay;
+import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOSparkMax;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -55,8 +67,9 @@ import frc.robot.subsystems.shooter.ShooterIOSparkMax;
  */
 public class RobotContainer {
   // Subsystems
-  private final SwerveSubsystem m_drive = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-      "swerve/swerve"));;
+  // private final SwerveSubsystem m_drive = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  //     "swerve/swerve"));;
+  private final Drive m_drive; 
   private final Climber m_climber;
   private final Intake m_intake;
   private final Feeder m_feeder;
@@ -76,14 +89,14 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        // m_drive =
-        // new Drive(
-        // new GyroIOPigeon2Phoenix6(),
-        // new ModuleIOReal(0),
-        // new ModuleIOReal(1),
-        // new ModuleIOReal(2),
-        // new ModuleIOReal(3)
-        // );
+        m_drive =
+        new Drive(
+        new GyroIOPigeon2Phoenix6(),
+        new ModuleIOReal(0),
+        new ModuleIOReal(1),
+        new ModuleIOReal(2),
+        new ModuleIOReal(3)
+        );
         m_climber = new Climber(new ClimberIOSparkMax());
         m_intake = new Intake(new IntakeIOSparkMax());
         m_feeder = new Feeder(new FeederIOSparkMax());
@@ -95,31 +108,31 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        // m_drive =
-        // new Drive(
-        // new GyroIOReplay() {},
-        // new ModuleIOSim("FrontLeft"),
-        // new ModuleIOSim("FrontRight"),
-        // new ModuleIOSim("BackLeft"),
-        // new ModuleIOSim("BackRight"));
+        m_drive =
+        new Drive(
+        new GyroIOReplay() {},
+        new ModuleIOSim("FrontLeft"),
+        new ModuleIOSim("FrontRight"),
+        new ModuleIOSim("BackLeft"),
+        new ModuleIOSim("BackRight"));
         m_climber = new Climber(new ClimberIOSim());
         m_intake = new Intake(new IntakeIOSim());
         m_feeder = new Feeder(new FeederIOSim());
         m_shooter = new Shooter(
-            new ShooterIOSparkMax(),
+            new ShooterIOSim(),
             new BeambreakIOSim(RobotMap.Shooter.feederBeambreak),
             new BeambreakIOSim(RobotMap.Shooter.shooterBeambreak));
         break;
 
       default:
         // Replayed robot, disable IO implementations
-        // m_drive =
-        // new Drive(
-        // new GyroIOReplay() {},
-        // new ModuleIOReplay() {},
-        // new ModuleIOReplay() {},
-        // new ModuleIOReplay() {},
-        // new ModuleIOReplay() {});
+        m_drive =
+        new Drive(
+        new GyroIOReplay() {},
+        new ModuleIOReplay() {},
+        new ModuleIOReplay() {},
+        new ModuleIOReplay() {},
+        new ModuleIOReplay() {});
         m_climber = new Climber(new ClimberIOReplay());
         m_intake = new Intake(new IntakeIOReplay());
         m_feeder = new Feeder(new FeederIOReplay());
@@ -148,27 +161,17 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // m_drive.setDefaultCommand(
-    // m_drive.runVoltageTeleopFieldRelative(
-    // () ->
-    // new ChassisSpeeds(
-    // -teleopAxisAdjustment(controller.getLeftY()) *
-    // DriveConstants.maxLinearVelocity,
-    // -teleopAxisAdjustment(controller.getLeftX()) *
-    // DriveConstants.maxLinearVelocity,
-    // -teleopAxisAdjustment(controller.getRightX())
-    // * DriveConstants.maxLinearVelocity)));
-    // controller.x().onTrue(Commands.runOnce(m_drive::stopWithX, m_drive));
-    // controller.y().onTrue(Commands.runOnce(m_drive::resetOffsetsCmd, m_drive));
-    // controller
-    // .b()
-    // .onTrue(
-    // Commands.runOnce(
-    // () ->
-    // m_drive.setPose(
-    // new Pose2d(m_drive.getPose().getTranslation(), new Rotation2d())),
-    // m_drive)
-    // .ignoringDisable(true));
+    m_drive.setDefaultCommand(
+    m_drive.runVoltageTeleopFieldRelative(
+    () ->
+    new ChassisSpeeds(
+    -teleopAxisAdjustment(controller.getLeftY()) *
+    DriveConstants.maxLinearVelocity,
+    -teleopAxisAdjustment(controller.getLeftX()) *
+    DriveConstants.maxLinearVelocity,
+    -teleopAxisAdjustment(controller.getRightX())
+    * DriveConstants.maxLinearVelocity)));
+
 
     // controller.start().onTrue(m_climber.runCurrentHoming());
     // controller
@@ -181,23 +184,23 @@ public class RobotContainer {
     // m_climber.setExtensionCmd(() -> ClimberConstants.minHeight));
     // }
 
-    m_drive.setDefaultCommand(
-        m_drive.driveCommand(
-            () -> MathUtil.applyDeadband(controller.getLeftY(), 0.01),
-            () -> MathUtil.applyDeadband(controller.getLeftX(), 0.01),
-            () -> controller.getRightX() * 0.5));
+    // m_drive.setDefaultCommand(
+    //     m_drive.driveCommand(
+    //         () -> MathUtil.applyDeadband(controller.getLeftY(), 0.01),
+    //         () -> MathUtil.applyDeadband(controller.getLeftX(), 0.01),
+    //         () -> controller.getRightX() * 0.5));
 
-    controller.a().whileTrue(
-        m_intake.setIntakeDown(false)
-    ).onFalse(m_intake.setIntakeUp());
+    // controller.a().whileTrue(
+    //     m_intake.setIntakeDown(false)
+    // ).onFalse(m_intake.setIntakeUp());
 
-    controller.b().whileTrue(
-        m_intake.setIntakeDown(true)
-    ).onFalse(m_intake.setIntakeUp());
+    // controller.b().whileTrue(
+    //     m_intake.setIntakeDown(true)
+    // ).onFalse(m_intake.setIntakeUp());
 
-    controller.y().whileTrue(
-        m_intake.setRollerRPM(() -> 2000)).onFalse(
-            m_intake.setRollerRPM(() -> 0));
+    // controller.y().whileTrue(
+    //     m_intake.setRollerRPM(() -> 2000)).onFalse(
+    //         m_intake.setRollerRPM(() -> 0));
   }
 
   public void robotPeriodic() {
@@ -212,4 +215,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return null;
   }
+
+  private static double teleopAxisAdjustment(double x) {
+    return MathUtil.applyDeadband(Math.abs(Math.pow(x, 2)) * Math.signum(x), 0.02);
+  }
+
 }

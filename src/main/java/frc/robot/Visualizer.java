@@ -56,8 +56,8 @@ public class Visualizer extends SubsystemBase {
         m_intakeMech = m_intakeRoot.append(new MechanismLigament2d("Intake", Units.inchesToMeters(14.914264), 83.649627, 8, new Color8Bit(Color.kFirstBlue)));
         m_intakeTarget = m_intakeRoot.append(new MechanismLigament2d("Intake Target", Units.inchesToMeters(14.914264), 83.649627, 2, new Color8Bit(Color.kBlue)));
 
-        m_shooterMech = m_shooterRoot.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(13.1001837), 11.313120, 8, new Color8Bit(Color.kWhite)));
-        m_shooterTarget = m_shooterRoot.append(new MechanismLigament2d("Shooter Target", Units.inchesToMeters(13.1001837), 11.313120, 2, new Color8Bit(Color.kBeige)));
+        m_shooterMech = m_shooterRoot.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(13.1001837), 12, 8, new Color8Bit(Color.kWhite)));
+        m_shooterTarget = m_shooterRoot.append(new MechanismLigament2d("Shooter Target", Units.inchesToMeters(13.1001837), 12, 2, new Color8Bit(Color.kBeige)));
 
         SmartDashboard.putData("Climb Up", (Sendable) m_climber.setExtensionCmd(() -> ClimberConstants.maxHeight));
         SmartDashboard.putData("Climb Down", (Sendable) m_climber.setExtensionCmd(() -> 0));
@@ -72,9 +72,9 @@ public class Visualizer extends SubsystemBase {
         SmartDashboard.putData("Shooter 60", (Sendable) m_shooter.setPivotTarget(() -> ShooterConstants.down + Units.degreesToRadians(60)));
         SmartDashboard.putData("Shooter 75", (Sendable) m_shooter.setPivotTarget(() -> ShooterConstants.down + Units.degreesToRadians(75)));
         SmartDashboard.putData("Shooter 90", (Sendable) m_shooter.setPivotTarget(() -> ShooterConstants.up));
-        SmartDashboard.putData("Test", (Sendable) m_intake.setRollerRPM(() -> 2000));
-        SmartDashboard.putData("NegTest", (Sendable) m_intake.setRollerRPM(() -> -2000));
 
+        SmartDashboard.putData("Pos", (Sendable) m_shooter.setPivotVoltage(() -> 5));
+        SmartDashboard.putData("NegPos", (Sendable) m_shooter.setPivotVoltage(() -> -5));
     }
     
     public void periodic() {

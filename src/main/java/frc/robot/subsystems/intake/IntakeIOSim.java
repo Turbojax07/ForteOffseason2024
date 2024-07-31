@@ -27,8 +27,6 @@ public class IntakeIOSim implements IntakeIO {
 
 	private PIDController rollerPID = new PIDController(IntakeConstants.kPRollerSim, 0.0, 0);
 
-	
-
 	@Override
 	public void processInputs(IntakeIOInputsAutoLogged inputs) {
 		rollerSim.update(Constants.loopPeriodSecs);

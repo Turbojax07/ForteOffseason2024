@@ -224,17 +224,6 @@ public class Drive extends SubsystemBase {
     return states;
   }
 
-  /** Returns the current odometry pose. */
-  @AutoLogOutput(key = "Odometry/Robot")
-  public Pose2d getPose() {
-    return poseEstimator.getEstimatedPosition();
-  }
-
-  /** Returns the current odometry rotation. */
-  public Rotation2d getRotation() {
-    return getPose().getRotation();
-  }
-
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
@@ -317,9 +306,8 @@ public class Drive extends SubsystemBase {
           var allianceSpeeds =
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   speeds.get(),
-                  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
-                      ? getPose().getRotation()
-                      : getPose().getRotation().minus(Rotation2d.fromDegrees(180)));
+                  gyroInputs.yawPosition
+                  );
           // Calculate module setpoints
           ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(allianceSpeeds, 0.02);
           SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
@@ -361,5 +349,13 @@ public class Drive extends SubsystemBase {
 
   public Command resetOffsetsCmd() {
     return run(() -> resetOffsets());
+}
+
+public Rotation2d getRotation() {
+  return gyroIO.getYaw();
+}
+
+public void resetGyro() {
+  gyroIO.reset();
 }
 }

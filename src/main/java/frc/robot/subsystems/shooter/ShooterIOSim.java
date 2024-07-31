@@ -12,6 +12,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOSim implements ShooterIO {
@@ -48,38 +49,42 @@ public class ShooterIOSim implements ShooterIO {
 	@Override
 	public void setLeftVoltage(double volts) {
 		leftSim.setInputVoltage(MathUtil.clamp(volts, -12, 12));
+
 	}
 
 	@Override
 	public void setRightVoltage(double volts) {
 		rightSim.setInputVoltage(MathUtil.clamp(volts, -12, 12));
+
 	}
 
 	@Override
 	public void setPivotTarget(double angle, ArmFeedforward ff) {
 		setPivotVoltage(pivotPID.calculate(pivotSim.getAngleRads(), angle) + ff.calculate(pivotPID.getSetpoint().position, pivotPID.getSetpoint().velocity));
+
 	}
-    
+
 	@Override
 	public void setLeftRPM(int rpm, SimpleMotorFeedforward ff) {
-		setLeftVoltage(leftPID.calculate(leftSim.getAngularVelocityRadPerSec() / (Math.PI * 2), rpm) + ff.calculate(rpm));
+		setLeftVoltage(ff.calculate(rpm));
 	}
 
 	@Override
 	public void setRightRPM(int rpm, SimpleMotorFeedforward ff) {
-		setRightVoltage(rightPID.calculate(rightSim.getAngularVelocityRadPerSec() / (Math.PI * 2), rpm) + ff.calculate(rpm));
+		setRightVoltage(ff.calculate(rpm));
+
 	}
 
-    @Override
-    public void setPivotPID(double kP, double kI, double kD) {
-        pivotPID = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(ShooterConstants.maxPivotVelocity, ShooterConstants.maxPivotAccel));
-    }
+	@Override
+	public void setPivotPID(double kP, double kI, double kD) {
+		pivotPID = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(IntakeConstants.maxPivotVelocity, IntakeConstants.maxPivotAccel));
 
-    @Override
-    public void setShooterPID(double kP, double kI, double kD) {
-        leftPID = new PIDController(kP, kI, kD);
+	}
+
+	@Override
+	public void setShooterPID(double kP, double kI, double kD) {
+		leftPID = new PIDController(kP, kI, kD);
 		rightPID = new PIDController(kP, kI, kD);
-    }
-
+	}
 
 }

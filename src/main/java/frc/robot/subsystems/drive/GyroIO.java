@@ -28,4 +28,10 @@ public interface GyroIO {
   }
 
   public abstract void processInputs(GyroIOInputsAutoLogged inputs);
+
+  public abstract void setYaw(double yaw);
+
+  public abstract Rotation2d getYaw();
+
+  public abstract void reset();
 }
