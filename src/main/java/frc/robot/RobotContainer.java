@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
@@ -299,28 +300,30 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    Pose2d initPose = m_drive.getPose();
+    // Pose2d initPose = m_drive.getPose();
 
-    List<Translation2d> points = PathPlannerPath.bezierFromPoses(
-        initPose,
-        new Pose2d(initPose.getX() + 2.0, initPose.getY(), initPose.getRotation())
-    );
+    // List<Translation2d> points = PathPlannerPath.bezierFromPoses(
+    //     initPose,
+    //     new Pose2d(initPose.getX() + 2.0, initPose.getY(), initPose.getRotation())
+    // );
 
-    PathPlannerPath path = new PathPlannerPath(points,
-        new PathConstraints(
-            DriveConstants.maxLinearVelocity,
-            DriveConstants.maxLinearAccel,
-            DriveConstants.maxAngularVelocity,
-            DriveConstants.maxAngularAccel
-        ),
-        new GoalEndState(0, initPose.getRotation())
-    );
+    // PathPlannerPath path = new PathPlannerPath(points,
+    //     new PathConstraints(
+    //         DriveConstants.maxLinearVelocity,
+    //         DriveConstants.maxLinearAccel,
+    //         DriveConstants.maxAngularVelocity,
+    //         DriveConstants.maxAngularAccel
+    //     ),
+    //     new GoalEndState(0, initPose.getRotation())
+    // );
 
-    path.preventFlipping = true;
+    // path.preventFlipping = true;
 
     // Test path
     // return AutoBuilder.followPath(path);
-    return new PathPlannerAuto("Simple Auto");
+    // Default path
+    // return new PathPlannerAuto("Simple Auto");
+    return new PrintCommand("No Auto lol");
   }
 
   public Command getTeleopCommand() {
