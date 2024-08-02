@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.Driver;
 import frc.robot.Constants.RobotMap;
 import frc.robot.subsystems.climber.Climb;
 import frc.robot.subsystems.climber.ClimbIOReplay;
@@ -64,6 +65,9 @@ import frc.robot.subsystems.shooter.ShooterIOSparkMax;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private Driver driver   = Driver.ARNAV_DRIVE;
+  private Driver operator = Driver.ZACH_OPERATOR;
+
   // Subsystems
   // private final SwerveSubsystem m_drive = new SwerveSubsystem(new
   // File(Filesystem.getDeployDirectory(),
@@ -107,8 +111,7 @@ public class RobotContainer {
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         m_drive = new Drive(
-            new GyroIOReplay() {
-            },
+            new GyroIOReplay() {},
             new ModuleIOSim("FrontLeft"),
             new ModuleIOSim("FrontRight"),
             new ModuleIOSim("BackLeft"),
@@ -124,16 +127,11 @@ public class RobotContainer {
       default:
         // Replayed robot, disable IO implementations
         m_drive = new Drive(
-            new GyroIOReplay() {
-            },
-            new ModuleIOReplay() {
-            },
-            new ModuleIOReplay() {
-            },
-            new ModuleIOReplay() {
-            },
-            new ModuleIOReplay() {
-            });
+            new GyroIOReplay() {},
+            new ModuleIOReplay() {},
+            new ModuleIOReplay() {},
+            new ModuleIOReplay() {},
+            new ModuleIOReplay() {});
         m_climber = new Climb(new ClimbIOReplay());
         m_intake = new Intake(new IntakeIOReplay());
         m_feeder = new Feeder(new FeederIOReplay(), new BeambreakIOReplay(), new BeambreakIOReplay());
@@ -157,6 +155,32 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    // switch(driver) {
+    //   case ARNAV_DRIVE:
+    //     break;
+    //   case CONNOR_DRIVE:
+    //     break;
+    //   case JAMES_DRIVE:
+    //     break;
+    //   case RAM_DRIVE:
+    //     break;
+    //   case ZACH_DRIVE:
+    //     break;
+    // }
+
+    // switch (operator) {
+    //   case ARNAV_OPERATOR:
+    //     break;
+    //   case CONNOR_OPERATOR:
+    //     break;
+    //   case JAMES_OPERATOR:
+    //     break;
+    //   case RAM_OPERATOR:
+    //     break;
+    //   case ZACH_OPERATOR:
+    //     break;
+    // }
 
     // Driver Controller
 
@@ -191,7 +215,7 @@ public class RobotContainer {
     m_operator.povUp().whileTrue(
         Commands.parallel(
             m_intake.setIntakeDown(false),
-            m_feeder.setRPM(() -> 2000)).until(() -> m_feeder.feederBeambreakObstructed()))
+            m_feeder.setRPM(() -> 5000)).until(() -> m_feeder.feederBeambreakObstructed()))
         .onFalse(m_intake.setIntakeUp());
 
     // D-Pad Down for intake down, rollers backward

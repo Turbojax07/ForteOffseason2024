@@ -44,6 +44,20 @@ public final class Constants {
     REPLAY
   }
 
+  // A list of drivers -- Only for WVROX
+  public static enum Driver {
+    ARNAV_DRIVE,
+    ARNAV_OPERATOR,
+    CONNOR_DRIVE,
+    CONNOR_OPERATOR,
+    JAMES_DRIVE,
+    JAMES_OPERATOR,
+    RAM_DRIVE,
+    RAM_OPERATOR,
+    ZACH_DRIVE,
+    ZACH_OPERATOR
+  }
+
   public static final boolean isTuning = true;
   
 
@@ -73,7 +87,7 @@ public final class Constants {
       public static final int backLeftEncoder = 1;
       public static final int backRightEncoder = 0;
 
-      public static final double frontLeftOffset = -1.58083975315094;
+      public static final double frontLeftOffset = -3.026233498250143;
       public static final double frontRightOffset = -0.49733975529670715;
       public static final double backLeftOffset = -2.035203218460083+Math.PI;
       public static final double backRightOffset = -3.0376768112182617+Math.PI;
@@ -123,8 +137,8 @@ public final class Constants {
     public static final double turnConversion = 2 * Math.PI / turnRatio;
     public static final double turnVelocityConversion = turnConversion / 60;
 
-    public static final int driveSupplyCurrent = 70; // 70
-    public static final int driveStatorCurrent = 120; // 120
+    public static final int driveSupplyCurrent = 50; // 70
+    public static final int driveStatorCurrent = 90; // 120
     public static final int turnCurrent = 30; // 30
 
     public static final double odometeryFrequency = 250;
@@ -143,7 +157,7 @@ public final class Constants {
     public static double kVDriveReal = 1.93;
     public static double kADriveReal = 0.25;
 
-    public static double kPTurnReal = 1; // 1.5?
+    public static double kPTurnReal = 1.5; // 1.5?
     public static double kDTurnReal = 0.0;
 
     public static double kPDriveSim = 0.3;
