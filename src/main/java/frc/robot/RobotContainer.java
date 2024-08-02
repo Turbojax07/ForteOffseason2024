@@ -21,13 +21,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotMap;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberIOReplay;
-import frc.robot.subsystems.climber.ClimberIOSim;
-import frc.robot.subsystems.climber.ClimberIOSparkMax;
+import frc.robot.subsystems.climber.Climb;
+import frc.robot.subsystems.climber.ClimbIOReplay;
+import frc.robot.subsystems.climber.ClimbIOSim;
+import frc.robot.subsystems.climber.ClimbIOSparkMax;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIOPigeon2Phoenix6;
 import frc.robot.subsystems.drive.GyroIOReplay;
@@ -69,7 +69,7 @@ public class RobotContainer {
   // File(Filesystem.getDeployDirectory(),
   // "swerve/swerve"));;
   private final Drive m_drive;
-  private final Climber m_climber;
+  private final Climb m_climber;
   private final Intake m_intake;
   private final Feeder m_feeder;
   private final Pivot m_pivot;
@@ -96,7 +96,7 @@ public class RobotContainer {
             new ModuleIOReal(1),
             new ModuleIOReal(2),
             new ModuleIOReal(3));
-        m_climber = new Climber(new ClimberIOSparkMax());
+        m_climber = new Climb(new ClimbIOSparkMax());
         m_intake = new Intake(new IntakeIOSparkMax());
         m_feeder = new Feeder(new FeederIOSparkMax(), new BeambreakIOReal(RobotMap.Shooter.feederBeambreak),
             new BeambreakIOReal(RobotMap.Shooter.shooterBeambreak));
@@ -113,7 +113,7 @@ public class RobotContainer {
             new ModuleIOSim("FrontRight"),
             new ModuleIOSim("BackLeft"),
             new ModuleIOSim("BackRight"));
-        m_climber = new Climber(new ClimberIOSim());
+        m_climber = new Climb(new ClimbIOSim());
         m_intake = new Intake(new IntakeIOSim());
         m_feeder = new Feeder(new FeederIOSim(), new BeambreakIOSim(RobotMap.Shooter.feederBeambreak),
             new BeambreakIOSim(RobotMap.Shooter.shooterBeambreak));
@@ -134,7 +134,7 @@ public class RobotContainer {
             },
             new ModuleIOReplay() {
             });
-        m_climber = new Climber(new ClimberIOReplay());
+        m_climber = new Climb(new ClimbIOReplay());
         m_intake = new Intake(new IntakeIOReplay());
         m_feeder = new Feeder(new FeederIOReplay(), new BeambreakIOReplay(), new BeambreakIOReplay());
         m_pivot = new Pivot(new PivotIOReplay());
@@ -172,16 +172,18 @@ public class RobotContainer {
                     * DriveConstants.maxLinearVelocity)));
 
     // left trigger -> climb up
-    m_driver
-        .leftTrigger(0.1)
-        .onTrue(
-            m_climber.setExtensionCmd(() -> ClimberConstants.maxHeight));
+    m_driver.leftTrigger(0.1).onTrue(
+        m_climber.setDutyCycle(-1)
+    ).onFalse(
+        m_climber.setDutyCycle(0)
+    );
 
-    // right trigger -> clinb up
-    m_driver
-        .rightTrigger(0.1)
-        .onTrue(
-            m_climber.setExtensionCmd(() -> ClimberConstants.minHeight));
+    // right trigger -> climb up
+    m_driver.rightTrigger(0.1).onTrue(
+        m_climber.setDutyCycle(1)
+    ).onFalse(
+        m_climber.setDutyCycle(0)
+    );
 
     // Operator Controller
 
@@ -202,8 +204,8 @@ public class RobotContainer {
     // Right trigger for run intake forward
     m_operator.rightTrigger(0.1).whileTrue(
         Commands.parallel(
-            m_intake.setRollerRPM(() -> 2000),
-            m_feeder.setRPM(() -> 0)).until(() -> m_feeder.feederBeambreakObstructed()))
+            m_intake.setRollerRPM(() -> 5000),
+            m_feeder.setRPM(() -> 5000)).until(() -> m_feeder.feederBeambreakObstructed()))
         .onFalse(
             Commands.parallel(
                 m_intake.setRollerRPM(() -> 0),
@@ -239,6 +241,11 @@ public class RobotContainer {
             m_feeder.setRPM(() -> -2000))
             .andThen(m_feeder.setRPM(() -> 2000)
                 .until(() -> (m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed()))));
+
+
+    m_operator.leftTrigger(0.1).whileTrue(
+        m_shooter.setRPM(() -> 5800, 0.3)
+    );
   }
 
   public void robotPeriodic() {

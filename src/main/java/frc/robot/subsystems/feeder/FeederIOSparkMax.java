@@ -22,6 +22,7 @@ public class FeederIOSparkMax implements FeederIO {
         feeder.restoreFactoryDefaults();
 
         feeder.setSmartCurrentLimit(FeederConstants.currentLimit);
+        feeder.setInverted(true);
 
         feeder.setIdleMode(IdleMode.kBrake);
 

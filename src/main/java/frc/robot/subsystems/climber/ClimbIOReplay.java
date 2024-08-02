@@ -1,11 +1,15 @@
 package frc.robot.subsystems.climber;
 
-public class ClimberIOReplay implements ClimberIO {
-    public void processInputs(final ClimberIOInputsAutoLogged inputs) {}
+import frc.robot.subsystems.climber.ClimbIOInputsAutoLogged;
+
+public class ClimbIOReplay implements ClimbIO {
+    public void processInputs(final ClimbIOInputsAutoLogged inputs) {}
 
     public void setTargetMeters(final double meters) {}
 
     public void setVoltage(final double voltage) {}
+
+    public void setOpenLoopDutyCycle(final double dutyCycle) {}
 
     public void stop() {
         setVoltage(0);

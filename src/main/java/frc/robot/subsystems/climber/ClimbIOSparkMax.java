@@ -8,16 +8,17 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
+import frc.robot.Constants.ClimbConstants;
+import frc.robot.Constants.RobotMap;
+import frc.robot.subsystems.climber.ClimbIOInputsAutoLogged;
 
-import static frc.robot.Constants.*;
-
-public class ClimberIOSparkMax implements ClimberIO {
-    private final CANSparkMax motor = new CANSparkMax(RobotMap.Climber.climber, MotorType.kBrushless);
+public class ClimbIOSparkMax implements ClimbIO {
+    private final CANSparkMax motor = new CANSparkMax(RobotMap.Climb.climber, MotorType.kBrushless);
     private final RelativeEncoder encoder = motor.getEncoder();
     
     private final SparkPIDController pid = motor.getPIDController();
 
-    public ClimberIOSparkMax() {
+    public ClimbIOSparkMax() {
 
         motor.restoreFactoryDefaults();
         motor.setIdleMode(IdleMode.kBrake);
@@ -26,20 +27,20 @@ public class ClimberIOSparkMax implements ClimberIO {
         motor.enableVoltageCompensation(12.0);
         motor.setSmartCurrentLimit(30);
 
-        encoder.setPositionConversionFactor(ClimberConstants.encoderConversion);
-        encoder.setVelocityConversionFactor(ClimberConstants.encoderConversion / 60);
+        encoder.setPositionConversionFactor(ClimbConstants.encoderConversion);
+        encoder.setVelocityConversionFactor(ClimbConstants.encoderConversion / 60);
 
-        pid.setP(ClimberConstants.kPReal);
-        pid.setI(ClimberConstants.kIReal);
-        pid.setD(ClimberConstants.kDReal);
-        pid.setFF(ClimberConstants.kFFReal);
+        pid.setP(ClimbConstants.kPReal);
+        pid.setI(ClimbConstants.kIReal);
+        pid.setD(ClimbConstants.kDReal);
+        pid.setFF(ClimbConstants.kFFReal);
         pid.setOutputRange(-1, 1);
 
         motor.burnFlash();
     }
 
     @Override
-    public void processInputs(final ClimberIOInputsAutoLogged inputs) {
+    public void processInputs(final ClimbIOInputsAutoLogged inputs) {
         inputs.climberPositionMeters = encoder.getPosition();
         inputs.climberVelocityMetersPerSecond = encoder.getVelocity();
         inputs.climberAppliedVolts = motor.getBusVoltage() * motor.getAppliedOutput(); 
@@ -55,6 +56,11 @@ public class ClimberIOSparkMax implements ClimberIO {
     @Override
     public void setVoltage(final double volts) {
         motor.setVoltage(MathUtil.clamp(volts, -12, 12));
+    }
+
+    @Override
+    public void setOpenLoopDutyCycle(final double dutyCycle) {
+        motor.set(MathUtil.clamp(dutyCycle, -1, 1));
     }
 
     @Override

@@ -1,7 +1,7 @@
 {
   "NTProvider": {
     "types": {
-      "/AdvantageKit/RealOutputs/Climber/Mechanism2d": "Mechanism2d",
+      "/AdvantageKit/RealOutputs/Climb/Mechanism2d": "Mechanism2d",
       "/AdvantageKit/RealOutputs/Visualizer/FullRobot": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Climb Down": "Command",
@@ -17,6 +17,7 @@
       "/SmartDashboard/Shooter 15": "Command",
       "/SmartDashboard/Shooter 30": "Command",
       "/SmartDashboard/Shooter 45": "Command",
+      "/SmartDashboard/Shooter 56": "Command",
       "/SmartDashboard/Shooter 60": "Command",
       "/SmartDashboard/Shooter 75": "Command",
       "/SmartDashboard/Shooter 90": "Command",
@@ -54,6 +55,11 @@
         }
       },
       "/SmartDashboard/Shooter 30": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shooter 56": {
         "window": {
           "visible": true
         }

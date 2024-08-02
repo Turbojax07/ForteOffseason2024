@@ -106,7 +106,7 @@ public class Intake extends SubsystemBase {
     return this.run(
         () -> {
           io.setPivotTarget(IntakeConstants.down, pivotFF);
-          inputs.pivotTargetPosition = Rotation2d.fromRadians(IntakeConstants.down + IntakeConstants.simOffset);
+          inputs.pivotTargetPosition = Rotation2d.fromRadians(IntakeConstants.down);
           
           io.setRollerRPM(2000 * (reverse ? -1 : 1), rollerFF);
           inputs.rollerTargetRPM = 2000 * (reverse ? -1 : 1);
@@ -117,7 +117,7 @@ public class Intake extends SubsystemBase {
     return this.run(
         () -> {
           io.setPivotTarget(IntakeConstants.up, pivotFF);
-          inputs.pivotTargetPosition = Rotation2d.fromRadians(IntakeConstants.up + IntakeConstants.simOffset);
+          inputs.pivotTargetPosition = Rotation2d.fromRadians(IntakeConstants.up);
 
           io.setRollerRPM(0, rollerFF);
           inputs.rollerTargetRPM = 0;
@@ -129,7 +129,7 @@ public class Intake extends SubsystemBase {
   }
 
   public double getTargetRadians() {
-    return inputs.pivotTargetPosition.getRadians();
+    return inputs.pivotTargetPosition.getRadians() + IntakeConstants.simOffset;
   }
 
   public Command setPivotVoltage(DoubleSupplier volts) {

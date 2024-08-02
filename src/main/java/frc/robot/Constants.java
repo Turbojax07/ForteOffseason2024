@@ -15,7 +15,6 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import swervelib.math.Matter;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -30,7 +29,6 @@ public final class Constants {
 
   public static final double LOOP_TIME = 0.13;
   public static final double ROBOT_MASS = 49.8951607;
-  public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
 
 
   public static final Mode currentMode = Mode.REAL;
@@ -75,10 +73,10 @@ public final class Constants {
       public static final int backLeftEncoder = 1;
       public static final int backRightEncoder = 0;
 
-      public static final double frontLeftOffset = 0.0;
-      public static final double frontRightOffset = 0.0;
-      public static final double backLeftOffset = -2.035203218460083;
-      public static final double backRightOffset = -3.0376768112182617;
+      public static final double frontLeftOffset = -1.58083975315094;
+      public static final double frontRightOffset = -0.49733975529670715;
+      public static final double backLeftOffset = -2.035203218460083+Math.PI;
+      public static final double backRightOffset = -3.0376768112182617+Math.PI;
 
 
 
@@ -100,7 +98,7 @@ public final class Constants {
       public static final int shooterBeambreak = 0;
     }
 
-    public static class Climber {
+    public static class Climb {
       public static final int climber = 31;
     }
     
@@ -167,7 +165,7 @@ public final class Constants {
     public static double kDTurnReplay = 0.0;
   }
 
-  public static class ClimberConstants {
+  public static class ClimbConstants {
     public static double gearRatio = 45;
     public static double spoolRadius = Units.inchesToMeters(.75);
     public static double encoderConversion = 2 * spoolRadius * Math.PI / gearRatio;
@@ -217,11 +215,11 @@ public final class Constants {
 
     public static final double rollerMOI = 0.011328;
     
-    public static final double up = .2;
+    public static final double up = .25;
     public static final double down = 2.1;
     public static final double simOffset = 1.27838411;
   
-    public static final int pivotCurrentLimit = 20;
+    public static final int pivotCurrentLimit = 30;
     public static final int rollerCurrentLimit = 80;
 
     public static final double kGPivot = 0.5;
@@ -273,17 +271,17 @@ public final class Constants {
 
     public static final double pivotAbsConversion = Math.PI * 2.0 / (33.0 / 34.0);
     public static final double pivotEncConversion = 2.0 * Math.PI / pivotRatio;
-    public static final double pivotOffset = 3.5780138;
+    public static final double pivotOffset = 3.54347622;
     public static final double simOffset = 0.0;
 
-    public static final double down = 0.191986218;
-    public static final double up = 1.19;
+    public static final double down = 0.19;
+    public static final double up = down + Math.PI/4;
     
     public static final double shooterMOI = 0.00920287973;
 
     public static final int pivotCurrentLimit = 40;
 
-    public static final double kGPivot = .9;
+    public static final double kGPivot = 0;
     public static final double kVPivot = 0;
     public static final double kAPivot = 0.00;
     
@@ -293,7 +291,7 @@ public final class Constants {
     public static final double kPShooterReal = 0.5;
     public static final double kSShooterReal = 0.5;
 
-    public static final double kPPivotReal = 0.0;
+    public static final double kPPivotReal = 30.0;
     public static final double kPPivotSim = 100.0;  
     
     public static final double kPShooterSim = 0.5;

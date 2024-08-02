@@ -33,6 +33,8 @@ public class ShooterIOSparkMax implements ShooterIO {
 		left.setIdleMode(IdleMode.kCoast);
 		right.setIdleMode(IdleMode.kCoast);
 
+		left.setInverted(true);
+
 		left.burnFlash();
 		right.burnFlash();
 	}

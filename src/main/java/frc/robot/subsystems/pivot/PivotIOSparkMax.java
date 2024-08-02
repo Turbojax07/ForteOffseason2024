@@ -32,10 +32,8 @@ public class PivotIOSparkMax implements PivotIO {
         pivot.setSmartCurrentLimit(ShooterConstants.pivotCurrentLimit);
 
         pivot.setIdleMode(IdleMode.kBrake);
-
         pivotPID.setFeedbackDevice(pivotAbs);
 		pivotPID.setOutputRange(-12, 12);
-
 		pivotPID.setPositionPIDWrappingEnabled(false);
         pivotAbs.setInverted(true);
 		pivot.setInverted(true);
