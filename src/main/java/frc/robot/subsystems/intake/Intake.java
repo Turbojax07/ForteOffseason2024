@@ -108,8 +108,8 @@ public class Intake extends SubsystemBase {
           io.setPivotTarget(IntakeConstants.down, pivotFF);
           inputs.pivotTargetPosition = Rotation2d.fromRadians(IntakeConstants.down);
           
-          io.setRollerRPM(2000 * (reverse ? -1 : 1), rollerFF);
-          inputs.rollerTargetRPM = 2000 * (reverse ? -1 : 1);
+          io.setRollerRPM(3000 * (reverse ? -1 : 1), rollerFF);
+          inputs.rollerTargetRPM = 3000 * (reverse ? -1 : 1);
         });
   }
 
