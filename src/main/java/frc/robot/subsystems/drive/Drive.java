@@ -376,13 +376,13 @@ public class Drive extends SubsystemBase {
 
   public Command resetOffsetsCmd() {
     return run(() -> resetOffsets());
-}
+  }
 
-public Rotation2d getRotation() {
-  return gyroIO.getYaw();
-}
+  public Rotation2d getRotation() {
+    return gyroIO.getYaw();
+  }
 
-public void resetGyro() {
-  gyroIO.reset();
-}
+  public void resetGyro() {
+    gyroIO.reset();
+  }
 }
