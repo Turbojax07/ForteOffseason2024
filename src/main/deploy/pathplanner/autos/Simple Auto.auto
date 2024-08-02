@@ -6,9 +6,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "GET OUT"
+            "pathName": "Leave Bottom"
           }
         }
       ]
