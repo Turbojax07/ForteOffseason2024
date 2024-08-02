@@ -45,6 +45,10 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.google.common.collect.Streams;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 public class Drive extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
@@ -82,21 +86,40 @@ public class Drive extends SubsystemBase {
     // PhoenixOdometryThread.getInstance().start();
 
     // Configure SysId
-    sysId =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(
-                null,
-                null,
-                null,
-                (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> {
-                  for (int i = 0; i < 4; i++) {
-                    modules[i].runCharacterization(voltage.in(Volts));
-                  }
-                },
-                null,
-                this));
+    sysId = new SysIdRoutine(
+      new SysIdRoutine.Config(
+        null,
+        null,
+        null,
+        (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())
+      ),
+      new SysIdRoutine.Mechanism(
+        (voltage) -> {
+          for (int i = 0; i < 4; i++) {
+            modules[i].runCharacterization(voltage.in(Volts));
+          }
+        },
+        null,
+        this
+      )
+    );
+
+    // Configure Pathplanner
+    AutoBuilder.configureHolonomic(
+      this::getPose,
+      this::setPose,
+      this::getVelocity,
+      this::runVelocity,
+      new HolonomicPathFollowerConfig(
+        new PIDConstants(DriveConstants.kPDriveReal, 0.0, DriveConstants.kDDriveReal),
+        new PIDConstants(DriveConstants.kPTurnReal, 0.0, DriveConstants.kDTurnReal),
+        getMaxLinearSpeedMetersPerSec(),
+        DriveConstants.trackWidth,
+        new ReplanningConfig()
+      ),
+      () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Red,
+      this
+    );  
   }
 
   public void periodic() {
@@ -230,6 +253,10 @@ public class Drive extends SubsystemBase {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
   }
 
+  public Pose2d getPose() {
+    return poseEstimator.getEstimatedPosition();
+  }
+
   /**
    * Adds a vision measurement to the pose estimator.
    *
@@ -333,13 +360,12 @@ public class Drive extends SubsystemBase {
 
   @AutoLogOutput(key = "Odometry/Velocity")
   public ChassisSpeeds getVelocity() {
-    var speeds =
-        ChassisSpeeds.fromRobotRelativeSpeeds(
-            kinematics.toChassisSpeeds(
-                Arrays.stream(modules).map((m) -> m.getState()).toArray(SwerveModuleState[]::new)),
-            getRotation());
-    return new ChassisSpeeds(
-        speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
+    return ChassisSpeeds.fromRobotRelativeSpeeds(
+      kinematics.toChassisSpeeds(
+        Arrays.stream(modules).map((m) -> m.getState()).toArray(SwerveModuleState[]::new)
+      ),
+      getRotation()
+    );
   }
 
   public void resetOffsets() {
