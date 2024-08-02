@@ -184,17 +184,6 @@ public class RobotContainer {
 
     // Driver Controller
 
-    // joysticks for drive
-    m_drive.setDefaultCommand(
-        m_drive.runVoltageTeleopFieldRelative(
-            () -> new ChassisSpeeds(
-                -teleopAxisAdjustment(m_driver.getLeftY()) *
-                    DriveConstants.maxLinearVelocity,
-                -teleopAxisAdjustment(m_driver.getLeftX()) *
-                    DriveConstants.maxLinearVelocity,
-                -teleopAxisAdjustment(m_driver.getRightX())
-                    * DriveConstants.maxLinearVelocity)));
-
     // left trigger -> climb up
     m_driver.leftTrigger(0.1).onTrue(
         m_climber.setDutyCycle(-1)
@@ -283,6 +272,16 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return null;
+  }
+
+  public Command getTeleopCommand() {
+    return m_drive.runVoltageTeleopFieldRelative(
+        () -> new ChassisSpeeds(
+            -teleopAxisAdjustment(m_driver.getLeftY())  * DriveConstants.maxLinearVelocity,
+            -teleopAxisAdjustment(m_driver.getLeftX())  * DriveConstants.maxLinearVelocity,
+            -teleopAxisAdjustment(m_driver.getRightX()) * DriveConstants.maxLinearVelocity
+        )
+    );
   }
 
   private static double teleopAxisAdjustment(double x) {
