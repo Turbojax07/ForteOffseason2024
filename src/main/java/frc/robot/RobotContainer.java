@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.Driver;
 import frc.robot.Constants.RobotMap;
 import frc.robot.subsystems.climber.Climb;
 import frc.robot.subsystems.climber.ClimbIOReplay;
@@ -65,8 +64,7 @@ import frc.robot.subsystems.shooter.ShooterIOSparkMax;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private Driver driver   = Driver.ARNAV_DRIVE;
-  private Driver operator = Driver.ZACH_OPERATOR;
+
 
   // Subsystems
   // private final SwerveSubsystem m_drive = new SwerveSubsystem(new
@@ -174,7 +172,7 @@ public class RobotContainer {
     //     break;
     //   case CONNOR_OPERATOR:
     //     break;
-    //   case JAMES_OPERATOR:
+    //   case JAMES_OPERATOR:+
     //     break;
     //   case RAM_OPERATOR:
     //     break;
@@ -215,21 +213,21 @@ public class RobotContainer {
     m_operator.povUp().whileTrue(
         Commands.parallel(
             m_intake.setIntakeDown(false),
-            m_feeder.setRPM(() -> 5000)).until(() -> m_feeder.feederBeambreakObstructed()))
+            m_feeder.setRPM(() -> 3000)).until(() -> m_feeder.feederBeambreakObstructed()))
         .onFalse(m_intake.setIntakeUp());
 
     // D-Pad Down for intake down, rollers backward
     m_operator.povDown().whileTrue(
         Commands.parallel(
             m_intake.setIntakeDown(true),
-            m_feeder.setRPM(() -> -2000)))
+            m_feeder.setRPM(() -> -3000)))
         .onFalse(m_intake.setIntakeUp());
 
     // Right trigger for run intake forward
     m_operator.rightTrigger(0.1).whileTrue(
         Commands.parallel(
-            m_intake.setRollerRPM(() -> 5000),
-            m_feeder.setRPM(() -> 5000)).until(() -> m_feeder.feederBeambreakObstructed()))
+            m_intake.setRollerRPM(() -> 3000),
+            m_feeder.setRPM(() -> 3000)).until(() -> m_feeder.feederBeambreakObstructed()))
         .onFalse(
             Commands.parallel(
                 m_intake.setRollerRPM(() -> 0),
@@ -238,8 +236,8 @@ public class RobotContainer {
     // Right bumper for run intake backward
     m_operator.rightBumper().whileTrue(
         Commands.parallel(
-            m_intake.setRollerRPM(() -> -2000),
-            m_feeder.setRPM(() -> -2000)))
+            m_intake.setRollerRPM(() -> -3000),
+            m_feeder.setRPM(() -> -3000)))
         .onFalse(
             Commands.parallel(
                 m_intake.setRollerRPM(() -> 0),
@@ -250,7 +248,7 @@ public class RobotContainer {
         Commands.parallel(
             m_pivot.setPivotTarget(() -> Units.radiansToDegrees(56)),
             m_shooter.setRPM(() -> 5800, 0.3))
-            .andThen(m_feeder.setRPM(() -> 2000)
+            .andThen(m_feeder.setRPM(() -> 3000)
                 .until(() -> (!m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed()))));
 
     // X for shooter at amp
@@ -267,9 +265,10 @@ public class RobotContainer {
                 .until(() -> (m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed()))));
 
 
-    m_operator.leftTrigger(0.1).whileTrue(
+    m_operator.leftTrigger(0.1).onTrue(
         m_shooter.setRPM(() -> 5800, 0.3)
-    );
+    ).onFalse(m_shooter.setRPM(() -> 0, 1));
+
   }
 
   public void robotPeriodic() {
