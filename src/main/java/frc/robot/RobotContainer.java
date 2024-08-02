@@ -13,15 +13,26 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Driver;
 import frc.robot.Constants.RobotMap;
@@ -144,6 +155,9 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    // Configuring Pathplanner commands
+    configurePathplanner();
   }
 
   /**
@@ -261,6 +275,21 @@ public class RobotContainer {
     );
   }
 
+  public void configurePathplanner() {
+    NamedCommands.registerCommand(
+        "ShootNote",
+        Commands.parallel(
+            m_shooter.setRPM(() -> 5800, 0.3),
+            Commands.sequence(
+                new WaitCommand(1),
+                m_feeder.setRPM(() -> 2000)
+            )
+        ).until(
+            () -> (!m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed())
+        )
+    );
+  }
+
   public void robotPeriodic() {
     m_visualizer.periodic();
   }
@@ -271,7 +300,28 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    Pose2d initPose = m_drive.getPose();
+
+    List<Translation2d> points = PathPlannerPath.bezierFromPoses(
+        initPose,
+        new Pose2d(initPose.getX() + 2.0, initPose.getY(), initPose.getRotation())
+    );
+
+    PathPlannerPath path = new PathPlannerPath(points,
+        new PathConstraints(
+            DriveConstants.maxLinearVelocity,
+            DriveConstants.maxLinearAccel,
+            DriveConstants.maxAngularVelocity,
+            DriveConstants.maxAngularAccel
+        ),
+        new GoalEndState(0, initPose.getRotation())
+    );
+
+    path.preventFlipping = true;
+
+    // Test path
+    // return AutoBuilder.followPath(path);
+    return new PathPlannerAuto("Simple Auto");
   }
 
   public Command getTeleopCommand() {
@@ -287,5 +337,4 @@ public class RobotContainer {
   private static double teleopAxisAdjustment(double x) {
     return MathUtil.applyDeadband(Math.abs(Math.pow(x, 2)) * Math.signum(x), 0.02);
   }
-
 }
