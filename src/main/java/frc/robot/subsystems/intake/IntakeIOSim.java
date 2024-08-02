@@ -25,8 +25,7 @@ public class IntakeIOSim implements IntakeIO {
 	private SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getNEO(1), IntakeConstants.pivotRatio, IntakeConstants.pivotMOI, Units.inchesToMeters(IntakeConstants.pivotLength), IntakeConstants.up, IntakeConstants.down, true, IntakeConstants.up);
 	private ProfiledPIDController pivotPID = new ProfiledPIDController(IntakeConstants.kPPivotSim, 0.0, 0.0, new TrapezoidProfile.Constraints(IntakeConstants.maxPivotVelocity, IntakeConstants.maxPivotAccel));
 
-	private PIDController rollerPID = new PIDController(IntakeConstants.kPRollerSim, 0.0, 0);
-
+	private PIDController rollerPID = new PIDController(IntakeConstants.kPRollerSim, 0.0, 0.0);
 	@Override
 	public void processInputs(IntakeIOInputsAutoLogged inputs) {
 		rollerSim.update(Constants.loopPeriodSecs);

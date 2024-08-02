@@ -13,11 +13,18 @@ import frc.robot.Constants.FeederConstants;
 public class Feeder extends SubsystemBase {
     public FeederIO io;
     public FeederIOInputsAutoLogged inputs = new FeederIOInputsAutoLogged();
+
+    public BeambreakIO feederBeambreak;
+    public BeambreakIOInputsAutoLogged feederBeambreakInputs = new BeambreakIOInputsAutoLogged();
+    public BeambreakIO shooterBeambreak;
+    public BeambreakIOInputsAutoLogged shooterBeambreakInputs = new BeambreakIOInputsAutoLogged();
     
     private SimpleMotorFeedforward ff;
 
-    public Feeder(FeederIO io) {
+    public Feeder(FeederIO io, BeambreakIO feederBeambreak, BeambreakIO shooterBeambreak) {
         this.io = io;
+        this.feederBeambreak = feederBeambreak;
+        this.shooterBeambreak = shooterBeambreak;
 
         io.setPID(FeederConstants.kPReal, 0.0, 0.0);
         ff = new SimpleMotorFeedforward(0.0, FeederConstants.kVReal);
@@ -25,10 +32,14 @@ public class Feeder extends SubsystemBase {
 
     public void periodic() {
         io.processInputs(inputs);
+        feederBeambreak.processInputs(feederBeambreakInputs);
+        shooterBeambreak.processInputs(shooterBeambreakInputs);
         Logger.processInputs("Feeder", inputs);
+        Logger.processInputs("Feeder/FeederBeambreak", feederBeambreakInputs);
+        Logger.processInputs("Feeder/ShooterBeambreak", shooterBeambreakInputs);
     }
 
-     public Command setRPM(IntSupplier rpm) {
+    public Command setRPM(IntSupplier rpm) {
     return this.run(
         () -> {
           io.setRPM(rpm.getAsInt(), ff);
@@ -44,6 +55,13 @@ public class Feeder extends SubsystemBase {
         });
   }
     
+    public boolean feederBeambreakObstructed() {
+      return feederBeambreakInputs.isObstructed;
+    }
+
+    public boolean shooterBeambreakObstructed() {
+      return shooterBeambreakInputs.isObstructed;
+    }
 
         
   }

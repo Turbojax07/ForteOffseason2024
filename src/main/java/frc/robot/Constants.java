@@ -75,10 +75,10 @@ public final class Constants {
       public static final int backLeftEncoder = 1;
       public static final int backRightEncoder = 0;
 
-      public static final double frontLeftOffset = 0.74771-2.3328;
-      public static final double frontRightOffset = 0.91836-1.43127;
-      public static final double backLeftOffset = 0.17289+0.91218;
-      public static final double backRightOffset = 0.01142+0.058;
+      public static final double frontLeftOffset = 0.0;
+      public static final double frontRightOffset = 0.0;
+      public static final double backLeftOffset = -2.035203218460083;
+      public static final double backRightOffset = -3.0376768112182617;
 
 
 
@@ -283,9 +283,9 @@ public final class Constants {
 
     public static final int pivotCurrentLimit = 40;
 
-    public static final double kGPivot = 1.51;
-    public static final double kVPivot = 0.94;
-    public static final double kAPivot = 0.03;
+    public static final double kGPivot = .9;
+    public static final double kVPivot = 0;
+    public static final double kAPivot = 0.00;
     
     public static final double kVShooter = 0.38;
     public static final double kAShooter = 0.25;
@@ -293,9 +293,8 @@ public final class Constants {
     public static final double kPShooterReal = 0.5;
     public static final double kSShooterReal = 0.5;
 
-
-    public static final double kPPivotReal = 0.1;
-    public static final double kPPivotSim = 3.0;  
+    public static final double kPPivotReal = 0.0;
+    public static final double kPPivotSim = 100.0;  
     
     public static final double kPShooterSim = 0.5;
     public static final double kSShooterSim = 0.5;

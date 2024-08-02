@@ -11,7 +11,6 @@ import com.revrobotics.SparkPIDController.ArbFFUnits;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.Constants.FeederConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.RobotMap;
 
 public class FeederIOSparkMax implements FeederIO {
@@ -24,7 +23,7 @@ public class FeederIOSparkMax implements FeederIO {
 
         feeder.setSmartCurrentLimit(FeederConstants.currentLimit);
 
-        feeder.setIdleMode(IdleMode.kCoast);
+        feeder.setIdleMode(IdleMode.kBrake);
 
         enc.setVelocityConversionFactor(1.0);
 

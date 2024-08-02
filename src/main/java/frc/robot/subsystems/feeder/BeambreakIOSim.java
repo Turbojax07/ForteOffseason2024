@@ -1,4 +1,4 @@
-package frc.robot.subsystems.shooter;
+package frc.robot.subsystems.feeder;
 
 import edu.wpi.first.wpilibj.simulation.DIOSim;
 

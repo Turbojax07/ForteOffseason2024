@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.shooter;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
 /** Add your docs here. */
@@ -14,25 +13,19 @@ public class ShooterIOReplay implements ShooterIO {
     public void processInputs(ShooterIOInputsAutoLogged inputs) {}
 
     @Override
-    public void setPivotVoltage(double volts) {}
-
-    @Override
     public void setLeftVoltage(double volts) {}
 
     @Override
     public void setRightVoltage(double volts) {}
 
     @Override
-    public void setPivotTarget(double angle, ArmFeedforward ff) {}
+    public void setRPM(int rpm, SimpleMotorFeedforward ff, double differential) {}
 
     @Override
     public void setLeftRPM(int rpm, SimpleMotorFeedforward ff) {}
 
     @Override
     public void setRightRPM(int rpm, SimpleMotorFeedforward ff) {}
-
-    @Override
-    public void setPivotPID(double kP, double kI, double kD) {}
 
     @Override
     public void setShooterPID(double kP, double kI, double kD) {}

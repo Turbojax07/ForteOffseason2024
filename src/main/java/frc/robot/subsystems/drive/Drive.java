@@ -79,6 +79,7 @@ public class Drive extends SubsystemBase {
 
     // Start threads (no-op for each if no signals have been created)
     SparkMaxOdometryThread.getInstance().start();
+    // PhoenixOdometryThread.getInstance().start();
 
     // Configure SysId
     sysId =

@@ -23,8 +23,6 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotMap;
 
-import static edu.wpi.first.units.Units.Rotation;
-
 import java.util.OptionalDouble;
 import java.util.Queue;
 

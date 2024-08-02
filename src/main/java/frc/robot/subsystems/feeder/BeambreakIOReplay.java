@@ -1,4 +1,6 @@
-package frc.robot.subsystems.shooter;
+package frc.robot.subsystems.feeder;
+
+import frc.robot.subsystems.feeder.BeambreakIOInputsAutoLogged;
 
 public class BeambreakIOReplay implements BeambreakIO {
 

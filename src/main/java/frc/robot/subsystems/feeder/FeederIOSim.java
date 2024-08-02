@@ -7,7 +7,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.Constants;
 import frc.robot.Constants.FeederConstants;
-import frc.robot.Constants.IntakeConstants;
 
 public class FeederIOSim implements FeederIO {
     	private FlywheelSim sim = new FlywheelSim(DCMotor.getNEO(1), FeederConstants.ratio, FeederConstants.MOI);
