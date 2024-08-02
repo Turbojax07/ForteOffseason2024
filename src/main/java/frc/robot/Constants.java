@@ -44,21 +44,7 @@ public final class Constants {
     REPLAY
   }
 
-  // A list of drivers -- Only for WVROX
-  public static enum Driver {
-    ARNAV_DRIVE,
-    ARNAV_OPERATOR,
-    CONNOR_DRIVE,
-    CONNOR_OPERATOR,
-    JAMES_DRIVE,
-    JAMES_OPERATOR,
-    RAM_DRIVE,
-    RAM_OPERATOR,
-    ZACH_DRIVE,
-    ZACH_OPERATOR
-  }
-
-  public static final boolean isTuning = true;
+  public static final boolean isTuning = false;
   
 
   public static class RobotMap {
@@ -72,7 +58,7 @@ public final class Constants {
       public static final int backRightDrive = 7;
       public static final int backRightTurn = 8;
 
-      public static final boolean frontLeftDriveInvert = true;
+      public static final boolean frontLeftDriveInvert = false;
       public static final boolean frontRightDriveInvert = false;
       public static final boolean backLeftDriveInvert = false;
       public static final boolean backRightDriveInvert = true;
@@ -138,7 +124,7 @@ public final class Constants {
     public static final double turnVelocityConversion = turnConversion / 60;
 
     public static final int driveSupplyCurrent = 50; // 70
-    public static final int driveStatorCurrent = 90; // 120
+    public static final int driveStatorCurrent = 70; // 120
     public static final int turnCurrent = 30; // 30
 
     public static final double odometeryFrequency = 250;
@@ -234,7 +220,7 @@ public final class Constants {
     public static final double simOffset = 1.27838411;
   
     public static final int pivotCurrentLimit = 30;
-    public static final int rollerCurrentLimit = 80;
+    public static final int rollerCurrentLimit = 70;
 
     public static final double kGPivot = 0.5;
     public static final double kVPivot = 1.06;
