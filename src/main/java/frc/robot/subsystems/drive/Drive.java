@@ -59,15 +59,13 @@ public class Drive extends SubsystemBase {
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
-  private SwerveModulePosition[] lastModulePositions = // For delta tracking
-      new SwerveModulePosition[] {
-        new SwerveModulePosition(),
-        new SwerveModulePosition(),
-        new SwerveModulePosition(),
-        new SwerveModulePosition()
-      };
-  private SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+  private SwerveModulePosition[] lastModulePositions = new SwerveModulePosition[] {
+    new SwerveModulePosition(),
+    new SwerveModulePosition(),
+    new SwerveModulePosition(),
+    new SwerveModulePosition()
+  };
+  private SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
 
   public Drive(
       GyroIO gyroIO,
@@ -101,19 +99,6 @@ public class Drive extends SubsystemBase {
                 },
                 null,
                 this));
-    AutoBuilder.configureHolonomic(
-      this::getPose,
-      this::setPose,
-      this::getVelocity,
-      this::runVelocity,
-      new HolonomicPathFollowerConfig(
-        new PIDConstants(DriveConstants.kPDriveReal, DriveConstants.kDDriveReal),
-        new PIDConstants(DriveConstants.kPDriveReal, DriveConstants.kDDriveReal),
-        DriveConstants.maxLinearVelocity,
-        DriveConstants.trackWidth,
-        new ReplanningConfig()),
-      () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Red,
-      this);
   }
 
   public void periodic() {
@@ -252,6 +237,10 @@ public class Drive extends SubsystemBase {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
   }
 
+  public Pose2d getPose() {
+    return poseEstimator.getEstimatedPosition();
+  }
+
   /**
    * Adds a vision measurement to the pose estimator.
    *
@@ -355,13 +344,12 @@ public class Drive extends SubsystemBase {
 
   @AutoLogOutput(key = "Odometry/Velocity")
   public ChassisSpeeds getVelocity() {
-    var speeds =
-        ChassisSpeeds.fromRobotRelativeSpeeds(
-            kinematics.toChassisSpeeds(
-                Arrays.stream(modules).map((m) -> m.getState()).toArray(SwerveModuleState[]::new)),
-            getRotation());
-    return new ChassisSpeeds(
-        speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
+    return ChassisSpeeds.fromRobotRelativeSpeeds(
+      kinematics.toChassisSpeeds(
+        Arrays.stream(modules).map((m) -> m.getState()).toArray(SwerveModuleState[]::new)
+      ),
+      getRotation()
+    );
   }
 
   public void resetOffsets() {
@@ -372,13 +360,13 @@ public class Drive extends SubsystemBase {
 
   public Command resetOffsetsCmd() {
     return run(() -> resetOffsets());
-}
+  }
 
-public Rotation2d getRotation() {
-  return gyroIO.getYaw();
-}
+  public Rotation2d getRotation() {
+    return gyroIO.getYaw();
+  }
 
-public void resetGyro() {
-  gyroIO.reset();
-}
+  public void resetGyro() {
+    gyroIO.reset();
+  }
 }

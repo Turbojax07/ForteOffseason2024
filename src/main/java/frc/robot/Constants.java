@@ -54,7 +54,7 @@ public final class Constants {
       public static final int backRightDrive = 7;
       public static final int backRightTurn = 8;
 
-      public static final boolean frontLeftDriveInvert = true;
+      public static final boolean frontLeftDriveInvert = false;
       public static final boolean frontRightDriveInvert = false;
       public static final boolean backLeftDriveInvert = false;
       public static final boolean backRightDriveInvert = false;
@@ -119,8 +119,8 @@ public final class Constants {
     public static final double turnConversion = 2 * Math.PI / turnRatio;
     public static final double turnVelocityConversion = turnConversion / 60;
 
-    public static final int driveSupplyCurrent = 40; // 70
-    public static final int driveStatorCurrent = 70; // 120
+    public static final int driveSupplyCurrent = 50; // 70
+    public static final int driveStatorCurrent = 90; // 120
     public static final int turnCurrent = 30; // 30
 
     public static final double odometeryFrequency = 250;

@@ -30,7 +30,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  */
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
-  private RobotContainer robotContainer;
+  private Command teleopCommand;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -60,7 +60,7 @@ public class Robot extends LoggedRobot {
     switch (Constants.currentMode) {
       case REAL:
         // Running on a real robot, log to a USB stick ("/U/logs")
-        // Logger.addDataReceiver(new WPILOGWriter());
+        Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
         break;
 
@@ -86,7 +86,11 @@ public class Robot extends LoggedRobot {
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
-    robotContainer = new RobotContainer();
+    RobotContainer robotContainer = new RobotContainer();
+
+    // Getting the commands for each mode
+    autonomousCommand = robotContainer.getAutonomousCommand();
+    teleopCommand = robotContainer.getTeleopCommand();
   }
 
   /** This function is called periodically during all modes. */
@@ -108,36 +112,49 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {}
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  /**
+   * This function is called once when autonomous is enabled.
+   * It starts running the autonomous command selected by your {@link RobotContainer} class.
+   */
   @Override
   public void autonomousInit() {
-    autonomousCommand = robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (autonomousCommand != null) {
-      autonomousCommand.schedule();
-    }
+    autonomousCommand.schedule();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {}
 
-  /** This function is called once when teleop is enabled. */
+  /**
+   * This function is called once when autonomous is exited.
+   * It stops running the autonomous command selected by your {@link RobotContainer} class.
+   */
+  @Override
+  public void autonomousExit() {
+    autonomousCommand.cancel();
+  }
+
+  /**
+   * This function is called once when teleop is enabled.
+   * It starts running the teleop command selected by your {@link RobotContainer} class.
+   */
   @Override
   public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    if (autonomousCommand != null) {
-      autonomousCommand.cancel();
-    }
+    teleopCommand.schedule();
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {}
+
+  /**
+   * This function is called once when teleop is exited.
+   * It stops running the teleop command selected by your {@link RobotContainer} class.
+   */
+  @Override
+  public void teleopExit() {
+    teleopCommand.cancel();
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override

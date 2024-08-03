@@ -13,19 +13,28 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotMap;
 import frc.robot.subsystems.climber.Climb;
@@ -68,6 +77,8 @@ import frc.robot.subsystems.shooter.ShooterIOSparkMax;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private Driver driver   = Driver.ARNAV_DRIVE;
+  private Driver operator = Driver.ZACH_OPERATOR;
 
   // Subsystems
   // private final SwerveSubsystem m_drive = new SwerveSubsystem(new
@@ -162,6 +173,9 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    // Configuring Pathplanner commands
+    configurePathplanner();
   }
 
   /**
@@ -192,7 +206,7 @@ public class RobotContainer {
     //     break;
     //   case CONNOR_OPERATOR:
     //     break;
-    //   case JAMES_OPERATOR:
+    //   case JAMES_OPERATOR:+
     //     break;
     //   case RAM_OPERATOR:
     //     break;
@@ -213,7 +227,7 @@ public class RobotContainer {
                 -teleopAxisAdjustment(m_driver.getRightX())
                     * DriveConstants.maxLinearVelocity)));
 
-    // left trigger -> climb down
+    // left trigger -> climb up
     m_driver.leftTrigger(0.1).onTrue(
         m_climber.setDutyCycle(-1)
     ).onFalse(
@@ -250,8 +264,9 @@ public class RobotContainer {
             // m_feeder.setRPM(() -> 3000)).until(() -> m_feeder.feederBeambreakObstructed()))
       .onFalse(
         Commands.parallel(
-          m_intake.setIntakeUp(),
-          m_feeder.setRPM(() -> 3000)).until(() -> m_feeder.feederBeambreakObstructed()));
+            m_intake.setIntakeDown(false),
+            m_feeder.setRPM(() -> 5000)).until(() -> m_feeder.feederBeambreakObstructed()))
+        .onFalse(m_intake.setIntakeUp());
 
     // D-Pad Down for intake down, rollers backward
     m_operator.povDown().onTrue(
@@ -281,11 +296,12 @@ public class RobotContainer {
                 m_feeder.setRPM(() -> 0)));
 
     // Y for shooter at subwoofer
-    // m_operator.y().onTrue(
-    //     Commands.parallel(
-    //         m_shooter.setRPM(() -> 5800, 0.3))
-    //         .andThen(m_feeder.setRPM(() -> 3000)
-    //             .until(() -> (!m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed()))));
+    m_operator.y().onTrue(
+        Commands.parallel(
+            m_pivot.setPivotTarget(() -> Units.radiansToDegrees(56)),
+            m_shooter.setRPM(() -> 5800, 0.3))
+            .andThen(m_feeder.setRPM(() -> 2000)
+                .until(() -> (!m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed()))));
 
     // X for shooter at amp
 
@@ -302,6 +318,22 @@ public class RobotContainer {
 
     m_operator.leftTrigger(0.1).onTrue(
         m_shooter.setRPM(() -> 5800, 0.3)
+    ).onFalse(m_shooter.setRPM(() -> 0, 1));
+
+  }
+
+  public void configurePathplanner() {
+    NamedCommands.registerCommand(
+        "ShootNote",
+        Commands.parallel(
+            m_shooter.setRPM(() -> 5800, 0.3),
+            Commands.sequence(
+                new WaitCommand(1),
+                m_feeder.setRPM(() -> 2000)
+            )
+        ).until(
+            () -> (!m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed())
+        )
     );
 
     m_operator.leftBumper().onTrue(
@@ -319,11 +351,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Bottom Taxi Auto");
+    return null;
   }
 
   private static double teleopAxisAdjustment(double x) {
     return MathUtil.applyDeadband(Math.abs(Math.pow(x, 2)) * Math.signum(x), 0.02);
   }
-
 }
