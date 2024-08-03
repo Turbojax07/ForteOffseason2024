@@ -90,7 +90,7 @@ public class Robot extends LoggedRobot {
 
     // Getting the commands for each mode
     autonomousCommand = robotContainer.getAutonomousCommand();
-    teleopCommand = robotContainer.getTeleopCommand();
+    // teleopCommand = robotContainer.getTeleopCommand();
   }
 
   /** This function is called periodically during all modes. */
