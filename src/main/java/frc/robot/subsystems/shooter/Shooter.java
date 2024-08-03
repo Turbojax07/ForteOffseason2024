@@ -101,4 +101,13 @@ public class Shooter extends SubsystemBase {
     );
   }
 
+  public Command stopShooter() {
+    return this.run( 
+      () -> {
+        io.setRightVoltage(0);
+        io.setLeftVoltage(0);
+      }
+    );
+  }
+
 }

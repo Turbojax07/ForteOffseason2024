@@ -41,7 +41,7 @@ public class IntakeIOSparkMax implements IntakeIO {
 		pivot.setSmartCurrentLimit(IntakeConstants.pivotCurrentLimit);
 
 		roller.setIdleMode(IdleMode.kCoast);
-        pivot.setIdleMode(IdleMode.kBrake);
+        pivot.setIdleMode(IdleMode.kCoast);
 
 		rollerEnc.setVelocityConversionFactor(1.0);
 

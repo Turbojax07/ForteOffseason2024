@@ -163,10 +163,6 @@ public class ModuleIOReal implements ModuleIO {
 
     turnRelativeEncoder = turnSparkMax.getEncoder();
 
-    if (DriveConstants.wheelsStraight) {
-      absoluteEncoderOffset = Rotation2d.fromRadians(turnRelativeEncoder.getPosition());
-    }
-
     turnRelativeEncoder.setPositionConversionFactor(DriveConstants.turnConversion);
     absoluteEncoder.setDistancePerRotation(2 * Math.PI);
     
@@ -200,8 +196,11 @@ public class ModuleIOReal implements ModuleIO {
     turnSparkMax.burnFlash();
     turnSparkMax.setCANTimeout(0);
 
-    turnRelativeEncoder.setPosition(getAbsoluteEncoder());
-
+    if (index == 0) {
+      turnRelativeEncoder.setPosition(0);
+    } else {
+      turnRelativeEncoder.setPosition(getAbsoluteEncoder());
+    }
 
     timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
     drivePosition = driveTalon.getPosition();

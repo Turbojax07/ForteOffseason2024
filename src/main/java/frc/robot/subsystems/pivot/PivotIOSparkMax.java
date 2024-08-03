@@ -16,6 +16,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.Constants;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.ShooterConstants;
 
@@ -25,21 +26,23 @@ public class PivotIOSparkMax implements PivotIO {
     private final RelativeEncoder pivotEnc = pivot.getEncoder();
     private final SparkAbsoluteEncoder pivotAbs = pivot.getAbsoluteEncoder(Type.kDutyCycle);
     private final SparkPIDController pivotPID = pivot.getPIDController();
+    private final double offset;
 
     public PivotIOSparkMax() {
+
         pivot.restoreFactoryDefaults();
 
         pivot.setSmartCurrentLimit(ShooterConstants.pivotCurrentLimit);
 
-        pivot.setIdleMode(IdleMode.kBrake);
+        pivot.setIdleMode(IdleMode.kCoast);
         pivotPID.setFeedbackDevice(pivotAbs);
 		pivotPID.setOutputRange(-12, 12);
 		pivotPID.setPositionPIDWrappingEnabled(false);
         pivotAbs.setInverted(true);
-		pivot.setInverted(true);
+		pivot.setInverted(false);
         pivotAbs.setPositionConversionFactor(ShooterConstants.pivotAbsConversion);
         pivotAbs.setVelocityConversionFactor(ShooterConstants.pivotAbsConversion / 60.0);
-        pivotAbs.setZeroOffset(ShooterConstants.pivotOffset);
+        offset = pivotAbs.getPosition() - .19;
 
 		pivotEnc.setPositionConversionFactor(ShooterConstants.pivotEncConversion);
         pivotEnc.setVelocityConversionFactor(ShooterConstants.pivotEncConversion / 60.0);
@@ -50,7 +53,7 @@ public class PivotIOSparkMax implements PivotIO {
 
 	@Override
 	public void processInputs(PivotIOInputsAutoLogged inputs) {
-		inputs.pivotPosition = Rotation2d.fromRadians(pivotAbs.getPosition());
+		inputs.pivotPosition = Rotation2d.fromRadians(pivotAbs.getPosition() - offset) ;
 		inputs.pivotVelocityRadPerSec = pivotEnc.getVelocity();
 		inputs.pivotAppliedVolts = pivot.getAppliedOutput() * pivot.getBusVoltage();
 		inputs.pivotCurrentAmps = pivot.getOutputCurrent();

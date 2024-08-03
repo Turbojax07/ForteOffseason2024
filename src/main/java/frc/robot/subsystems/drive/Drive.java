@@ -45,6 +45,10 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.google.common.collect.Streams;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 public class Drive extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
@@ -97,6 +101,19 @@ public class Drive extends SubsystemBase {
                 },
                 null,
                 this));
+    AutoBuilder.configureHolonomic(
+      this::getPose,
+      this::setPose,
+      this::getVelocity,
+      this::runVelocity,
+      new HolonomicPathFollowerConfig(
+        new PIDConstants(DriveConstants.kPDriveReal, DriveConstants.kDDriveReal),
+        new PIDConstants(DriveConstants.kPDriveReal, DriveConstants.kDDriveReal),
+        DriveConstants.maxLinearVelocity,
+        DriveConstants.trackWidth,
+        new ReplanningConfig()),
+      () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Red,
+      this);
   }
 
   public void periodic() {
@@ -225,6 +242,11 @@ public class Drive extends SubsystemBase {
     return states;
   }
 
+  /** Gets the current odometry pose. */
+  public Pose2d getPose() {
+    return poseEstimator.getEstimatedPosition();
+  }
+  
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
