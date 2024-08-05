@@ -27,6 +27,10 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static final double loopPeriodSecs = 0.02;
 
+  public static final double LOOP_TIME = 0.13;
+  public static final double ROBOT_MASS = 49.8951607;
+
+
   public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
@@ -40,7 +44,7 @@ public final class Constants {
     REPLAY
   }
 
-  public static final boolean isTuning = true;
+  public static final boolean isTuning = false;
   
 
   public static class RobotMap {
@@ -54,9 +58,9 @@ public final class Constants {
       public static final int backRightDrive = 7;
       public static final int backRightTurn = 8;
 
-      public static final boolean frontLeftDriveInvert = false;
+      public static final boolean frontLeftDriveInvert = true;
       public static final boolean frontRightDriveInvert = false;
-      public static final boolean backLeftDriveInvert = false;
+      public static final boolean backLeftDriveInvert = true;
       public static final boolean backRightDriveInvert = false;
 
       public static final boolean frontLeftTurnInvert = false;
@@ -69,10 +73,10 @@ public final class Constants {
       public static final int backLeftEncoder = 1;
       public static final int backRightEncoder = 0;
 
-      public static final double frontLeftOffset = 0.0;
-      public static final double frontRightOffset = -0.49733975529670715;
-      public static final double backLeftOffset = -2.035203218460083+Math.PI;
-      public static final double backRightOffset = -3.0376768112182617+Math.PI;
+      public static final double frontLeftOffset = -0.011687441729009151;
+      public static final double frontRightOffset = 2.628922700881958;
+      public static final double backLeftOffset = -2.0652801990509033;
+      public static final double backRightOffset = -3.03214430809021;
 
 
 
@@ -120,7 +124,7 @@ public final class Constants {
     public static final double turnVelocityConversion = turnConversion / 60;
 
     public static final int driveSupplyCurrent = 50; // 70
-    public static final int driveStatorCurrent = 90; // 120
+    public static final int driveStatorCurrent = 70; // 120
     public static final int turnCurrent = 30; // 30
 
     public static final double odometeryFrequency = 250;
@@ -211,7 +215,7 @@ public final class Constants {
 
     public static final double rollerMOI = 0.011328;
     
-    public static final double up = .22;
+    public static final double up = .25;
     public static final double down = 2.1;
     public static final double simOffset = 1.27838411;
   
@@ -225,7 +229,7 @@ public final class Constants {
     public static final double kVRoller = 0.0029;
     public static final double kARoller = 0;
     
-    public static double kPPivotReal = 1;
+    public static double kPPivotReal = .7;
 
     public static double kPRollerReal = 0.0000;
     public static double kSRollerReal = 0.0;
@@ -245,7 +249,7 @@ public final class Constants {
     public static final double ratio = 30.0 / 18.0;
     public static final double MOI = 0.0109330333;
 
-    public static final int currentLimit = 70;
+    public static final int currentLimit = 30;
 
     public static double kPReal = 0.0001;
     public static double kVReal = 0.0;
@@ -265,17 +269,17 @@ public final class Constants {
     public static final double maxPivotVelocity = 10.5819313;
 	  public static final double maxPivotAccel = 5;
 
-    public static final double pivotAbsConversion = Math.PI * 2.0 / (34.0 / 34.0);
+    public static final double pivotAbsConversion = Math.PI * 2.0 / (33.0 / 34.0);
     public static final double pivotEncConversion = 2.0 * Math.PI / pivotRatio;
-    public static final double pivotOffset = 0.00;
+    public static final double pivotOffset = 3.54347622;
     public static final double simOffset = 0.0;
 
-    public static final double down = 0.0;
+    public static final double down = 0.19;
     public static final double up = down + Math.PI/4;
     
     public static final double shooterMOI = 0.00920287973;
 
-    public static final int pivotCurrentLimit = 30;
+    public static final int pivotCurrentLimit = 40;
 
     public static final double kGPivot = 0;
     public static final double kVPivot = 0;
@@ -284,10 +288,10 @@ public final class Constants {
     public static final double kVShooter = 0.38;
     public static final double kAShooter = 0.25;
 
-    public static final double kPShooterReal = 0.15;
-    public static final double kSShooterReal = 0.0;
+    public static final double kPShooterReal = 0.5;
+    public static final double kSShooterReal = 0.5;
 
-    public static final double kPPivotReal = 1.0;
+    public static final double kPPivotReal = 30.0;
     public static final double kPPivotSim = 100.0;  
     
     public static final double kPShooterSim = 0.5;

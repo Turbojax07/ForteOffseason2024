@@ -22,9 +22,6 @@ import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -34,6 +31,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
@@ -78,8 +76,7 @@ import frc.robot.subsystems.shooter.ShooterIOSparkMax;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-//   private Driver driver   = Driver.ARNAV_DRIVE;
-//   private Driver operator = Driver.ZACH_OPERATOR;
+
 
   // Subsystems
   // private final SwerveSubsystem m_drive = new SwerveSubsystem(new
@@ -109,7 +106,7 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         m_drive = new Drive(
             new GyroIOPigeon2Phoenix6(),
-            new ModuleIOReal(0),
+            new ModuleIOReplay(),
             new ModuleIOReal(1),
             new ModuleIOReal(2),
             new ModuleIOReal(3));
@@ -117,7 +114,7 @@ public class RobotContainer {
         m_intake = new Intake(new IntakeIOSparkMax());
         m_feeder = new Feeder(new FeederIOSparkMax(), new BeambreakIOReal(RobotMap.Shooter.feederBeambreak),
             new BeambreakIOReal(RobotMap.Shooter.shooterBeambreak));
-        m_pivot = new Pivot(new PivotIOReplay());
+        m_pivot = new Pivot(new PivotIOSparkMax());
         m_shooter = new Shooter(new ShooterIOSparkMax());
         break;
 
@@ -133,7 +130,7 @@ public class RobotContainer {
         m_intake = new Intake(new IntakeIOSim());
         m_feeder = new Feeder(new FeederIOSim(), new BeambreakIOSim(RobotMap.Shooter.feederBeambreak),
             new BeambreakIOSim(RobotMap.Shooter.shooterBeambreak));
-        m_pivot = new Pivot(new PivotIOReplay());
+        m_pivot = new Pivot(new PivotIOSim());
         m_shooter = new Shooter(new ShooterIOSim());
         break;
 
@@ -154,23 +151,6 @@ public class RobotContainer {
 
     }
     m_visualizer = new Visualizer(m_climber, m_intake, m_pivot);
-
-    // Registering named commands
-    NamedCommands.registerCommand("ShootNote", Commands.sequence(
-        Commands.deadline(
-            new WaitCommand(2),
-            m_shooter.setRPM(() -> 5000, 0.3),
-            Commands.sequence(
-                new WaitCommand(1),
-                m_feeder.setRPM(() -> 3000)
-            )
-        ),
-        Commands.deadline(
-            new WaitCommand(1),
-            m_shooter.setRPM(() -> 0, 0.3),
-            m_feeder.setRPM(() -> 0)
-        )
-    ));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -217,26 +197,8 @@ public class RobotContainer {
 
     // Driver Controller
 
-    // joysticks for drive
-    m_drive.setDefaultCommand(
-        m_drive.runVoltageTeleopFieldRelative(
-            () -> new ChassisSpeeds(
-                -teleopAxisAdjustment(m_driver.getLeftY()) *
-                    DriveConstants.maxLinearVelocity,
-                -teleopAxisAdjustment(m_driver.getLeftX()) *
-                    DriveConstants.maxLinearVelocity,
-                -teleopAxisAdjustment(m_driver.getRightX())
-                    * DriveConstants.maxLinearVelocity)));
-
     // left trigger -> climb up
     m_driver.leftTrigger(0.1).onTrue(
-        m_climber.setDutyCycle(-1)
-    ).onFalse(
-        m_climber.setDutyCycle(0)
-    );
-
-    // left bumper -> climb down
-    m_driver.leftBumper().onTrue(
         m_climber.setDutyCycle(-1)
     ).onFalse(
         m_climber.setDutyCycle(0)
@@ -249,35 +211,24 @@ public class RobotContainer {
         m_climber.setDutyCycle(0)
     );
 
-    // left trigger -> climb up
-    m_driver.rightBumper().onTrue(
-        m_climber.setDutyCycle(1)
-    ).onFalse(
-        m_climber.setDutyCycle(0)
-    );
-
     // Operator Controller
 
     // D-Pad Up for intake down, rollers forward, until note in feeder beambreak
-    m_operator.povUp().onTrue(
-        Commands.parallel(
-            m_intake.setIntakeDown(false)))
-            // m_feeder.setRPM(() -> 3000)).until(() -> m_feeder.feederBeambreakObstructed()))
-      .onFalse(
+    m_operator.povUp().whileTrue(
         Commands.parallel(
             m_intake.setIntakeDown(false),
-            m_feeder.setRPM(() -> 5000)).until(() -> m_feeder.feederBeambreakObstructed()))
+            m_feeder.setRPM(() -> 3000)).until(() -> m_feeder.feederBeambreakObstructed()))
         .onFalse(m_intake.setIntakeUp());
 
     // D-Pad Down for intake down, rollers backward
-    m_operator.povDown().onTrue(
+    m_operator.povDown().whileTrue(
         Commands.parallel(
             m_intake.setIntakeDown(true),
             m_feeder.setRPM(() -> -3000)))
         .onFalse(m_intake.setIntakeUp());
 
     // Right trigger for run intake forward
-    m_operator.rightTrigger(0.1).onTrue(
+    m_operator.rightTrigger(0.1).whileTrue(
         Commands.parallel(
             m_intake.setRollerRPM(() -> 3000),
             m_feeder.setRPM(() -> 3000)).until(() -> m_feeder.feederBeambreakObstructed()))
@@ -287,7 +238,7 @@ public class RobotContainer {
                 m_feeder.setRPM(() -> 0)));
 
     // Right bumper for run intake backward
-    m_operator.rightBumper().onTrue(
+    m_operator.rightBumper().whileTrue(
         Commands.parallel(
             m_intake.setRollerRPM(() -> -3000),
             m_feeder.setRPM(() -> -3000)))
@@ -301,7 +252,7 @@ public class RobotContainer {
         Commands.parallel(
             m_pivot.setPivotTarget(() -> Units.radiansToDegrees(56)),
             m_shooter.setRPM(() -> 5800, 0.3))
-            .andThen(m_feeder.setRPM(() -> 2000)
+            .andThen(m_feeder.setRPM(() -> 3000)
                 .until(() -> (!m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed()))));
 
     // X for shooter at amp
@@ -309,12 +260,13 @@ public class RobotContainer {
     // B for shooter at podium or feeding
 
     // A for shooter at source
-    // m_operator.a().onTrue(
-    //     Commands.parallel(
-    //         m_shooter.setRPM(() -> -3000, 1.0),
-    //         m_feeder.setRPM(() -> -3000))
-    //         .andThen(m_feeder.setRPM(() -> 3000)
-    //             .until(() -> (m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed()))));
+    m_operator.a().onTrue(
+        Commands.parallel(
+            m_pivot.setPivotTarget(() -> Units.radiansToDegrees(56)),
+            m_shooter.setRPM(() -> -2000, 1.0),
+            m_feeder.setRPM(() -> -2000))
+            .andThen(m_feeder.setRPM(() -> 2000)
+                .until(() -> (m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed()))));
 
 
     m_operator.leftTrigger(0.1).onTrue(
@@ -336,10 +288,6 @@ public class RobotContainer {
             () -> (!m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed())
         )
     );
-
-    m_operator.leftBumper().onTrue(
-        m_shooter.stopShooter());
-
   }
 
   public void robotPeriodic() {
@@ -352,7 +300,40 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    // Pose2d initPose = m_drive.getPose();
+
+    // List<Translation2d> points = PathPlannerPath.bezierFromPoses(
+    //     initPose,
+    //     new Pose2d(initPose.getX() + 2.0, initPose.getY(), initPose.getRotation())
+    // );
+
+    // PathPlannerPath path = new PathPlannerPath(points,
+    //     new PathConstraints(
+    //         DriveConstants.maxLinearVelocity,
+    //         DriveConstants.maxLinearAccel,
+    //         DriveConstants.maxAngularVelocity,
+    //         DriveConstants.maxAngularAccel
+    //     ),
+    //     new GoalEndState(0, initPose.getRotation())
+    // );
+
+    // path.preventFlipping = true;
+
+    // Test path
+    // return AutoBuilder.followPath(path);
+    // Default path
+    // return new PathPlannerAuto("Simple Auto");
+    return new PrintCommand("No Auto lol");
+  }
+
+  public Command getTeleopCommand() {
+    return m_drive.runVoltageTeleopFieldRelative(
+        () -> new ChassisSpeeds(
+            -teleopAxisAdjustment(m_driver.getLeftY())  * DriveConstants.maxLinearVelocity,
+            -teleopAxisAdjustment(m_driver.getLeftX())  * DriveConstants.maxLinearVelocity,
+            -teleopAxisAdjustment(m_driver.getRightX()) * DriveConstants.maxLinearVelocity
+        )
+    );
   }
 
   private static double teleopAxisAdjustment(double x) {

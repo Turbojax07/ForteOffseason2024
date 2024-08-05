@@ -66,7 +66,6 @@ public class Visualizer extends SubsystemBase {
         SmartDashboard.putData("Intake Down", (Sendable) m_intake.setPivotTarget(() -> IntakeConstants.down));
 
         SmartDashboard.putData("Shooter 0", (Sendable) m_pivot.setPivotTarget(() -> ShooterConstants.down));
-
         SmartDashboard.putData("Shooter 56", (Sendable) m_pivot.setPivotTarget(() -> ShooterConstants.up));
 
         SmartDashboard.putData("Pos", (Sendable) m_pivot.setPivotVoltage(() -> 5));
