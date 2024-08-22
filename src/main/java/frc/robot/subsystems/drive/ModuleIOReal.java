@@ -196,11 +196,7 @@ public class ModuleIOReal implements ModuleIO {
     turnSparkMax.burnFlash();
     turnSparkMax.setCANTimeout(0);
 
-    if (index == 0) {
-      turnRelativeEncoder.setPosition(0);
-    } else {
-      turnRelativeEncoder.setPosition(getAbsoluteEncoder());
-    }
+    turnRelativeEncoder.setPosition(getAbsoluteEncoder());
 
     timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
     drivePosition = driveTalon.getPosition();

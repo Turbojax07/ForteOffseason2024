@@ -13,26 +13,13 @@
 
 package frc.robot;
 
-import java.util.List;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotMap;
@@ -154,9 +141,6 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-
-    // Configuring Pathplanner commands
-    configurePathplanner();
   }
 
   /**
@@ -169,33 +153,16 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // switch(driver) {
-    //   case ARNAV_DRIVE:
-    //     break;
-    //   case CONNOR_DRIVE:
-    //     break;
-    //   case JAMES_DRIVE:
-    //     break;
-    //   case RAM_DRIVE:
-    //     break;
-    //   case ZACH_DRIVE:
-    //     break;
-    // }
-
-    // switch (operator) {
-    //   case ARNAV_OPERATOR:
-    //     break;
-    //   case CONNOR_OPERATOR:
-    //     break;
-    //   case JAMES_OPERATOR:+
-    //     break;
-    //   case RAM_OPERATOR:
-    //     break;
-    //   case ZACH_OPERATOR:
-    //     break;
-    // }
-
     // Driver Controller
+    m_drive.setDefaultCommand(
+        m_drive.runVoltageTeleopFieldRelative(
+            () -> new ChassisSpeeds(
+                -teleopAxisAdjustment(m_driver.getLeftY()) *
+                    DriveConstants.maxLinearVelocity,
+                -teleopAxisAdjustment(m_driver.getLeftX()) *
+                    DriveConstants.maxLinearVelocity,
+                -teleopAxisAdjustment(m_driver.getRightX())
+                    * DriveConstants.maxLinearVelocity)));
 
     // left trigger -> climb up
     m_driver.leftTrigger(0.1).onTrue(
@@ -275,68 +242,15 @@ public class RobotContainer {
 
   }
 
-  public void configurePathplanner() {
-    NamedCommands.registerCommand(
-        "ShootNote",
-        Commands.parallel(
-            m_shooter.setRPM(() -> 5800, 0.3),
-            Commands.sequence(
-                new WaitCommand(1),
-                m_feeder.setRPM(() -> 2000)
-            )
-        ).until(
-            () -> (!m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed())
-        )
-    );
-  }
-
   public void robotPeriodic() {
     m_visualizer.periodic();
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // Pose2d initPose = m_drive.getPose();
-
-    // List<Translation2d> points = PathPlannerPath.bezierFromPoses(
-    //     initPose,
-    //     new Pose2d(initPose.getX() + 2.0, initPose.getY(), initPose.getRotation())
-    // );
-
-    // PathPlannerPath path = new PathPlannerPath(points,
-    //     new PathConstraints(
-    //         DriveConstants.maxLinearVelocity,
-    //         DriveConstants.maxLinearAccel,
-    //         DriveConstants.maxAngularVelocity,
-    //         DriveConstants.maxAngularAccel
-    //     ),
-    //     new GoalEndState(0, initPose.getRotation())
-    // );
-
-    // path.preventFlipping = true;
-
-    // Test path
-    // return AutoBuilder.followPath(path);
-    // Default path
-    // return new PathPlannerAuto("Simple Auto");
-    return new PrintCommand("No Auto lol");
-  }
-
-  public Command getTeleopCommand() {
-    return m_drive.runVoltageTeleopFieldRelative(
-        () -> new ChassisSpeeds(
-            -teleopAxisAdjustment(m_driver.getLeftY())  * DriveConstants.maxLinearVelocity,
-            -teleopAxisAdjustment(m_driver.getLeftX())  * DriveConstants.maxLinearVelocity,
-            -teleopAxisAdjustment(m_driver.getRightX()) * DriveConstants.maxLinearVelocity
-        )
-    );
-  }
-
   private static double teleopAxisAdjustment(double x) {
     return MathUtil.applyDeadband(Math.abs(Math.pow(x, 2)) * Math.signum(x), 0.02);
+  }
+
+  public Command getAutonomousCommand() {
+    return null;
   }
 }

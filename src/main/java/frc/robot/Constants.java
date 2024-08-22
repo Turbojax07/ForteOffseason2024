@@ -13,7 +13,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -60,8 +59,8 @@ public final class Constants {
 
       public static final boolean frontLeftDriveInvert = true;
       public static final boolean frontRightDriveInvert = false;
-      public static final boolean backLeftDriveInvert = true;
-      public static final boolean backRightDriveInvert = false;
+      public static final boolean backLeftDriveInvert = false; //true?
+      public static final boolean backRightDriveInvert = true; //false?
 
       public static final boolean frontLeftTurnInvert = false;
       public static final boolean frontRightTurnInvert = false;
@@ -124,7 +123,7 @@ public final class Constants {
     public static final double turnVelocityConversion = turnConversion / 60;
 
     public static final int driveSupplyCurrent = 50; // 70
-    public static final int driveStatorCurrent = 70; // 120
+    public static final int driveStatorCurrent = 90; // 120
     public static final int turnCurrent = 30; // 30
 
     public static final double odometeryFrequency = 250;

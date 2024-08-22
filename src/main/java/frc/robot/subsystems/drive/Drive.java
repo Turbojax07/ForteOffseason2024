@@ -45,10 +45,6 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.google.common.collect.Streams;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 
 public class Drive extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
@@ -59,13 +55,15 @@ public class Drive extends SubsystemBase {
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
-  private SwerveModulePosition[] lastModulePositions = new SwerveModulePosition[] {
-    new SwerveModulePosition(),
-    new SwerveModulePosition(),
-    new SwerveModulePosition(),
-    new SwerveModulePosition()
-  };
-  private SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+  private SwerveModulePosition[] lastModulePositions = // For delta tracking
+      new SwerveModulePosition[] {
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition()
+      };
+  private SwerveDrivePoseEstimator poseEstimator =
+      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
 
   public Drive(
       GyroIO gyroIO,
@@ -227,11 +225,6 @@ public class Drive extends SubsystemBase {
     return states;
   }
 
-  /** Gets the current odometry pose. */
-  public Pose2d getPose() {
-    return poseEstimator.getEstimatedPosition();
-  }
-  
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
@@ -340,12 +333,13 @@ public class Drive extends SubsystemBase {
 
   @AutoLogOutput(key = "Odometry/Velocity")
   public ChassisSpeeds getVelocity() {
-    return ChassisSpeeds.fromRobotRelativeSpeeds(
-      kinematics.toChassisSpeeds(
-        Arrays.stream(modules).map((m) -> m.getState()).toArray(SwerveModuleState[]::new)
-      ),
-      getRotation()
-    );
+    var speeds =
+        ChassisSpeeds.fromRobotRelativeSpeeds(
+            kinematics.toChassisSpeeds(
+                Arrays.stream(modules).map((m) -> m.getState()).toArray(SwerveModuleState[]::new)),
+            getRotation());
+    return new ChassisSpeeds(
+        speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
   }
 
   public void resetOffsets() {
@@ -356,13 +350,13 @@ public class Drive extends SubsystemBase {
 
   public Command resetOffsetsCmd() {
     return run(() -> resetOffsets());
-  }
+}
 
-  public Rotation2d getRotation() {
-    return gyroIO.getYaw();
-  }
+public Rotation2d getRotation() {
+  return gyroIO.getYaw();
+}
 
-  public void resetGyro() {
-    gyroIO.reset();
-  }
+public void resetGyro() {
+  gyroIO.reset();
+}
 }
