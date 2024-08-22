@@ -93,7 +93,7 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         m_drive = new Drive(
             new GyroIOPigeon2Phoenix6(),
-            new ModuleIOReplay(),
+            new ModuleIOReal(0),
             new ModuleIOReal(1),
             new ModuleIOReal(2),
             new ModuleIOReal(3));
