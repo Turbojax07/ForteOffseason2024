@@ -31,7 +31,7 @@ public class PivotIOSparkMax implements PivotIO {
 
         pivot.setSmartCurrentLimit(ShooterConstants.pivotCurrentLimit);
 
-        pivot.setIdleMode(IdleMode.kBrake);
+        pivot.setIdleMode(IdleMode.kCoast);
         pivotPID.setFeedbackDevice(pivotAbs);
 		pivotPID.setOutputRange(-12, 12);
 		pivotPID.setPositionPIDWrappingEnabled(false);
@@ -39,11 +39,12 @@ public class PivotIOSparkMax implements PivotIO {
 		pivot.setInverted(true);
         pivotAbs.setPositionConversionFactor(ShooterConstants.pivotAbsConversion);
         pivotAbs.setVelocityConversionFactor(ShooterConstants.pivotAbsConversion / 60.0);
-        pivotAbs.setZeroOffset(ShooterConstants.pivotOffset);
 
 		pivotEnc.setPositionConversionFactor(ShooterConstants.pivotEncConversion);
         pivotEnc.setVelocityConversionFactor(ShooterConstants.pivotEncConversion / 60.0);
-        pivotEnc.setPosition(pivotAbs.getPosition());
+
+		// pivotAbs.setZeroOffset(0.0);
+		pivotEnc.setPosition(pivotAbs.getPosition());
 
         pivot.burnFlash();
     }

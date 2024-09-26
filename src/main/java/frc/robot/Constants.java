@@ -261,36 +261,36 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
-    public static final double pivotRatio = 48.0;
+    public static final double pivotRatio = 496 / 3;
     public static final double pivotMOI = 0.0022842632;
     public static final double pivotLength = Units.inchesToMeters(7.01793315);
 
     public static final double maxPivotVelocity = 10.5819313;
 	  public static final double maxPivotAccel = 5;
 
-    public static final double pivotAbsConversion = Math.PI * 2.0 / (33.0 / 34.0);
+    public static final double pivotAbsConversion = Math.PI * 2.0;
     public static final double pivotEncConversion = 2.0 * Math.PI / pivotRatio;
-    public static final double pivotOffset = 3.54347622;
-    public static final double simOffset = 0.0;
+    public static final double pivotOffset = 0.0;
+    public static final double simOffset = 0.19;
 
-    public static final double down = 0.19;
+    public static final double down = 0.01;
     public static final double up = down + Math.PI/4;
     
     public static final double shooterMOI = 0.00920287973;
 
-    public static final int pivotCurrentLimit = 40;
+    public static final int pivotCurrentLimit = 20;
 
-    public static final double kGPivot = 0;
+    public static final double kGPivot = 0.00;
     public static final double kVPivot = 0;
     public static final double kAPivot = 0.00;
     
     public static final double kVShooter = 0.38;
     public static final double kAShooter = 0.25;
 
-    public static final double kPShooterReal = 0.5;
-    public static final double kSShooterReal = 0.5;
+    public static final double kPShooterReal = 3;
+    public static final double kSShooterReal = 0;
 
-    public static final double kPPivotReal = 30.0;
+    public static final double kPPivotReal = 2;
     public static final double kPPivotSim = 100.0;  
     
     public static final double kPShooterSim = 0.5;

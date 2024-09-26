@@ -201,8 +201,8 @@ public class RobotContainer {
             m_feeder.setRPM(() -> 3000)).until(() -> m_feeder.feederBeambreakObstructed()))
         .onFalse(
             Commands.parallel(
-                m_intake.setRollerRPM(() -> 0),
-                m_feeder.setRPM(() -> 0)));
+                m_intake.setRollerVoltage(() -> 0),
+                m_feeder.setVoltage(() -> 0)));
 
     // Right bumper for run intake backward
     m_operator.rightBumper().whileTrue(
@@ -211,13 +211,13 @@ public class RobotContainer {
             m_feeder.setRPM(() -> -3000)))
         .onFalse(
             Commands.parallel(
-                m_intake.setRollerRPM(() -> 0),
-                m_feeder.setRPM(() -> 0)));
+                m_intake.setRollerVoltage(() -> 0),
+                m_feeder.setVoltage(() -> 0)));
 
     // Y for shooter at subwoofer
-    m_operator.y().onTrue(
+    m_operator.y().whileTrue(
         Commands.parallel(
-            m_pivot.setPivotTarget(() -> Units.radiansToDegrees(56)),
+            m_pivot.setPivotTarget(() -> Units.degreesToRadians(45)),
             m_shooter.setRPM(() -> 5800, 0.3))
             .andThen(m_feeder.setRPM(() -> 3000)
                 .until(() -> (!m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed()))));
@@ -225,12 +225,19 @@ public class RobotContainer {
     // X for shooter at amp
 
     // B for shooter at podium or feeding
+    m_operator.b().whileTrue(
+        Commands.parallel(
+            m_pivot.setPivotTarget(() -> Units.degreesToRadians(20)),
+            m_shooter.setRPM(() -> -2000, 1.0),
+            m_feeder.setRPM(() -> -2000))
+            .andThen(m_feeder.setRPM(() -> 2000)
+                .until(() -> (m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed()))));
 
     // A for shooter at source
-    m_operator.a().onTrue(
+    m_operator.a().whileTrue(
         Commands.parallel(
-            m_pivot.setPivotTarget(() -> Units.radiansToDegrees(56)),
-            m_shooter.setRPM(() -> -2000, 1.0),
+            m_pivot.setPivotTarget(() -> Units.degreesToRadians(45)),
+            m_shooter.setRPM(() -> 5800, 1.0),
             m_feeder.setRPM(() -> -2000))
             .andThen(m_feeder.setRPM(() -> 2000)
                 .until(() -> (m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed()))));
@@ -238,7 +245,7 @@ public class RobotContainer {
 
     m_operator.leftTrigger(0.1).onTrue(
         m_shooter.setRPM(() -> 5800, 0.3)
-    ).onFalse(m_shooter.setRPM(() -> 0, 1));
+    ).onFalse(m_shooter.stopShooter().andThen(m_pivot.setPivotTarget(() -> Units.degreesToRadians(0))));
 
   }
 
