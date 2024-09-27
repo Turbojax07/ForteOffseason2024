@@ -210,9 +210,9 @@ public class RobotContainer {
                                 m_intake.setRollerVoltage(() -> 0),
                                 m_feeder.setVoltage(() -> 0))).andThen(
                                         Commands.parallel(
-                                        m_feeder.setRollerRPM(() -> -1000),
-                                        m_intake.setRollerRPM(() -> -1000),
-                                        m_shooter.setRollerRPM(() -> -1000)
+                                        m_feeder.setRollerRPM(() -> -1200),
+                                        m_intake.setRollerRPM(() -> -1200),
+                                        m_shooter.setRollerRPM(() -> -1200)
                                         ).until(!m_feeder.shooterBeambreakObstructed()).unless(() -> !m_feeder.shooterBeambreakObstructed()) 
                                         );
 
