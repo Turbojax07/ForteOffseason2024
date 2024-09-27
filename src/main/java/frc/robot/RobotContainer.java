@@ -208,13 +208,13 @@ public class RobotContainer {
                 .onFalse(
                         Commands.parallel(
                                 m_intake.setRollerVoltage(() -> 0),
-                                m_feeder.setVoltage(() -> 0))).andThen(
+                                m_feeder.setVoltage(() -> 0)).andThen(
                                         Commands.parallel(
                                         m_feeder.setRPM(() -> -1000),
                                         m_intake.setRollerRPM(() -> -1000),
                                         m_shooter.setRPM(() -> -1000, 1)
                                         ).until(() -> !m_feeder.shooterBeambreakObstructed()).unless(() -> !m_feeder.shooterBeambreakObstructed()) 
-                                        );
+                                        ));
 
         // Right bumper for run intake backward
         m_operator.rightBumper().whileTrue(
