@@ -213,7 +213,7 @@ public class RobotContainer {
                                         m_feeder.setRPM(() -> -1000),
                                         m_intake.setRollerRPM(() -> -1000),
                                         m_shooter.setRPM(() -> -1000, 1)
-                                        ).until(!m_feeder.shooterBeambreakObstructed()).unless(() -> !m_feeder.shooterBeambreakObstructed()) 
+                                        ).until(() -> !m_feeder.shooterBeambreakObstructed()).unless(() -> !m_feeder.shooterBeambreakObstructed()) 
                                         );
 
         // Right bumper for run intake backward
