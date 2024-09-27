@@ -8,7 +8,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
-import frc.robot.subsystems.climber.ClimbIOInputsAutoLogged;
 import static frc.robot.Constants.*;
 
 public class ClimbIOSim implements ClimbIO {

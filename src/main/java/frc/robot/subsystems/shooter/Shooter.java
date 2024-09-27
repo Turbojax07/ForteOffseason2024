@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.subsystems.feeder.BeambreakIO;
 import frc.util.LoggedTunableNumber;
 
 /** Add your docs here. */
@@ -25,6 +24,7 @@ public class Shooter extends SubsystemBase {
     private SimpleMotorFeedforward shooterFF;
 
     private LoggedTunableNumber kPShooter = new LoggedTunableNumber("Shooter/kPShooter");
+    private LoggedTunableNumber kIShooter = new LoggedTunableNumber("Shooter/kIShooter");
     private LoggedTunableNumber kSShooter = new LoggedTunableNumber("Shooter/kSShooter");
 
 
@@ -34,21 +34,25 @@ public class Shooter extends SubsystemBase {
       switch (Constants.currentMode) {
         case REAL:
           kPShooter.initDefault(ShooterConstants.kPShooterReal);
+          kIShooter.initDefault(ShooterConstants.kIShooterReal);
           kSShooter.initDefault(ShooterConstants.kSShooterReal);
           break;
         case SIM:
           kPShooter.initDefault(ShooterConstants.kPShooterSim);
+          kIShooter.initDefault(ShooterConstants.kIShooterSim);
           kSShooter.initDefault(ShooterConstants.kSShooterSim);
           break;
         case REPLAY:
           kPShooter.initDefault(ShooterConstants.kPShooterReplay);
+          kIShooter.initDefault(ShooterConstants.kIShooterReplay);
           kSShooter.initDefault(ShooterConstants.kSShooterReplay);
           break;
         default:
           kPShooter.initDefault(0.0);
+          kIShooter.initDefault(0.0);
           kSShooter.initDefault(0.0);
       }
-        io.setShooterPID(kPShooter.getAsDouble(), 0.0, 0.0);
+        io.setShooterPID(kPShooter.getAsDouble(), kIShooter.getAsDouble(), 0.0);
         shooterFF = new SimpleMotorFeedforward(kSShooter.getAsDouble(), ShooterConstants.kVShooter, ShooterConstants.kAShooter);
   }
 
@@ -109,5 +113,10 @@ public class Shooter extends SubsystemBase {
       }
     );
   }
+
+  public boolean atSetpoint() {
+    return Math.abs(inputs.leftTargetRPM - inputs.leftSpeedRPM) <= (0.05 * inputs.leftTargetRPM) &&
+           Math.abs(inputs.rightTargetRPM - inputs.rightSpeedRPM) <= (0.05 * inputs.rightTargetRPM);
+}
 
 }

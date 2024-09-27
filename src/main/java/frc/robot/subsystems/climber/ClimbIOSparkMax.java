@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.RobotMap;
-import frc.robot.subsystems.climber.ClimbIOInputsAutoLogged;
 
 public class ClimbIOSparkMax implements ClimbIO {
     private final CANSparkMax motor = new CANSparkMax(RobotMap.Climb.climber, MotorType.kBrushless);

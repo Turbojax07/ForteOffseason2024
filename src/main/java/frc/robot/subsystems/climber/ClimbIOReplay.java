@@ -1,7 +1,5 @@
 package frc.robot.subsystems.climber;
 
-import frc.robot.subsystems.climber.ClimbIOInputsAutoLogged;
-
 public class ClimbIOReplay implements ClimbIO {
     public void processInputs(final ClimbIOInputsAutoLogged inputs) {}
 

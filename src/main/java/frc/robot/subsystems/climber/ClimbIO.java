@@ -1,7 +1,5 @@
 package frc.robot.subsystems.climber;
 
-import frc.robot.subsystems.climber.ClimbIOInputsAutoLogged;
-
 import org.littletonrobotics.junction.AutoLog;
 
 /** Add your docs here. */

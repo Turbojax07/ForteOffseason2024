@@ -72,10 +72,10 @@ public final class Constants {
       public static final int backLeftEncoder = 1;
       public static final int backRightEncoder = 0;
 
-      public static final double frontLeftOffset = -0.011687441729009151;
-      public static final double frontRightOffset = 2.628922700881958;
-      public static final double backLeftOffset = -2.0652801990509033;
-      public static final double backRightOffset = -3.03214430809021;
+      public static final double frontLeftOffset = -0.5107599496841431;
+      public static final double frontRightOffset = -0.5107599496841431;
+      public static final double backLeftOffset = 1.8345500230789185;
+      public static final double backRightOffset = 2.437732458114624;
 
 
 
@@ -93,8 +93,8 @@ public final class Constants {
       public static final int left = 23;
       public static final int right = 24;
 
-      public static final int feederBeambreak = 1;
-      public static final int shooterBeambreak = 0;
+      public static final int feederBeambreak = 0;
+      public static final int shooterBeambreak = 1;
     }
 
     public static class Climb {
@@ -130,11 +130,11 @@ public final class Constants {
     public static final double updateFrequency = 100;
 
     // public static final double maxLinearVelocity = Units.feetToMeters(20.4);
-     public static final double maxLinearVelocity = Units.feetToMeters(20.4);
+     public static final double maxLinearVelocity = Units.feetToMeters(1.4);
     public static final double maxLinearAccel = 8.0;
 
-    public static final double maxAngularVelocity = maxLinearVelocity / (Math.hypot(trackWidth / 2.0, trackWidth / 2.0));
-    public static final double maxAngularAccel = maxLinearAccel / (Math.hypot(trackWidth / 2.0, trackWidth / 2.0));
+    public static final double maxAngularVelocity = 10;
+    public static final double maxAngularAccel = 10;
 
     public static double kPDriveReal = 2.0;
     public static double kDDriveReal = 0.2;
@@ -248,9 +248,9 @@ public final class Constants {
     public static final double ratio = 30.0 / 18.0;
     public static final double MOI = 0.0109330333;
 
-    public static final int currentLimit = 30;
+    public static final int currentLimit = 50;
 
-    public static double kPReal = 0.0001;
+    public static double kPReal = 0.001;
     public static double kVReal = 0.0;
 
     public static final double kPSim = 0.1;
@@ -284,21 +284,24 @@ public final class Constants {
     public static final double kVPivot = 0;
     public static final double kAPivot = 0.00;
     
-    public static final double kVShooter = 0.38;
-    public static final double kAShooter = 0.25;
+    public static final double kVShooter = 0.0055;
+    public static final double kAShooter = 0.00;
 
-    public static final double kPShooterReal = 3;
+    public static final double kPShooterReal = 0.0000;
+    public static final double kIShooterReal = 0.00000;
     public static final double kSShooterReal = 0;
 
-    public static final double kPPivotReal = 2;
+    public static final double kPPivotReal = 1;
     public static final double kPPivotSim = 100.0;  
     
     public static final double kPShooterSim = 0.5;
+    public static final double kIShooterSim = 0.0;
     public static final double kSShooterSim = 0.5;
 
     public static final double kPPivotReplay = 0.0;
     
     public static final double kPShooterReplay = 0.0;
+    public static final double kIShooterReplay = 0.0;
     public static final double kSShooterReplay = 0.0;
   }
   public static class SimConstants {
