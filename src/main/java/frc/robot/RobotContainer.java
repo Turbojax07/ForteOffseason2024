@@ -65,209 +65,244 @@ import frc.robot.subsystems.shooter.ShooterIOSparkMax;
  */
 public class RobotContainer {
 
-    // Subsystems
-    // private final SwerveSubsystem m_drive = new SwerveSubsystem(new
-    // File(Filesystem.getDeployDirectory(),
-    // "swerve/swerve"));;
-    private final Drive m_drive;
-    private final Climb m_climber;
-    private final Intake m_intake;
-    private final Feeder m_feeder;
-    private final Pivot m_pivot;
-    private final Shooter m_shooter;
-    private final Visualizer m_visualizer;
+        // Subsystems
+        // private final SwerveSubsystem m_drive = new SwerveSubsystem(new
+        // File(Filesystem.getDeployDirectory(),
+        // "swerve/swerve"));;
+        private final Drive m_drive;
+        private final Climb m_climber;
+        private final Intake m_intake;
+        private final Feeder m_feeder;
+        private final Pivot m_pivot;
+        private final Shooter m_shooter;
+        private final Visualizer m_visualizer;
 
-    // Controller
-    private final CommandXboxController m_driver = new CommandXboxController(0);
-    private final CommandXboxController m_operator = new CommandXboxController(1);
+        // Controller
+        private final CommandXboxController m_driver = new CommandXboxController(0);
+        private final CommandXboxController m_operator = new CommandXboxController(1);
 
-    // final CommandXboxController driverXbox = new CommandXboxController(0);
-    // private final SwerveSubsystem drivebase
+        // final CommandXboxController driverXbox = new CommandXboxController(0);
+        // private final SwerveSubsystem drivebase
 
-    /**
-     * The container for the robot. Contains subsystems, OI devices, and commands.
-     */
-    public RobotContainer() {
-        switch (Constants.currentMode) {
-            case REAL:
-                // Real robot, instantiate hardware IO implementations
-                m_drive = new Drive(
-                        new GyroIOPigeon2Phoenix6(),
-                        new ModuleIOReal(0),
-                        new ModuleIOReal(1),
-                        new ModuleIOReal(2),
-                        new ModuleIOReal(3));
-                m_climber = new Climb(new ClimbIOSparkMax());
-                m_intake = new Intake(new IntakeIOSparkMax());
-                m_feeder = new Feeder(new FeederIOSparkMax(), new BeambreakIOReal(RobotMap.Shooter.feederBeambreak),
-                        new BeambreakIOReal(RobotMap.Shooter.shooterBeambreak));
-                m_pivot = new Pivot(new PivotIOSparkMax());
-                m_shooter = new Shooter(new ShooterIOSparkMax());
-                break;
+        /**
+         * The container for the robot. Contains subsystems, OI devices, and commands.
+         */
+        public RobotContainer() {
+                switch (Constants.currentMode) {
+                        case REAL:
+                                // Real robot, instantiate hardware IO implementations
+                                m_drive = new Drive(
+                                                new GyroIOPigeon2Phoenix6(),
+                                                new ModuleIOReal(0),
+                                                new ModuleIOReal(1),
+                                                new ModuleIOReal(2),
+                                                new ModuleIOReal(3));
+                                m_climber = new Climb(new ClimbIOSparkMax());
+                                m_intake = new Intake(new IntakeIOSparkMax());
+                                m_feeder = new Feeder(new FeederIOSparkMax(),
+                                                new BeambreakIOReal(RobotMap.Shooter.feederBeambreak),
+                                                new BeambreakIOReal(RobotMap.Shooter.shooterBeambreak));
+                                m_pivot = new Pivot(new PivotIOSparkMax());
+                                m_shooter = new Shooter(new ShooterIOSparkMax());
+                                break;
 
-            case SIM:
-                // Sim robot, instantiate physics sim IO implementations
-                m_drive = new Drive(
-                        new GyroIOReplay() {
-                        },
-                        new ModuleIOSim("FrontLeft"),
-                        new ModuleIOSim("FrontRight"),
-                        new ModuleIOSim("BackLeft"),
-                        new ModuleIOSim("BackRight"));
-                m_climber = new Climb(new ClimbIOSim());
-                m_intake = new Intake(new IntakeIOSim());
-                m_feeder = new Feeder(new FeederIOSim(), new BeambreakIOSim(RobotMap.Shooter.feederBeambreak),
-                        new BeambreakIOSim(RobotMap.Shooter.shooterBeambreak));
-                m_pivot = new Pivot(new PivotIOSim());
-                m_shooter = new Shooter(new ShooterIOSim());
-                break;
+                        case SIM:
+                                // Sim robot, instantiate physics sim IO implementations
+                                m_drive = new Drive(
+                                                new GyroIOReplay() {
+                                                },
+                                                new ModuleIOSim("FrontLeft"),
+                                                new ModuleIOSim("FrontRight"),
+                                                new ModuleIOSim("BackLeft"),
+                                                new ModuleIOSim("BackRight"));
+                                m_climber = new Climb(new ClimbIOSim());
+                                m_intake = new Intake(new IntakeIOSim());
+                                m_feeder = new Feeder(new FeederIOSim(),
+                                                new BeambreakIOSim(RobotMap.Shooter.feederBeambreak),
+                                                new BeambreakIOSim(RobotMap.Shooter.shooterBeambreak));
+                                m_pivot = new Pivot(new PivotIOSim());
+                                m_shooter = new Shooter(new ShooterIOSim());
+                                break;
 
-            default:
-                // Replayed robot, disable IO implementations
-                m_drive = new Drive(
-                        new GyroIOReplay() {
-                        },
-                        new ModuleIOReplay() {
-                        },
-                        new ModuleIOReplay() {
-                        },
-                        new ModuleIOReplay() {
-                        },
-                        new ModuleIOReplay() {
-                        });
-                m_climber = new Climb(new ClimbIOReplay());
-                m_intake = new Intake(new IntakeIOReplay());
-                m_feeder = new Feeder(new FeederIOReplay(), new BeambreakIOReplay(), new BeambreakIOReplay());
-                m_pivot = new Pivot(new PivotIOReplay());
-                m_shooter = new Shooter(new ShooterIOReplay());
-                break;
+                        default:
+                                // Replayed robot, disable IO implementations
+                                m_drive = new Drive(
+                                                new GyroIOReplay() {
+                                                },
+                                                new ModuleIOReplay() {
+                                                },
+                                                new ModuleIOReplay() {
+                                                },
+                                                new ModuleIOReplay() {
+                                                },
+                                                new ModuleIOReplay() {
+                                                });
+                                m_climber = new Climb(new ClimbIOReplay());
+                                m_intake = new Intake(new IntakeIOReplay());
+                                m_feeder = new Feeder(new FeederIOReplay(), new BeambreakIOReplay(),
+                                                new BeambreakIOReplay());
+                                m_pivot = new Pivot(new PivotIOReplay());
+                                m_shooter = new Shooter(new ShooterIOReplay());
+                                break;
+
+                }
+                m_visualizer = new Visualizer(m_climber, m_intake, m_pivot);
+                // Configure the button bindings
+                configureButtonBindings();
+        }
+
+        /**
+         * Use this method to define your button->command mappings. Buttons can be
+         * created by
+         * instantiating a {@link GenericHID} or one of its subclasses ({@link
+         * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+         * it to a {@link
+         * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+         */
+        private void configureButtonBindings() {
+
+                // Driver Controller
+                m_drive.setDefaultCommand(
+                                m_drive.runVoltageTeleopFieldRelative(
+                                                () -> new ChassisSpeeds(
+                                                                -teleopAxisAdjustment(m_driver.getLeftY()) *
+                                                                                DriveConstants.maxLinearVelocity,
+                                                                -teleopAxisAdjustment(m_driver.getLeftX()) *
+                                                                                DriveConstants.maxLinearVelocity,
+                                                                -teleopAxisAdjustment(m_driver.getRightX())
+                                                                                * DriveConstants.maxLinearVelocity)));
+
+                m_intake.setDefaultCommand(
+                                m_intake.setIntakeUp());
+
+                // left trigger -> climb up
+                m_driver.leftTrigger(0.1).onTrue(
+                                m_climber.setDutyCycle(-1)).onFalse(
+                                                m_climber.setDutyCycle(0));
+
+                // right trigger -> climb up
+                m_driver.rightTrigger(0.1).onTrue(
+                                m_climber.setDutyCycle(1)).onFalse(
+                                                m_climber.setDutyCycle(0));
+
+                // Operator Controller
+
+                // D-Pad Up for intake down, rollers forward, until note in feeder beambreak
+                m_operator.povUp().whileTrue(
+                                Commands.parallel(
+                                                m_intake.setIntakeDown(false),
+                                                m_feeder.setRPM(() -> 3000))
+                                                .until(() -> m_feeder.feederBeambreakObstructed()))
+                                .onFalse(m_intake.setIntakeUp());
+
+                // D-Pad Down for intake down, rollers backward
+                m_operator.povDown().whileTrue(
+                                Commands.parallel(
+                                                m_intake.setIntakeDown(true),
+                                                m_feeder.setRPM(() -> -3000)))
+                                .onFalse(m_intake.setIntakeUp());
+
+                // Right trigger for run intake forward
+                m_operator.rightTrigger(0.1).whileTrue(
+                                Commands.parallel(
+                                                m_intake.setRollerRPM(() -> 3000),
+                                                m_feeder.setRPM(() -> 3000))
+                                                .until(() -> m_feeder.feederBeambreakObstructed()))
+                                .onFalse(
+                                                Commands.parallel(
+                                                                m_intake.setRollerVoltage(() -> 0),
+                                                                m_feeder.setVoltage(() -> 0)).andThen(
+                                                                                Commands.parallel(
+                                                                                                m_feeder.setRPM(() -> -1000),
+                                                                                                m_intake.setRollerRPM(
+                                                                                                                () -> -1000),
+                                                                                                m_shooter.setRPM(
+                                                                                                                () -> -1000,
+                                                                                                                1))
+                                                                                                .until(() -> !m_feeder
+                                                                                                                .shooterBeambreakObstructed())
+                                                                                                .unless(() -> !m_feeder
+                                                                                                                .shooterBeambreakObstructed())));
+
+                // Right bumper for run intake backward
+                m_operator.rightBumper().whileTrue(
+                                Commands.parallel(
+                                                m_intake.setRollerRPM(() -> -3000),
+                                                m_feeder.setRPM(() -> -3000)))
+                                .onFalse(
+                                                Commands.parallel(
+                                                                m_intake.setRollerVoltage(() -> 0),
+                                                                m_feeder.setVoltage(() -> 0)));
+
+                // Y for shooter at subwoofer
+                m_operator.y().whileTrue(
+                                Commands.parallel(
+                                                m_pivot.setPivotTarget(() -> Units.degreesToRadians(45)),
+                                                m_shooter.setRPM(() -> 5000, 0.3)).until(() -> m_shooter.atSetpoint()) // DEMO: 2000
+                                                .andThen(m_feeder.setRPM(() -> 3000)
+                                                                .until(() -> (!m_feeder.feederBeambreakObstructed()
+                                                                                && !m_feeder.shooterBeambreakObstructed()))));
+
+                // X for shooter at amp
+                
+
+                
+
+                // B for shooter at podium or feeding
+                m_operator.b().whileTrue(
+                                Commands.parallel(
+                                                m_pivot.setPivotTarget(() -> Units.degreesToRadians(20)),
+                                                m_shooter.setRPM(() -> 5500, 1)).until(() -> m_shooter.atSetpoint())); // DEMO: 2000, COMP: 5500
+
+                // A for shooter at source
+                m_operator.a().whileTrue(
+                                Commands.parallel(
+                                                m_pivot.setPivotTarget(() -> Units.degreesToRadians(45)),
+                                                m_shooter.setRPM(() -> -1500, 1.0),
+                                                m_feeder.setRPM(() -> -1500),
+                                                m_intake.setRollerRPM(() -> -1000))
+                                                .until(() -> (m_feeder.feederBeambreakObstructed()
+                                                                && !m_feeder.shooterBeambreakObstructed()))
+                                                .andThen(Commands.parallel(
+                                                                m_shooter.stopShooter(),
+                                                                m_pivot.setPivotTarget(
+                                                                                () -> Units.degreesToRadians(0))),
+                                                                m_feeder.setVoltage(() -> 0))
+                                                .andThen(
+                                                                Commands.parallel(
+                                                                                m_feeder.setRPM(() -> 1000),
+                                                                                m_intake.setRollerRPM(() -> 1000))
+                                                                                .until(() -> !m_feeder
+                                                                                                .shooterBeambreakObstructed())
+                                                                                .unless(() -> !m_feeder
+                                                                                                .shooterBeambreakObstructed())));
+
+                // Left bumper for reset shooter
+                m_operator.leftBumper().whileTrue(
+                        Commands.parallel(
+                                m_pivot.setPivotTarget(() -> Units.degreesToRadians(0)),
+                                m_feeder.setVoltage(() -> 0),
+                                m_shooter.stopShooter()
+                        )
+                );
+
+                // Left trigger for shoot
+                m_operator.leftTrigger(0.1).onTrue(
+                                m_shooter.setRPM(() -> 5500, 0.3)) // DEMO: 3000, COMP: 5500
+                                .onFalse(m_shooter.stopShooter()
+                                                .andThen(m_pivot.setPivotTarget(() -> Units.degreesToRadians(0))));
 
         }
-        m_visualizer = new Visualizer(m_climber, m_intake, m_pivot);
-        // Configure the button bindings
-        configureButtonBindings();
-    }
 
-    /**
-     * Use this method to define your button->command mappings. Buttons can be
-     * created by
-     * instantiating a {@link GenericHID} or one of its subclasses ({@link
-     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-     * it to a {@link
-     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-     */
-    private void configureButtonBindings() {
+        public void robotPeriodic() {
+                m_visualizer.periodic();
+        }
 
-        // Driver Controller
-        m_drive.setDefaultCommand(
-                m_drive.runVoltageTeleopFieldRelative(
-                        () -> new ChassisSpeeds(
-                                -teleopAxisAdjustment(m_driver.getLeftY()) *
-                                        DriveConstants.maxLinearVelocity,
-                                -teleopAxisAdjustment(m_driver.getLeftX()) *
-                                        DriveConstants.maxLinearVelocity,
-                                -teleopAxisAdjustment(m_driver.getRightX())
-                                        * DriveConstants.maxLinearVelocity)));
+        private static double teleopAxisAdjustment(double x) {
+                return MathUtil.applyDeadband(Math.abs(Math.pow(x, 2)) * Math.signum(x), 0.02);
+        }
 
-
-        m_intake.setDefaultCommand(
-            m_intake.setIntakeUp()
-        );
-        
-        // left trigger -> climb up
-        m_driver.leftTrigger(0.1).onTrue(
-                m_climber.setDutyCycle(-1)).onFalse(
-                        m_climber.setDutyCycle(0));
-
-        // right trigger -> climb up
-        m_driver.rightTrigger(0.1).onTrue(
-                m_climber.setDutyCycle(1)).onFalse(
-                        m_climber.setDutyCycle(0));
-
-        // Operator Controller
-
-        // D-Pad Up for intake down, rollers forward, until note in feeder beambreak
-        m_operator.povUp().whileTrue(
-                Commands.parallel(
-                        m_intake.setIntakeDown(false),
-                        m_feeder.setRPM(() -> 2500)).until(() -> m_feeder.feederBeambreakObstructed()))
-                .onFalse(m_intake.setIntakeUp());
-
-        // D-Pad Down for intake down, rollers backward
-        m_operator.povDown().whileTrue(
-                Commands.parallel(
-                        m_intake.setIntakeDown(true),
-                        m_feeder.setRPM(() -> -3000)))
-                .onFalse(m_intake.setIntakeUp());
-
-        // Right trigger for run intake forward
-        m_operator.rightTrigger(0.1).whileTrue(
-                Commands.parallel(
-                        m_intake.setRollerRPM(() -> 3000),
-                        m_feeder.setRPM(() -> 3000)).until(() -> m_feeder.feederBeambreakObstructed()))
-                .onFalse(
-                        Commands.parallel(
-                                m_intake.setRollerVoltage(() -> 0),
-                                m_feeder.setVoltage(() -> 0)));
-
-        // Right bumper for run intake backward
-        m_operator.rightBumper().whileTrue(
-                Commands.parallel(
-                        m_intake.setRollerRPM(() -> -3000),
-                        m_feeder.setRPM(() -> -3000)))
-                .onFalse(
-                        Commands.parallel(
-                                m_intake.setRollerVoltage(() -> 0),
-                                m_feeder.setVoltage(() -> 0)));
-
-        // Y for shooter at subwoofer
-        m_operator.y().whileTrue(
-                Commands.parallel(
-                        m_pivot.setPivotTarget(() -> Units.degreesToRadians(45)),
-                        m_shooter.setRPM(() -> 5800, 0.3)).until(() -> m_shooter.atSetpoint())
-                        .andThen(m_feeder.setRPM(() -> 3000)
-                                .until(() -> (!m_feeder.feederBeambreakObstructed()
-                                        && !m_feeder.shooterBeambreakObstructed()))));
-
-        // X for shooter at amp
-
-        // B for shooter at podium or feeding
-        m_operator.b().whileTrue(
-                Commands.parallel(
-                        m_pivot.setPivotTarget(() -> Units.degreesToRadians(20)),
-                        m_shooter.setRPM(() -> 5800, 1.0)).until(() -> m_shooter.atSetpoint())
-                        .andThen(m_feeder.setRPM(() -> 2000)
-                                .until(() -> (!m_feeder.feederBeambreakObstructed()
-                                        && !m_feeder.shooterBeambreakObstructed())))
-                        .andThen(new WaitCommand(0.5)).andThen(Commands.parallel(m_shooter.stopShooter(),
-                                m_pivot.setPivotTarget(() -> Units.degreesToRadians(0.0)))));
-
-        // A for shooter at source
-        m_operator.a().whileTrue(
-                Commands.parallel(
-                        m_pivot.setPivotTarget(() -> Units.degreesToRadians(45)),
-                        m_shooter.setRPM(() -> -1500, 1.0),
-                        m_feeder.setRPM(() -> -1500),
-                        m_intake.setRollerRPM(() -> -1000))
-                        .until(() -> (m_feeder.feederBeambreakObstructed() && !m_feeder.shooterBeambreakObstructed()))
-                        .andThen(Commands.parallel(m_shooter.stopShooter(),
-                                m_pivot.setPivotTarget(() -> Units.degreesToRadians(0.0)))));
-
-        m_operator.leftTrigger(0.1).onTrue(
-                m_shooter.setRPM(() -> 5800, 0.3))
-                .onFalse(m_shooter.stopShooter().andThen(m_pivot.setPivotTarget(() -> Units.degreesToRadians(0))));
-
-    }
-
-    public void robotPeriodic() {
-        m_visualizer.periodic();
-    }
-
-    private static double teleopAxisAdjustment(double x) {
-        return MathUtil.applyDeadband(Math.abs(Math.pow(x, 2)) * Math.signum(x), 0.02);
-    }
-
-    public Command getAutonomousCommand() {
-        return null;
-    }
+        public Command getAutonomousCommand() {
+                return null;
+        }
 }
