@@ -238,7 +238,7 @@ public class RobotContainer {
                 m_operator.y().whileTrue(
                                 Commands.parallel(
                                                 m_pivot.setPivotTarget(() -> Units.degreesToRadians(45)),
-                                                m_shooter.setRPM(() -> 5000, 0.3)).until(() -> m_shooter.atSetpoint()) // DEMO: 2000
+                                                m_shooter.setRPM(() -> 5500, 0.3)).until(() -> m_shooter.atSetpoint()) // DEMO: 2000
                                                 .andThen(m_feeder.setRPM(() -> 3000)
                                                                 .until(() -> (!m_feeder.feederBeambreakObstructed()
                                                                                 && !m_feeder.shooterBeambreakObstructed()))));
@@ -252,7 +252,7 @@ public class RobotContainer {
                 m_operator.b().whileTrue(
                                 Commands.parallel(
                                                 m_pivot.setPivotTarget(() -> Units.degreesToRadians(20)),
-                                                m_shooter.setRPM(() -> 5000, 1)).until(() -> m_shooter.atSetpoint())); // DEMO: 2000, COMP: 5500
+                                                m_shooter.setRPM(() -> 5500, 1)).until(() -> m_shooter.atSetpoint())); // DEMO: 2000, COMP: 5500
 
                 // A for shooter at source
                 m_operator.a().whileTrue(
