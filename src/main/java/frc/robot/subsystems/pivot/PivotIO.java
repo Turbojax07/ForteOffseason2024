@@ -25,9 +25,4 @@ public interface PivotIO {
     public abstract void processInputs(final PivotIOInputsAutoLogged inputs);
 
     public abstract void setPivotVoltage(double volts);
-
-    public abstract void setPivotTarget(double angle, ArmFeedforward ff);
-
-    public abstract void setPivotPID(double kP, double kI, double kD);
-    
 } 

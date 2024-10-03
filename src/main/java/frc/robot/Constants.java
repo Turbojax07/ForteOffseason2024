@@ -272,6 +272,7 @@ public final class Constants {
     public static final double pivotEncConversion = 2.0 * Math.PI / pivotRatio;
     public static final double pivotOffset = 0.0;
     public static final double simOffset = 0.19;
+    public static final double pivotTolerance = 0.01;
 
     public static final double down = 0.01;
     public static final double up = down + Math.PI/4;
@@ -291,14 +292,11 @@ public final class Constants {
     public static final double kIShooterReal = 0.00000;
     public static final double kSShooterReal = 0;
 
-    public static final double kPPivotReal = 1;
-    public static final double kPPivotSim = 100.0;  
+    public static final double kPPivot = 1;
     
     public static final double kPShooterSim = 0.5;
     public static final double kIShooterSim = 0.0;
     public static final double kSShooterSim = 0.5;
-
-    public static final double kPPivotReplay = 0.0;
     
     public static final double kPShooterReplay = 0.0;
     public static final double kIShooterReplay = 0.0;

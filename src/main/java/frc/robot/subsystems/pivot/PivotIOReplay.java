@@ -14,11 +14,5 @@ public class PivotIOReplay implements PivotIO {
 
     @Override
     public void setPivotVoltage(double volts) {}
-
-    @Override
-    public void setPivotTarget(double angle, ArmFeedforward ff) {}
-
-    @Override
-    public void setPivotPID(double kP, double kI, double kD) {}
     
 } 

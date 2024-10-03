@@ -7,9 +7,12 @@ package frc.robot.subsystems.pivot;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
@@ -22,26 +25,17 @@ public class Pivot extends SubsystemBase {
 
     private ArmFeedforward pivotFF;
 
+    private PIDController pivotPID = new PIDController(0.0, 0.0, 0.0);
     private LoggedTunableNumber kPPivot = new LoggedTunableNumber("Shooter/kPPivot");
 
     public Pivot(PivotIO io) {
       this.io = io;
-
-      switch (Constants.currentMode) {
-        case REAL:
-          kPPivot.initDefault(ShooterConstants.kPPivotReal);
-          break;
-        case SIM:
-          kPPivot.initDefault(ShooterConstants.kPPivotSim);
-          break;
-        case REPLAY:
-          kPPivot.initDefault(ShooterConstants.kPPivotReplay);
-          break;
-        default:
-          kPPivot.initDefault(0.0);
-      }
-        io.setPivotPID(kPPivot.getAsDouble(), 0.0, 0.0);
-        pivotFF = new ArmFeedforward(0.0, ShooterConstants.kGPivot, ShooterConstants.kVPivot, ShooterConstants.kAPivot);
+    
+      kPPivot.initDefault(ShooterConstants.kPPivot);
+      pivotPID.setP(kPPivot.getAsDouble());
+      pivotPID.enableContinuousInput(0, Math.PI * 2);
+      pivotPID.setTolerance(ShooterConstants.pivotTolerance);
+      pivotFF = new ArmFeedforward(0.0, ShooterConstants.kGPivot, ShooterConstants.kVPivot, ShooterConstants.kAPivot);
     }
 
   public void periodic() {
@@ -52,7 +46,9 @@ public class Pivot extends SubsystemBase {
   public Command setPivotTarget(DoubleSupplier radians) {
     return this.run(
       () -> {
-        io.setPivotTarget(radians.getAsDouble(), pivotFF);
+        double volts = pivotPID.calculate(inputs.pivotPosition.getRadians(), radians.getAsDouble()) + pivotFF.calculate(radians.getAsDouble(), 0);
+
+        setPivotVoltage(() -> MathUtil.clamp(volts, -12, 12));
         inputs.pivotTargetPosition = Rotation2d.fromRadians(radians.getAsDouble() + ShooterConstants.simOffset);
       }
     );

@@ -23,28 +23,24 @@ import frc.robot.Constants.ShooterConstants;
 public class PivotIOSparkMax implements PivotIO {
     private final CANSparkMax pivot = new CANSparkMax(RobotMap.Shooter.pivot, MotorType.kBrushless);
     private final RelativeEncoder pivotEnc = pivot.getEncoder();
-    private final SparkAbsoluteEncoder pivotAbs = pivot.getAbsoluteEncoder(Type.kDutyCycle);
-    private final SparkPIDController pivotPID = pivot.getPIDController();
+	private final ThroughboreEncoder pivotAbs;
 
     public PivotIOSparkMax() {
         pivot.restoreFactoryDefaults();
+		pivotAbs = new ThroughboreEncoder(pivot.getAbsoluteEncoder(), pivot.getAbsoluteEncoder().getPosition());
 
         pivot.setSmartCurrentLimit(ShooterConstants.pivotCurrentLimit);
 
         pivot.setIdleMode(IdleMode.kCoast);
-        pivotPID.setFeedbackDevice(pivotAbs);
-		pivotPID.setOutputRange(-12, 12);
-		pivotPID.setPositionPIDWrappingEnabled(false);
-        pivotAbs.setInverted(true);
+        pivotAbs.abs.setInverted(true);
 		pivot.setInverted(true);
-        pivotAbs.setPositionConversionFactor(ShooterConstants.pivotAbsConversion);
-        pivotAbs.setVelocityConversionFactor(ShooterConstants.pivotAbsConversion / 60.0);
+        pivotAbs.abs.setPositionConversionFactor(ShooterConstants.pivotAbsConversion);
+        pivotAbs.abs.setVelocityConversionFactor(ShooterConstants.pivotAbsConversion / 60.0);
 
 		pivotEnc.setPositionConversionFactor(ShooterConstants.pivotEncConversion);
         pivotEnc.setVelocityConversionFactor(ShooterConstants.pivotEncConversion / 60.0);
 
-		// pivotAbs.setZeroOffset(0.0);
-		pivotEnc.setPosition(pivotAbs.getPosition());
+		pivotEnc.setPosition(pivotAbs.abs.getPosition());
 
         pivot.burnFlash();
     }
@@ -62,18 +58,5 @@ public class PivotIOSparkMax implements PivotIO {
 	public void setPivotVoltage(double volts) {
 		pivot.setVoltage(MathUtil.clamp(volts, -12, 12));
 	}
-
-	@Override
-	public void setPivotTarget(double angle, ArmFeedforward ff) {
-		pivotPID.setReference(angle, ControlType.kPosition, 0, ff.calculate(angle, 0));
-	}
-
-	@Override
-	public void setPivotPID(double kP, double kI, double kD) {
-		pivotPID.setP(kP);
-		pivotPID.setI(kI);
-		pivotPID.setD(kD);
-		pivot.burnFlash();
-		}
 
 }
