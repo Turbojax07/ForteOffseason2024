@@ -163,16 +163,6 @@ public class Module {
     return optimizedState;
   }
 
-  /** Runs the module with the specified voltage while controlling to zero degrees. */
-  public void runCharacterization(double volts) {
-    // Closed loop turn control
-    angleSetpoint = new Rotation2d();
-
-    // Open loop drive control
-    io.runDriveVoltage(volts);
-    velocitySetpoint = null;
-  }
-
   /** Disables all outputs to motors. */
   public void stop() {
     io.runTurnVoltage(0.0);
@@ -222,11 +212,6 @@ public class Module {
   /** Returns the timestamps of the samples received this cycle. */
   public double[] getOdometryTimestamps() {
     return inputs.odometryTimestamps;
-  }
-
-  /** Returns the drive velocity in radians/sec. */
-  public double getCharacterizationVelocity() {
-    return inputs.driveVelocityRadPerSec;
   }
 
   public void resetOffset() {
