@@ -49,7 +49,7 @@ public class Pivot extends SubsystemBase {
   public Command setPivotTarget(DoubleSupplier radians) {
     return this.run(
       () -> {
-        double volts = pivotPID.calculate(inputs.pivotPosition.getRadians(), radians.getAsDouble()) + pivotFF.calculate(radians.getAsDouble(), 0);
+        double volts = pivotPID.calculate(inputs.pivotPosition.getRadians(), radians.getAsDouble()) + pivotFF.calculate(pivotPID.getSetpoint().position, pivotPID.getSetpoint().velocity);
 
         io.setPivotVoltage(MathUtil.clamp(volts, -12, 12));
 
