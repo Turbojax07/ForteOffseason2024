@@ -48,6 +48,7 @@ public class PivotIOSparkMax implements PivotIO {
 	@Override
 	public void processInputs(PivotIOInputsAutoLogged inputs) {
 		inputs.pivotPosition = Rotation2d.fromRadians(pivotAbs.getPosition());
+		inputs.pivotAbsolutePosition = Rotation2d.fromRadians(pivotAbs.abs.getPosition());
 		inputs.pivotVelocityRadPerSec = pivotEnc.getVelocity();
 		inputs.pivotAppliedVolts = pivot.getAppliedOutput() * pivot.getBusVoltage();
 		inputs.pivotCurrentAmps = pivot.getOutputCurrent();
@@ -57,6 +58,11 @@ public class PivotIOSparkMax implements PivotIO {
 	@Override
 	public void setPivotVoltage(double volts) {
 		pivot.setVoltage(MathUtil.clamp(volts, -12, 12));
+	}
+
+	@Override
+	public void resetEncoder() {
+		pivotAbs.setOffset(pivotAbs.abs.getPosition());
 	}
 
 }

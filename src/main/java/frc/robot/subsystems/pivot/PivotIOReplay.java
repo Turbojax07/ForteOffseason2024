@@ -15,4 +15,6 @@ public class PivotIOReplay implements PivotIO {
     @Override
     public void setPivotVoltage(double volts) {}
     
+    @Override
+    public void resetEncoder() {}
 } 

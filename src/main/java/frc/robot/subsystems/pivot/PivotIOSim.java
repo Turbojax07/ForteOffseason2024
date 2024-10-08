@@ -28,4 +28,8 @@ public class PivotIOSim implements PivotIO {
 	public void setPivotVoltage(double volts) {
 		pivotSim.setInputVoltage(MathUtil.clamp(volts, -12, 12));
 	}
+
+	@Override
+	public void resetEncoder() {
+	}
 }

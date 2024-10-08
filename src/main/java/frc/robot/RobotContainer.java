@@ -230,6 +230,13 @@ public class RobotContainer {
                                         && !m_feeder.shooterBeambreakObstructed()))));
 
         // X for shooter at amp
+        m_operator.leftBumper().whileTrue(
+                Commands.parallel(
+                                m_pivot.setPivotVoltage(() -> 0),
+                                m_feeder.setVoltage(() -> 0),
+                                m_shooter.stopShooter()
+                        )
+        );
 
         // B for shooter at podium or feeding
         m_operator.b().whileTrue(

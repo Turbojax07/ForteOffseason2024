@@ -26,15 +26,15 @@ public class Pivot extends SubsystemBase {
     private ArmFeedforward pivotFF;
 
     private PIDController pivotPID = new PIDController(0.0, 0.0, 0.0);
-    private LoggedTunableNumber kPPivot = new LoggedTunableNumber("Shooter/kPPivot");
+    private LoggedTunableNumber kPPivot = new LoggedTunableNumber("Shooter/kPPivot", ShooterConstants.kPPivot);
 
     public Pivot(PivotIO io) {
       this.io = io;
     
       kPPivot.initDefault(ShooterConstants.kPPivot);
-      pivotPID.setP(kPPivot.getAsDouble());
       pivotPID.enableContinuousInput(0, Math.PI * 2);
       pivotPID.setTolerance(ShooterConstants.pivotTolerance);
+      pivotPID.setP(kPPivot.getAsDouble());
       pivotFF = new ArmFeedforward(0.0, ShooterConstants.kGPivot, ShooterConstants.kVPivot, ShooterConstants.kAPivot);
     }
 
@@ -48,7 +48,9 @@ public class Pivot extends SubsystemBase {
       () -> {
         double volts = pivotPID.calculate(inputs.pivotPosition.getRadians(), radians.getAsDouble()) + pivotFF.calculate(radians.getAsDouble(), 0);
 
-        setPivotVoltage(() -> MathUtil.clamp(volts, -12, 12));
+        io.setPivotVoltage(MathUtil.clamp(volts, -12, 12));
+
+        inputs.pivotAppliedVolts = volts;
         inputs.pivotTargetPosition = Rotation2d.fromRadians(radians.getAsDouble() + ShooterConstants.simOffset);
       }
     );
@@ -68,5 +70,19 @@ public class Pivot extends SubsystemBase {
 
   public double getTargetRadians() {
     return inputs.pivotTargetPosition.getRadians();
+  }
+
+  public Command resetEncoder() {
+    return this.run(
+      () -> {
+        io.resetEncoder();
+      }
+    );
+  }
+
+  public Command runCurrentZeroing() {
+    return this.run(() -> io.setPivotVoltage(-1.0))
+        .until(() -> inputs.pivotCurrentAmps > 20.0)
+        .finallyDo(() -> io.resetEncoder());
   }
 }

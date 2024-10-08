@@ -14,6 +14,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -30,7 +31,7 @@ public final class Constants {
   public static final double ROBOT_MASS = 49.8951607;
 
 
-  public static final Mode currentMode = Mode.REAL;
+  public static final Mode currentMode = Mode.SIM;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -262,8 +263,11 @@ public final class Constants {
 
   public static class ShooterConstants {
     public static final double pivotRatio = 496 / 3;
-    public static final double pivotMOI = 0.0022842632;
     public static final double pivotLength = Units.inchesToMeters(7.01793315);
+    public static final double pivotMass = Units.lbsToKilograms(20.655);
+    // public static final double pivotMOI = SingleJointedArmSim.estimateMOI(pivotLength, pivotMass);
+    public static final double pivotMOI = .0001;
+
 
     public static final double maxPivotVelocity = 10.5819313;
 	  public static final double maxPivotAccel = 5;
@@ -292,7 +296,7 @@ public final class Constants {
     public static final double kIShooterReal = 0.00000;
     public static final double kSShooterReal = 0;
 
-    public static final double kPPivot = 1;
+    public static final double kPPivot = .7;
     
     public static final double kPShooterSim = 0.5;
     public static final double kIShooterSim = 0.0;

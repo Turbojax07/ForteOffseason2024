@@ -15,6 +15,7 @@ public interface PivotIO {
     public static class PivotIOInputs {
         public Rotation2d pivotPosition = new Rotation2d();
         public double pivotRelativeEncoder = 0.0;
+        public Rotation2d pivotAbsolutePosition = new Rotation2d();
         public Rotation2d pivotTargetPosition = new Rotation2d();
         public double pivotVelocityRadPerSec = 0.0;
         public double pivotAppliedVolts = 0.0;
@@ -25,4 +26,6 @@ public interface PivotIO {
     public abstract void processInputs(final PivotIOInputsAutoLogged inputs);
 
     public abstract void setPivotVoltage(double volts);
+
+    public abstract void resetEncoder();
 } 
