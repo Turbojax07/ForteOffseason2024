@@ -10,7 +10,9 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,7 +27,8 @@ public class Pivot extends SubsystemBase {
 
     private ArmFeedforward pivotFF;
 
-    private PIDController pivotPID = new PIDController(0.0, 0.0, 0.0);
+    // private PIDController pivotPID = new PIDController(0.0, 0.0, 0.0);
+    private ProfiledPIDController pivotPID = new ProfiledPIDController(0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(ShooterConstants.maxPivotVelocity, ShooterConstants.maxPivotAccel));
     private LoggedTunableNumber kPPivot = new LoggedTunableNumber("Shooter/kPPivot", ShooterConstants.kPPivot);
 
     public Pivot(PivotIO io) {
