@@ -265,8 +265,8 @@ public final class Constants {
     public static final double pivotRatio = 496 / 3;
     public static final double pivotLength = Units.inchesToMeters(7.01793315);
     public static final double pivotMass = Units.lbsToKilograms(20.655);
-    // public static final double pivotMOI = SingleJointedArmSim.estimateMOI(pivotLength, pivotMass);
-    public static final double pivotMOI = .0001;
+    public static final double pivotMOI = SingleJointedArmSim.estimateMOI(pivotLength, pivotMass);
+    // public static final double pivotMOI = .0001;
 
 
     public static final double maxPivotVelocity = 10.5819313;
@@ -285,9 +285,9 @@ public final class Constants {
 
     public static final int pivotCurrentLimit = 20;
 
-    public static final double kGPivot = 0.00;
-    public static final double kVPivot = 0;
-    public static final double kAPivot = 0.00;
+    public static final double kGPivot = 0.45;
+    public static final double kVPivot = 3.22;
+    public static final double kAPivot = 0.01;
     
     public static final double kVShooter = 0.0055;
     public static final double kAShooter = 0.00;
