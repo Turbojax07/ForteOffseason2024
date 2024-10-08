@@ -53,6 +53,7 @@ public class PivotIOSparkMax implements PivotIO {
 		inputs.pivotAppliedVolts = pivot.getAppliedOutput() * pivot.getBusVoltage();
 		inputs.pivotCurrentAmps = pivot.getOutputCurrent();
 		inputs.pivotTempCelsius = pivot.getMotorTemperature();
+		inputs.pivotOffset = pivotAbs.getOffset();
 	}
 
 	@Override

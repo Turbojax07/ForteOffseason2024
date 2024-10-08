@@ -18,4 +18,8 @@ public class ThroughboreEncoder {
     public void setOffset(double absOffset) {
         offset = absOffset;
     }
+
+    public double getOffset() {
+        return offset;
+    }
 }

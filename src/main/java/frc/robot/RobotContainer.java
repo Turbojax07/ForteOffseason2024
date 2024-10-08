@@ -200,26 +200,6 @@ public class RobotContainer {
                         m_feeder.setRPM(() -> -3000)))
                 .onFalse(m_intake.setIntakeUp());
 
-        // Right trigger for run intake forward
-        m_operator.rightTrigger(0.1).whileTrue(
-                Commands.parallel(
-                        m_intake.setRollerRPM(() -> 3000),
-                        m_feeder.setRPM(() -> 3000)).until(() -> m_feeder.feederBeambreakObstructed()))
-                .onFalse(
-                        Commands.parallel(
-                                m_intake.setRollerVoltage(() -> 0),
-                                m_feeder.setVoltage(() -> 0)));
-
-        // Right bumper for run intake backward
-        m_operator.rightBumper().whileTrue(
-                Commands.parallel(
-                        m_intake.setRollerRPM(() -> -3000),
-                        m_feeder.setRPM(() -> -3000)))
-                .onFalse(
-                        Commands.parallel(
-                                m_intake.setRollerVoltage(() -> 0),
-                                m_feeder.setVoltage(() -> 0)));
-
         // Y for shooter at subwoofer
         m_operator.y().whileTrue(
                 Commands.parallel(
@@ -232,11 +212,17 @@ public class RobotContainer {
         // X for shooter at amp
         m_operator.leftBumper().whileTrue(
                 Commands.parallel(
-                                m_pivot.setPivotVoltage(() -> 0),
                                 m_feeder.setVoltage(() -> 0),
-                                m_shooter.stopShooter()
+                                m_shooter.stopShooter(),
+                                m_pivot.setPivotVoltage(() -> 0)
                         )
         );
+
+        m_operator.rightBumper().whileTrue(
+                m_pivot.runCurrentZeroing()
+        );
+
+
 
         // B for shooter at podium or feeding
         m_operator.b().whileTrue(
@@ -252,7 +238,7 @@ public class RobotContainer {
         // A for shooter at source
         m_operator.a().whileTrue(
                 Commands.parallel(
-                        m_pivot.setPivotTarget(() -> Units.degreesToRadians(45)),
+                        m_pivot.setPivotTarget(() -> Units.degreesToRadians(34)),
                         m_shooter.setRPM(() -> -1500, 1.0),
                         m_feeder.setRPM(() -> -1500),
                         m_intake.setRollerRPM(() -> -1000))

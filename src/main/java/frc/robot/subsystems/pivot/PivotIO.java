@@ -21,6 +21,7 @@ public interface PivotIO {
         public double pivotAppliedVolts = 0.0;
         public double pivotCurrentAmps = 0.0;
         public double pivotTempCelsius = 0.0;
+        public double pivotOffset = 0.0;
     }
 
     public abstract void processInputs(final PivotIOInputsAutoLogged inputs);

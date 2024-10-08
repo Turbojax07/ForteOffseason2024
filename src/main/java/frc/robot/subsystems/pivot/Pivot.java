@@ -85,7 +85,8 @@ public class Pivot extends SubsystemBase {
 
   public Command runCurrentZeroing() {
     return this.run(() -> io.setPivotVoltage(-1.0))
-        .until(() -> inputs.pivotCurrentAmps > 20.0)
-        .finallyDo(() -> io.resetEncoder());
+        .until(() -> inputs.pivotCurrentAmps > 30.0)
+        .andThen(() -> io.setPivotVoltage(0))
+        .andThen(() -> io.resetEncoder());
   }
 }
