@@ -27,11 +27,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 public final class Constants {
   public static final double loopPeriodSecs = 0.02;
 
-  public static final double LOOP_TIME = 0.13;
-  public static final double ROBOT_MASS = 49.8951607;
-
-
-  public static final Mode currentMode = Mode.REAL;
+  public static final Mode currentMode = Mode.SIM;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -263,13 +259,12 @@ public final class Constants {
 
   public static class ShooterConstants {
     public static final double pivotRatio = 496 / 3;
-    public static final double pivotLength = Units.inchesToMeters(7.01793315);
-    public static final double pivotMass = Units.lbsToKilograms(20.655);
-    // public static final double pivotMOI = SingleJointedArmSim.estimateMOI(pivotLength, pivotMass);
-    public static final double pivotMOI = .0001;
+    public static final double pivotLength = Units.inchesToMeters(7.5);
+    public static final double pivotMass = Units.lbsToKilograms(23);
+    public static final double pivotMOI = SingleJointedArmSim.estimateMOI(pivotLength, pivotMass);
+    // public static final double pivotMOI = .0001;
 
-
-    public static final double maxPivotVelocity = 10.5819313;
+    public static final double maxPivotVelocity = 20;
 	  public static final double maxPivotAccel = 5;
 
     public static final double pivotAbsConversion = Math.PI * 2.0;
@@ -285,9 +280,9 @@ public final class Constants {
 
     public static final int pivotCurrentLimit = 25;
 
-    public static final double kGPivot = 0.0;
-    public static final double kVPivot = 0.0;
-    public static final double kAPivot = 0.0;
+    public static final double kGPivot = 0.381640625;
+    public static final double kVPivot = 0.875;
+    public static final double kAPivot = 0.00;
     
     public static final double kVShooter = 0.0055;
     public static final double kAShooter = 0.00;
@@ -296,7 +291,7 @@ public final class Constants {
     public static final double kIShooterReal = 0.00000;
     public static final double kSShooterReal = 0;
 
-    public static final double kPPivot = .75;
+    public static final double kPPivot = 5.0;
     
     public static final double kPShooterSim = 0.5;
     public static final double kIShooterSim = 0.0;

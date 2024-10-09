@@ -1,4 +1,4 @@
-package frc.robot.subsystems.pivot;
+package frc.robot.subsystems.pivot2;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -13,7 +13,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class PivotIOSim implements PivotIO {
-    private SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getNEO(1), ShooterConstants.pivotRatio, ShooterConstants.pivotMOI, Units.inchesToMeters(ShooterConstants.pivotLength), ShooterConstants.down, ShooterConstants.up, true, ShooterConstants.down);    
+    private SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getNEO(1), ShooterConstants.pivotRatio, ShooterConstants.pivotMOI, ShooterConstants.pivotLength, ShooterConstants.down, ShooterConstants.up, true, ShooterConstants.down);    
 
 	@Override
 	public void processInputs(PivotIOInputsAutoLogged inputs) {

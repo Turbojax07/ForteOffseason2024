@@ -1,4 +1,4 @@
-package frc.robot.subsystems.pivot;
+package frc.robot.subsystems.pivot2;
 
 import com.revrobotics.SparkAbsoluteEncoder;
 
@@ -12,10 +12,10 @@ public class ThroughboreEncoder {
     }
 
     public double getPosition() {
-        return (abs.getPosition() - offset) % (2 * Math.PI) + ((abs.getPosition() + offset) < 0 ? 2 * Math.PI : 0);
+        return (abs.getPosition() + offset) % (2 * Math.PI);
     }
 
-    public void setOffset(double absOffset) {
+    public void setOffset(double absOffset) {    
         offset = absOffset;
     }
 

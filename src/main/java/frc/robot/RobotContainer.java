@@ -45,10 +45,10 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOReplay;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOSparkMax;
-import frc.robot.subsystems.pivot.Pivot;
-import frc.robot.subsystems.pivot.PivotIOReplay;
-import frc.robot.subsystems.pivot.PivotIOSim;
-import frc.robot.subsystems.pivot.PivotIOSparkMax;
+import frc.robot.subsystems.pivot2.Pivot;
+import frc.robot.subsystems.pivot2.PivotIOReplay;
+import frc.robot.subsystems.pivot2.PivotIOSim;
+import frc.robot.subsystems.pivot2.PivotIOSparkMax;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIOReplay;
 import frc.robot.subsystems.shooter.ShooterIOSim;
@@ -218,9 +218,9 @@ public class RobotContainer {
                         )
         );
 
-        m_operator.rightBumper().whileTrue(
-                m_pivot.runCurrentZeroing()
-        );
+        // m_operator.rightBumper().whileTrue(
+        //         m_pivot.runCurrentZeroing()
+        // );
 
 
 

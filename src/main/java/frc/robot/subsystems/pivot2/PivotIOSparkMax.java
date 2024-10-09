@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.pivot;
+package frc.robot.subsystems.pivot2;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -30,8 +30,8 @@ public class PivotIOSparkMax implements PivotIO {
 		pivotAbs = new ThroughboreEncoder(pivot.getAbsoluteEncoder(), pivot.getAbsoluteEncoder().getPosition());
 
         pivot.setSmartCurrentLimit(ShooterConstants.pivotCurrentLimit);
-
         pivot.setIdleMode(IdleMode.kCoast);
+		
         pivotAbs.abs.setInverted(true);
 		pivot.setInverted(true);
         pivotAbs.abs.setPositionConversionFactor(ShooterConstants.pivotAbsConversion);

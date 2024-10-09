@@ -16,7 +16,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.climber.Climb;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot2.Pivot;
 
 public class Visualizer extends SubsystemBase {
     private Mechanism2d m_main;
