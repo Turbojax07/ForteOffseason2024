@@ -59,7 +59,7 @@ public class PivotIOSparkMax implements PivotIO {
 		inputs.pivotCurrentAmps = pivot.getOutputCurrent();
 		inputs.pivotTempCelsius = pivot.getMotorTemperature();
 		inputs.pivotOffset = pivotAbs.getOffset();
-		inputs.pivotStalled = stallDebouncer.calculate(pivot.getOutputCurrent() > 20);
+		inputs.pivotStalled = stallDebouncer.calculate((pivot.getOutputCurrent() > 20) && (pivotEnc.getVelocity() > ));
 	}
 
 	@Override
