@@ -15,6 +15,8 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.ShooterConstants;
@@ -25,13 +27,15 @@ public class PivotIOSparkMax implements PivotIO {
     private final RelativeEncoder pivotEnc = pivot.getEncoder();
 	private final ThroughboreEncoder pivotAbs;
 
+	private Debouncer stallDebouncer = new Debouncer(0.2, DebounceType.kRising);
+
     public PivotIOSparkMax() {
         pivot.restoreFactoryDefaults();
 		pivotAbs = new ThroughboreEncoder(pivot.getAbsoluteEncoder(), pivot.getAbsoluteEncoder().getPosition());
 
         pivot.setSmartCurrentLimit(ShooterConstants.pivotCurrentLimit);
         pivot.setIdleMode(IdleMode.kCoast);
-		
+
         pivotAbs.abs.setInverted(true);
 		pivot.setInverted(true);
         pivotAbs.abs.setPositionConversionFactor(ShooterConstants.pivotAbsConversion);
@@ -49,11 +53,13 @@ public class PivotIOSparkMax implements PivotIO {
 	public void processInputs(PivotIOInputsAutoLogged inputs) {
 		inputs.pivotPosition = Rotation2d.fromRadians(pivotAbs.getPosition());
 		inputs.pivotAbsolutePosition = Rotation2d.fromRadians(pivotAbs.abs.getPosition());
+		inputs.pivotRelativeEncoder = Rotation2d.fromRadians(pivotEnc.getPosition());
 		inputs.pivotVelocityRadPerSec = pivotEnc.getVelocity();
 		inputs.pivotAppliedVolts = pivot.getAppliedOutput() * pivot.getBusVoltage();
 		inputs.pivotCurrentAmps = pivot.getOutputCurrent();
 		inputs.pivotTempCelsius = pivot.getMotorTemperature();
 		inputs.pivotOffset = pivotAbs.getOffset();
+		inputs.pivotStalled = stallDebouncer.calculate(pivot.getOutputCurrent() > 20);
 	}
 
 	@Override

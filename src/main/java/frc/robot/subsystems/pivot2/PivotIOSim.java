@@ -3,6 +3,8 @@ package frc.robot.subsystems.pivot2;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -13,7 +15,8 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class PivotIOSim implements PivotIO {
-    private SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getNEO(1), ShooterConstants.pivotRatio, ShooterConstants.pivotMOI, ShooterConstants.pivotLength, ShooterConstants.down, ShooterConstants.up, true, ShooterConstants.down);    
+    private SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getNEO(1), ShooterConstants.pivotRatio, ShooterConstants.pivotMOI, ShooterConstants.pivotLength, ShooterConstants.down, ShooterConstants.up, true, ShooterConstants.down); 
+	private Debouncer stallDebouncer = new Debouncer(0.2, DebounceType.kRising);
 
 	@Override
 	public void processInputs(PivotIOInputsAutoLogged inputs) {
@@ -22,6 +25,7 @@ public class PivotIOSim implements PivotIO {
 		inputs.pivotPosition = Rotation2d.fromRadians(pivotSim.getAngleRads());
         inputs.pivotVelocityRadPerSec = Units.rotationsToRadians(pivotSim.getVelocityRadPerSec());
         inputs.pivotCurrentAmps = pivotSim.getCurrentDrawAmps();
+		inputs.pivotStalled = stallDebouncer.calculate(pivotSim.getCurrentDrawAmps() > 20);
 	}
 
 	@Override

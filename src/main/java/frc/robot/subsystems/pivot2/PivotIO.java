@@ -14,7 +14,7 @@ public interface PivotIO {
     @AutoLog
     public static class PivotIOInputs {
         public Rotation2d pivotPosition = new Rotation2d();
-        public double pivotRelativeEncoder = 0.0;
+        public Rotation2d pivotRelativeEncoder = new Rotation2d();
         public Rotation2d pivotAbsolutePosition = new Rotation2d();
         public Rotation2d pivotTargetPosition = new Rotation2d();
         public double pivotVelocityRadPerSec = 0.0;
@@ -22,6 +22,7 @@ public interface PivotIO {
         public double pivotCurrentAmps = 0.0;
         public double pivotTempCelsius = 0.0;
         public double pivotOffset = 0.0;
+        public boolean pivotStalled = false;
     }
 
     public abstract void processInputs(final PivotIOInputsAutoLogged inputs);

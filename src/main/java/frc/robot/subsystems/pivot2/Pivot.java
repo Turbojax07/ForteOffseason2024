@@ -11,6 +11,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -48,9 +51,9 @@ public class Pivot extends SubsystemBase {
   public Command setPivotTarget(DoubleSupplier radians) {
     return this.run(() -> {
       double volts = pivotPID.calculate(inputs.pivotPosition.getRadians(), radians.getAsDouble())
-      + pivotFF.calculate(pivotPID.getSetpoint().position,
-      pivotPID.getSetpoint().velocity)
-      ;
+          + pivotFF.calculate(pivotPID.getSetpoint().position,
+              pivotPID.getSetpoint().velocity);
+
       io.setPivotVoltage(volts);
       inputs.pivotAppliedVolts = volts;
       inputs.pivotTargetPosition = Rotation2d.fromRadians(radians.getAsDouble());
@@ -62,6 +65,7 @@ public class Pivot extends SubsystemBase {
     return this.run(
         () -> {
           io.setPivotVoltage(volts.getAsDouble());
+          inputs.pivotAppliedVolts = volts.getAsDouble();
         });
   }
 
@@ -79,4 +83,24 @@ public class Pivot extends SubsystemBase {
           io.resetEncoder();
         });
   }
+
+  public double getRelativeRadians() {
+    return inputs.pivotRelativeEncoder.getRadians() + ShooterConstants.simOffset;
+  }
+
+  public boolean atSetpoint() {
+    return pivotPID.atSetpoint();
+  }
+
+  public boolean isStalled() {
+    return inputs.pivotStalled;
+  }
+
+  public Command runZero() {
+    return this.run(
+        () -> {
+          io.setPivotVoltage(-1);
+        }).until(() -> inputs.pivotStalled).finallyDo(() -> io.resetEncoder());
+  }
+
 }
