@@ -27,7 +27,7 @@ public class PivotIOSparkMax implements PivotIO {
     private final RelativeEncoder pivotEnc = pivot.getEncoder();
 	private final ThroughboreEncoder pivotAbs;
 
-	private Debouncer stallDebouncer = new Debouncer(0.2, DebounceType.kRising);
+	private Debouncer stallDebouncer = new Debouncer(ShooterConstants.stallTimeout, DebounceType.kRising);
 
     public PivotIOSparkMax() {
         pivot.restoreFactoryDefaults();

@@ -16,7 +16,7 @@ import frc.robot.Constants.ShooterConstants;
 
 public class PivotIOSim implements PivotIO {
     private SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getNEO(1), ShooterConstants.pivotRatio, ShooterConstants.pivotMOI, ShooterConstants.pivotLength, ShooterConstants.down, ShooterConstants.up, true, ShooterConstants.down); 
-	private Debouncer stallDebouncer = new Debouncer(0.2, DebounceType.kRising);
+	private Debouncer stallDebouncer = new Debouncer(ShooterConstants.stallTimeout, DebounceType.kRising);
 
 	@Override
 	public void processInputs(PivotIOInputsAutoLogged inputs) {

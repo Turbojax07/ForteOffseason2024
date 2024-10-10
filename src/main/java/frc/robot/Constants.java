@@ -272,6 +272,7 @@ public final class Constants {
     public static final double pivotOffset = 0.0;
     public static final double simOffset = 0.19;
     public static final double pivotTolerance = 0.01;
+    public static final double stallTimeout = 0.0;
 
     public static final double down = 0.01;
     public static final double up = down + Math.PI/4;
