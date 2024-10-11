@@ -135,11 +135,14 @@ gversion {
     indent       = "  "
 }
 
+// Spotless formatting
+project.compileJava.dependsOn(spotlessApply)
 spotless {
+    enforceCheck false
     java {
-        target fileTree('.') {
-            include '**/*.java'
-            exclude '**/build/**', '**/build-*/**'
+        target fileTree(".") {
+            include "**/*.java"
+            exclude "**/build/**", "**/build-*/**"
         }
         toggleOffOn()
         googleJavaFormat()
@@ -148,29 +151,19 @@ spotless {
         endWithNewline()
     }
     groovyGradle {
-        target fileTree('.') {
-            include '**/*.gradle'
-            exclude '**/build/**', '**/build-*/**'
+        target fileTree(".") {
+            include "**/*.gradle"
+            exclude "**/build/**", "**/build-*/**"
         }
         greclipse()
         indentWithSpaces(4)
         trimTrailingWhitespace()
         endWithNewline()
     }
-    format 'xml', {
-        target fileTree('.') {
-            include '**/*.xml'
-            exclude '**/build/**', '**/build-*/**'
-        }
-        eclipseWtp('xml')
-        trimTrailingWhitespace()
-        indentWithSpaces(2)
-        endWithNewline()
-    }
-    format 'misc', {
-        target fileTree('.') {
-            include '**/*.md', '**/.gitignore'
-            exclude '**/build/**', '**/build-*/**'
+    format "misc", {
+        target fileTree(".") {
+            include "**/*.md", "**/.gitignore"
+            exclude "**/build/**", "**/build-*/**"
         }
         trimTrailingWhitespace()
         indentWithSpaces(2)
