@@ -247,7 +247,7 @@ public final class Constants {
 
     public static final int currentLimit = 50;
 
-    public static double kPReal = 0.001;
+    public static double kPReal = 0.00025;
     public static double kVReal = 0.0;
 
     public static final double kPSim = 0.1;
@@ -285,7 +285,7 @@ public final class Constants {
     public static final double kVPivot = 0.875;
     public static final double kAPivot = 0.00;
     
-    public static final double kVShooter = 0.0055;
+    public static final double kVShooter = 0.0055; // COMP: 0.0055, DEMO: 0.0041875
     public static final double kAShooter = 0.00;
 
     public static final double kPShooterReal = 0.0000;
