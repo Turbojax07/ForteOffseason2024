@@ -4,17 +4,15 @@
 
 package frc.robot.subsystems.pivot2;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-
 /** Add your docs here. */
 public class PivotIOReplay implements PivotIO {
 
-    @Override
-    public void processInputs(PivotIOInputsAutoLogged inputs) {}
+  @Override
+  public void processInputs(PivotIOInputsAutoLogged inputs) {}
 
-    @Override
-    public void setPivotVoltage(double volts) {}
-    
-    @Override
-    public void resetEncoder() {}
-} 
+  @Override
+  public void setPivotVoltage(double volts) {}
+
+  @Override
+  public void resetEncoder() {}
+}

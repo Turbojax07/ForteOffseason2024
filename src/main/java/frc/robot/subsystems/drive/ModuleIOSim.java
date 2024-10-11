@@ -33,13 +33,14 @@ import frc.robot.Constants.SimConstants;
 public class ModuleIOSim implements ModuleIO {
   private final String name;
 
-  private DCMotorSim driveSim = new DCMotorSim(DCMotor.getKrakenX60(1), DriveConstants.driveRatio, DriveConstants.driveMOI);
-  private DCMotorSim turnSim = new DCMotorSim(DCMotor.getNEO(1), DriveConstants.turnRatio, DriveConstants.turnMOI);
-  
+  private DCMotorSim driveSim =
+      new DCMotorSim(DCMotor.getKrakenX60(1), DriveConstants.driveRatio, DriveConstants.driveMOI);
+  private DCMotorSim turnSim =
+      new DCMotorSim(DCMotor.getNEO(1), DriveConstants.turnRatio, DriveConstants.turnMOI);
+
   private final PIDController driveFeedback =
       new PIDController(0.0, 0.0, 0.0, SimConstants.loopTime);
-  private SimpleMotorFeedforward driveFeedforward =
-      new SimpleMotorFeedforward(0, 0, 0);
+  private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0, 0, 0);
 
   private final PIDController turnFeedback =
       new PIDController(0.0, 0.0, 0.0, SimConstants.loopTime);
@@ -92,8 +93,8 @@ public class ModuleIOSim implements ModuleIO {
   @Override
   public void runDriveVelocitySetpoint(double velocityRadsPerSec, double feedForward) {
     runDriveVoltage(
-        feedForward + driveFeedback.calculate(driveSim.getAngularVelocityRadPerSec(), velocityRadsPerSec)
-        );
+        feedForward
+            + driveFeedback.calculate(driveSim.getAngularVelocityRadPerSec(), velocityRadsPerSec));
   }
 
   @Override
@@ -133,5 +134,4 @@ public class ModuleIOSim implements ModuleIO {
   }
 
   public void resetOffset() {}
-  
 }

@@ -4,11 +4,6 @@
 
 package frc.robot.subsystems.intake;
 
-import java.util.function.DoubleSupplier;
-import java.util.function.IntSupplier;
-
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,6 +12,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.util.LoggedTunableNumber;
+import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
+import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   public IntakeIO io;
@@ -64,11 +62,14 @@ public class Intake extends SubsystemBase {
     }
 
     io.setPivotPID(kPPivot.getAsDouble(), 0.0, 0.0);
-    pivotFF = new ArmFeedforward(0.0, IntakeConstants.kGPivot, IntakeConstants.kVPivot, IntakeConstants.kAPivot);
-
+    pivotFF =
+        new ArmFeedforward(
+            0.0, IntakeConstants.kGPivot, IntakeConstants.kVPivot, IntakeConstants.kAPivot);
 
     io.setRollerPID(kPRoller.getAsDouble(), 0.0, 0.0);
-    rollerFF = new SimpleMotorFeedforward(kSRoller.getAsDouble(), IntakeConstants.kVRoller, IntakeConstants.kARoller);
+    rollerFF =
+        new SimpleMotorFeedforward(
+            kSRoller.getAsDouble(), IntakeConstants.kVRoller, IntakeConstants.kARoller);
 
     setIntakeUp();
   }
@@ -83,7 +84,8 @@ public class Intake extends SubsystemBase {
     return this.run(
         () -> {
           io.setPivotTarget(radians.getAsDouble(), pivotFF);
-          inputs.pivotTargetPosition = Rotation2d.fromRadians(radians.getAsDouble() + IntakeConstants.simOffset);
+          inputs.pivotTargetPosition =
+              Rotation2d.fromRadians(radians.getAsDouble() + IntakeConstants.simOffset);
         });
   }
 
@@ -107,7 +109,7 @@ public class Intake extends SubsystemBase {
         () -> {
           io.setPivotTarget(IntakeConstants.down, pivotFF);
           inputs.pivotTargetPosition = Rotation2d.fromRadians(IntakeConstants.down);
-          
+
           io.setRollerRPM(3000 * (reverse ? -1 : 1), rollerFF);
           inputs.rollerTargetRPM = 3000 * (reverse ? -1 : 1);
         });

@@ -15,10 +15,8 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
+import com.google.common.collect.Streams;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -26,24 +24,15 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.ControlConstants;
 import frc.robot.Constants.DriveConstants;
-
 import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-
-import com.google.common.collect.Streams;
 
 public class Drive extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
@@ -129,7 +118,6 @@ public class Drive extends SubsystemBase {
         Twist2d twist = kinematics.toTwist2d(moduleDeltas);
         rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
       }
-
     }
   }
 
@@ -214,17 +202,15 @@ public class Drive extends SubsystemBase {
   }
 
   public Command runVoltageTeleopFieldRelative(Supplier<ChassisSpeeds> speeds) {
-   return this.run(
+    return this.run(
         () -> {
           var allianceSpeeds =
-              ChassisSpeeds.fromFieldRelativeSpeeds(
-                  speeds.get(),
-                  gyroInputs.yawPosition
-                  );
+              ChassisSpeeds.fromFieldRelativeSpeeds(speeds.get(), gyroInputs.yawPosition);
           // Calculate module setpoints
           ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(allianceSpeeds, 0.02);
           SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
-          SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, DriveConstants.maxLinearVelocity);
+          SwerveDriveKinematics.desaturateWheelSpeeds(
+              setpointStates, DriveConstants.maxLinearVelocity);
 
           Logger.recordOutput("Drive/Target Speeds", discreteSpeeds);
           Logger.recordOutput("Drive/Speed Error", discreteSpeeds.minus(getVelocity()));
@@ -233,9 +219,12 @@ public class Drive extends SubsystemBase {
               ChassisSpeeds.fromRobotRelativeSpeeds(discreteSpeeds, getRotation()));
 
           // Send setpoints to modules
-          SwerveModuleState[] optimizedSetpointStates = Streams.zip(
-                Arrays.stream(modules), Arrays.stream(setpointStates), (m, s) -> m.runSetpoint(s))
-            .toArray(SwerveModuleState[]::new);
+          SwerveModuleState[] optimizedSetpointStates =
+              Streams.zip(
+                      Arrays.stream(modules),
+                      Arrays.stream(setpointStates),
+                      (m, s) -> m.runSetpoint(s))
+                  .toArray(SwerveModuleState[]::new);
 
           // Log setpoint states
           Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
@@ -262,13 +251,13 @@ public class Drive extends SubsystemBase {
 
   public Command resetOffsetsCmd() {
     return run(() -> resetOffsets());
-}
+  }
 
-public Rotation2d getRotation() {
-  return gyroIO.getYaw();
-}
+  public Rotation2d getRotation() {
+    return gyroIO.getYaw();
+  }
 
-public void resetGyro() {
-  gyroIO.reset();
-}
+  public void resetGyro() {
+    gyroIO.reset();
+  }
 }

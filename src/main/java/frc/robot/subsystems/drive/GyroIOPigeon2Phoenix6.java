@@ -22,7 +22,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotMap;
-
 import java.util.OptionalDouble;
 import java.util.Queue;
 
@@ -40,7 +39,7 @@ public class GyroIOPigeon2Phoenix6 implements GyroIO {
     yaw.setUpdateFrequency(DriveConstants.odometeryFrequency);
     yawVelocity.setUpdateFrequency(100.0);
     pigeon.optimizeBusUtilization();
-    
+
     yawTimestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
     yawPositionQueue =
         SparkMaxOdometryThread.getInstance()
@@ -54,7 +53,6 @@ public class GyroIOPigeon2Phoenix6 implements GyroIO {
                   }
                 });
   }
-  
 
   @Override
   public void processInputs(GyroIOInputsAutoLogged inputs) {
@@ -72,18 +70,15 @@ public class GyroIOPigeon2Phoenix6 implements GyroIO {
     yawPositionQueue.clear();
   }
 
-
   @Override
   public void setYaw(double yaw) {
     pigeon.setYaw(yaw, 0.1);
   }
 
-
   @Override
   public Rotation2d getYaw() {
     return Rotation2d.fromDegrees(yaw.getValueAsDouble());
   }
-
 
   @Override
   public void reset() {
@@ -93,7 +88,7 @@ public class GyroIOPigeon2Phoenix6 implements GyroIO {
   public Rotation2d normalizeAngle(Rotation2d yaw) {
     while (yaw.getRadians() < Math.PI * 2) {
       yaw.plus(Rotation2d.fromRadians(Math.PI));
-     }
+    }
     return Rotation2d.fromRadians(yaw.getRadians() % (Math.PI * 2));
   }
 }

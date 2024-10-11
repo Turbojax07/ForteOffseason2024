@@ -4,35 +4,34 @@
 
 package frc.robot.subsystems.pivot2;
 
-import java.util.function.DoubleSupplier;
-import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 import frc.util.LoggedTunableNumber;
+import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 
 /** Add your docs here. */
 public class Pivot extends SubsystemBase {
   public PivotIO io;
   public PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
 
-  private ArmFeedforward pivotFF = new ArmFeedforward(0.0, ShooterConstants.kGPivot, ShooterConstants.kVPivot,
-      ShooterConstants.kAPivot);
-  private ProfiledPIDController pivotPID = new ProfiledPIDController(0.0, 0.0, 0.0,
-      new TrapezoidProfile.Constraints(ShooterConstants.maxPivotVelocity, ShooterConstants.maxPivotAccel));
-  private LoggedTunableNumber kPPivot = new LoggedTunableNumber("Shooter/kPPivot", ShooterConstants.kPPivot);
+  private ArmFeedforward pivotFF =
+      new ArmFeedforward(
+          0.0, ShooterConstants.kGPivot, ShooterConstants.kVPivot, ShooterConstants.kAPivot);
+  private ProfiledPIDController pivotPID =
+      new ProfiledPIDController(
+          0.0,
+          0.0,
+          0.0,
+          new TrapezoidProfile.Constraints(
+              ShooterConstants.maxPivotVelocity, ShooterConstants.maxPivotAccel));
+  private LoggedTunableNumber kPPivot =
+      new LoggedTunableNumber("Shooter/kPPivot", ShooterConstants.kPPivot);
 
   public Pivot(PivotIO io) {
     this.io = io;
@@ -49,16 +48,17 @@ public class Pivot extends SubsystemBase {
   }
 
   public Command setPivotTarget(DoubleSupplier radians) {
-    return this.run(() -> {
-      double volts = pivotPID.calculate(inputs.pivotPosition.getRadians(), radians.getAsDouble())
-          + pivotFF.calculate(pivotPID.getSetpoint().position,
-              pivotPID.getSetpoint().velocity);
+    return this.run(
+        () -> {
+          double volts =
+              pivotPID.calculate(inputs.pivotPosition.getRadians(), radians.getAsDouble())
+                  + pivotFF.calculate(
+                      pivotPID.getSetpoint().position, pivotPID.getSetpoint().velocity);
 
-      io.setPivotVoltage(volts);
-      inputs.pivotAppliedVolts = volts;
-      inputs.pivotTargetPosition = Rotation2d.fromRadians(radians.getAsDouble());
-
-    });
+          io.setPivotVoltage(volts);
+          inputs.pivotAppliedVolts = volts;
+          inputs.pivotTargetPosition = Rotation2d.fromRadians(radians.getAsDouble());
+        });
   }
 
   public Command setPivotVoltage(DoubleSupplier volts) {
@@ -98,9 +98,10 @@ public class Pivot extends SubsystemBase {
 
   public Command runZero() {
     return this.run(
-        () -> {
-          io.setPivotVoltage(-1);
-        }).until(() -> inputs.pivotStalled).finallyDo(() -> io.resetEncoder());
+            () -> {
+              io.setPivotVoltage(-1);
+            })
+        .until(() -> inputs.pivotStalled)
+        .finallyDo(() -> io.resetEncoder());
   }
-
 }

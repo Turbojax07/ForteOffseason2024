@@ -17,9 +17,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.ParentDevice;
-
 import frc.robot.Constants.DriveConstants;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;

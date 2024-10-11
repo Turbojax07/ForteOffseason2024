@@ -1,7 +1,7 @@
 package frc.robot.subsystems.drive;
 
 public class ModuleIOReplay implements ModuleIO {
-    /** Updates the set of loggable inputs. */
+  /** Updates the set of loggable inputs. */
   public void processInputs(ModuleIOInputsAutoLogged inputs) {}
 
   /** Run the drive motor at the specified voltage. */
@@ -31,7 +31,9 @@ public class ModuleIOReplay implements ModuleIO {
   /** Disable output to all motors */
   public void stop() {}
 
-  public String getModuleName() { return null; } 
+  public String getModuleName() {
+    return null;
+  }
 
   public void resetOffset() {}
 }

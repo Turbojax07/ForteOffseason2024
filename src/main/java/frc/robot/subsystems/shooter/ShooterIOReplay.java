@@ -9,27 +9,24 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 /** Add your docs here. */
 public class ShooterIOReplay implements ShooterIO {
 
-    @Override
-    public void processInputs(ShooterIOInputsAutoLogged inputs) {}
+  @Override
+  public void processInputs(ShooterIOInputsAutoLogged inputs) {}
 
-    @Override
-    public void setLeftVoltage(double volts) {}
+  @Override
+  public void setLeftVoltage(double volts) {}
 
-    @Override
-    public void setRightVoltage(double volts) {}
+  @Override
+  public void setRightVoltage(double volts) {}
 
-    @Override
-    public void setRPM(int rpm, SimpleMotorFeedforward ff, double differential) {}
+  @Override
+  public void setRPM(int rpm, SimpleMotorFeedforward ff, double differential) {}
 
-    @Override
-    public void setLeftRPM(int rpm, SimpleMotorFeedforward ff) {}
+  @Override
+  public void setLeftRPM(int rpm, SimpleMotorFeedforward ff) {}
 
-    @Override
-    public void setRightRPM(int rpm, SimpleMotorFeedforward ff) {}
+  @Override
+  public void setRightRPM(int rpm, SimpleMotorFeedforward ff) {}
 
-    @Override
-    public void setShooterPID(double kP, double kI, double kD) {}
-
-    
-    
-} 
+  @Override
+  public void setShooterPID(double kP, double kI, double kD) {}
+}

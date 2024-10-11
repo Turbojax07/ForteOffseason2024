@@ -14,7 +14,6 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ModuleIO {
@@ -60,7 +59,8 @@ public interface ModuleIO {
   public abstract void runTurnPositionSetpoint(double angleRads);
 
   /** Configure drive PID */
-  public abstract void setDrivePIDFF(double kP, double kI, double kD, double kS, double kV, double kA);
+  public abstract void setDrivePIDFF(
+      double kP, double kI, double kD, double kS, double kV, double kA);
 
   /** Configure turn PID */
   public abstract void setTurnPID(double kP, double kI, double kD);

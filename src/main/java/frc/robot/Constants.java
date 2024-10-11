@@ -41,7 +41,6 @@ public final class Constants {
   }
 
   public static final boolean isTuning = false;
-  
 
   public static class RobotMap {
     public static class Drive {
@@ -56,8 +55,8 @@ public final class Constants {
 
       public static final boolean frontLeftDriveInvert = true;
       public static final boolean frontRightDriveInvert = false;
-      public static final boolean backLeftDriveInvert = false; //true?
-      public static final boolean backRightDriveInvert = true; //false?
+      public static final boolean backLeftDriveInvert = false; // true?
+      public static final boolean backRightDriveInvert = true; // false?
 
       public static final boolean frontLeftTurnInvert = false;
       public static final boolean frontRightTurnInvert = false;
@@ -73,8 +72,6 @@ public final class Constants {
       public static final double frontRightOffset = -0.5107599496841431;
       public static final double backLeftOffset = 1.8345500230789185;
       public static final double backRightOffset = 2.437732458114624;
-
-
 
       public static final int gyro = 10;
     }
@@ -97,7 +94,6 @@ public final class Constants {
     public static class Climb {
       public static final int climber = 31;
     }
-    
   }
 
   public static class ControlConstants {
@@ -127,7 +123,7 @@ public final class Constants {
     public static final double updateFrequency = 100;
 
     // public static final double maxLinearVelocity = Units.feetToMeters(20.4);
-     public static final double maxLinearVelocity = Units.feetToMeters(1.4);
+    public static final double maxLinearVelocity = Units.feetToMeters(1.4);
     public static final double maxLinearAccel = 8.0;
 
     public static final double maxAngularVelocity = 10;
@@ -156,7 +152,7 @@ public final class Constants {
     public static double kSDriveReplay = 0.0;
     public static double kVDriveReplay = 0.0;
     public static double kADriveReplay = 0.0;
-    
+
     public static double kPTurnReplay = 0.0;
     public static double kDTurnReplay = 0.0;
   }
@@ -193,28 +189,28 @@ public final class Constants {
     public static double kGSim = 0.0;
     public static double kVSim = 0.0;
     public static double kASim = 0.0;
-}
+  }
 
   public static class IntakeConstants {
     public static final double pivotRatio = 25.0 * 48.0 / 44.0 * 48.0 / 24.0;
     public static final double pivotMOI = 0.0022842632;
     public static final double pivotLength = Units.inchesToMeters(9.41628595);
-    
+
     public static final double pivotOffset = 1.1;
     public static final boolean pivotInvert = true;
 
     public static final double maxPivotVelocity = 10.6081112;
-	  public static final double maxPivotAccel = 5;
+    public static final double maxPivotAccel = 5;
 
-    public static final double pivotAbsConversion = Math.PI * 2.0/((48.0/44.0)*(48.0/24.0));
+    public static final double pivotAbsConversion = Math.PI * 2.0 / ((48.0 / 44.0) * (48.0 / 24.0));
     public static final double pivotEncConversion = 2.0 * Math.PI / pivotRatio;
 
     public static final double rollerMOI = 0.011328;
-    
+
     public static final double up = .25;
     public static final double down = 2.1;
     public static final double simOffset = 1.27838411;
-  
+
     public static final int pivotCurrentLimit = 30;
     public static final int rollerCurrentLimit = 70;
 
@@ -224,7 +220,7 @@ public final class Constants {
 
     public static final double kVRoller = 0.0029;
     public static final double kARoller = 0;
-    
+
     public static double kPPivotReal = .7;
 
     public static double kPRollerReal = 0.0000;
@@ -238,7 +234,7 @@ public final class Constants {
     public static double kPPivotReplay = 0.3;
 
     public static double kPRollerReplay = 10;
-    public static double kSRollerReplay = 0.0;    
+    public static double kSRollerReplay = 0.0;
   }
 
   public static class FeederConstants {
@@ -265,7 +261,7 @@ public final class Constants {
     // public static final double pivotMOI = .0001;
 
     public static final double maxPivotVelocity = 20;
-	  public static final double maxPivotAccel = 5;
+    public static final double maxPivotAccel = 5;
 
     public static final double pivotAbsConversion = Math.PI * 2.0;
     public static final double pivotEncConversion = 2.0 * Math.PI / pivotRatio;
@@ -275,8 +271,8 @@ public final class Constants {
     public static final double stallTimeout = 0.0;
 
     public static final double down = 0.01;
-    public static final double up = down + Math.PI/4;
-    
+    public static final double up = down + Math.PI / 4;
+
     public static final double shooterMOI = 0.00920287973;
 
     public static final int pivotCurrentLimit = 25;
@@ -284,7 +280,7 @@ public final class Constants {
     public static final double kGPivot = 0.381640625;
     public static final double kVPivot = 0.875;
     public static final double kAPivot = 0.00;
-    
+
     public static final double kVShooter = 0.0055; // COMP: 0.0055, DEMO: 0.0041875
     public static final double kAShooter = 0.00;
 
@@ -293,15 +289,16 @@ public final class Constants {
     public static final double kSShooterReal = 0;
 
     public static final double kPPivot = 5.0;
-    
+
     public static final double kPShooterSim = 0.5;
     public static final double kIShooterSim = 0.0;
     public static final double kSShooterSim = 0.5;
-    
+
     public static final double kPShooterReplay = 0.0;
     public static final double kIShooterReplay = 0.0;
     public static final double kSShooterReplay = 0.0;
   }
+
   public static class SimConstants {
     public static final double loopTime = 0.02;
   }

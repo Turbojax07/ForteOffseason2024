@@ -13,10 +13,6 @@
 
 package frc.robot.subsystems.drive;
 
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -28,18 +24,20 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotMap;
-
 import java.util.OptionalDouble;
 import java.util.Queue;
 
@@ -77,7 +75,8 @@ public class ModuleIOReal implements ModuleIO {
   private final StatusSignal<Double> driveCurrent;
   // private int multiplier;
 
-  private final VelocityVoltage driveCurrentVelocity = new VelocityVoltage(0.0).withEnableFOC(false);
+  private final VelocityVoltage driveCurrentVelocity =
+      new VelocityVoltage(0.0).withEnableFOC(false);
 
   private final Queue<Double> turnPositionQueue;
 
@@ -91,7 +90,8 @@ public class ModuleIOReal implements ModuleIO {
         turnSparkMax = new CANSparkMax(RobotMap.Drive.frontLeftTurn, MotorType.kBrushless);
         turnInverted = RobotMap.Drive.frontLeftTurnInvert;
         absoluteEncoder = new AnalogEncoder(RobotMap.Drive.frontLeftEncoder);
-        absoluteEncoderOffset = new Rotation2d(RobotMap.Drive.frontLeftOffset); // MUST BE CALIBRATED
+        absoluteEncoderOffset =
+            new Rotation2d(RobotMap.Drive.frontLeftOffset); // MUST BE CALIBRATED
         name = "FrontLeft";
         // multiplier = -1;
         break;
@@ -101,7 +101,8 @@ public class ModuleIOReal implements ModuleIO {
         turnSparkMax = new CANSparkMax(RobotMap.Drive.frontRightTurn, MotorType.kBrushless);
         turnInverted = RobotMap.Drive.frontRightTurnInvert;
         absoluteEncoder = new AnalogEncoder(RobotMap.Drive.frontRightEncoder);
-        absoluteEncoderOffset = new Rotation2d(RobotMap.Drive.frontRightOffset); // MUST BE CALIBRATED
+        absoluteEncoderOffset =
+            new Rotation2d(RobotMap.Drive.frontRightOffset); // MUST BE CALIBRATED
         name = "FrontRight";
         // multiplier = 1;
         break;
@@ -121,15 +122,14 @@ public class ModuleIOReal implements ModuleIO {
         turnSparkMax = new CANSparkMax(RobotMap.Drive.backRightTurn, MotorType.kBrushless);
         turnInverted = RobotMap.Drive.backRightTurnInvert;
         absoluteEncoder = new AnalogEncoder(RobotMap.Drive.backRightEncoder);
-        absoluteEncoderOffset = new Rotation2d(RobotMap.Drive.backRightOffset); // MUST BE CALIBRATED
+        absoluteEncoderOffset =
+            new Rotation2d(RobotMap.Drive.backRightOffset); // MUST BE CALIBRATED
         name = "BackRight";
         // multiplier = 1;
         break;
       default:
         throw new RuntimeException("Invalid module index");
     }
-
-    
 
     driveConfig.CurrentLimits.SupplyCurrentLimit = DriveConstants.driveSupplyCurrent;
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -147,7 +147,7 @@ public class ModuleIOReal implements ModuleIO {
     driveConfig.MotionMagic.MotionMagicCruiseVelocity = DriveConstants.maxLinearVelocity;
     driveConfig.MotionMagic.MotionMagicAcceleration = DriveConstants.maxLinearAccel;
     driveConfig.MotionMagic.MotionMagicJerk = DriveConstants.maxLinearVelocity / 0.1;
-    
+
     driveConfig.Slot0.kP = DriveConstants.kPDriveReal;
     driveConfig.Slot0.kI = 0.0;
     driveConfig.Slot0.kD = DriveConstants.kDDriveReal;
@@ -165,18 +165,18 @@ public class ModuleIOReal implements ModuleIO {
 
     turnRelativeEncoder.setPositionConversionFactor(DriveConstants.turnConversion);
     absoluteEncoder.setDistancePerRotation(2 * Math.PI);
-    
+
     turnRelativeEncoder.setVelocityConversionFactor(DriveConstants.turnConversion * 60);
     turnPID = turnSparkMax.getPIDController();
 
     turnSparkMax.restoreFactoryDefaults();
     turnSparkMax.setCANTimeout(250);
 
-    for (int i = 0; i < 30; i ++) {
+    for (int i = 0; i < 30; i++) {
       turnPID.setFeedbackDevice(turnRelativeEncoder);
       turnRelativeEncoder.setPositionConversionFactor(DriveConstants.turnConversion);
       turnRelativeEncoder.setVelocityConversionFactor((2 * Math.PI) / 60.0);
-      
+
       turnSparkMax.setInverted(turnInverted);
       turnSparkMax.setSmartCurrentLimit(30);
       turnSparkMax.enableVoltageCompensation(12.0);
@@ -221,26 +221,21 @@ public class ModuleIOReal implements ModuleIO {
                     return OptionalDouble.empty();
                   }
                 });
-
   }
 
   @Override
   public void processInputs(ModuleIOInputsAutoLogged inputs) {
-    BaseStatusSignal.refreshAll(
-        drivePosition,
-        driveVelocity,
-        driveAppliedVolts,
-        driveCurrent);
+    BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
 
-    inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble()) / DriveConstants.driveRatio;
-    inputs.driveVelocityRadPerSec = Units.rotationsToRadians(driveVelocity.getValueAsDouble()) / DriveConstants.driveRatio;
+    inputs.drivePositionRad =
+        Units.rotationsToRadians(drivePosition.getValueAsDouble()) / DriveConstants.driveRatio;
+    inputs.driveVelocityRadPerSec =
+        Units.rotationsToRadians(driveVelocity.getValueAsDouble()) / DriveConstants.driveRatio;
     inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
     inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};
 
-    inputs.turnAbsolutePosition =
-      Rotation2d.fromRadians(absoluteEncoder.getAbsolutePosition());
-    inputs.turnPosition =
-      Rotation2d.fromRadians(normalizeAngle(turnRelativeEncoder.getPosition()));
+    inputs.turnAbsolutePosition = Rotation2d.fromRadians(absoluteEncoder.getAbsolutePosition());
+    inputs.turnPosition = Rotation2d.fromRadians(normalizeAngle(turnRelativeEncoder.getPosition()));
     inputs.turnVelocityRadPerSec = turnRelativeEncoder.getVelocity();
     inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
     inputs.turnCurrentAmps = new double[] {turnSparkMax.getOutputCurrent()};
@@ -249,7 +244,8 @@ public class ModuleIOReal implements ModuleIO {
         timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
     inputs.odometryDrivePositionsRad =
         drivePositionQueue.stream()
-            .mapToDouble((Double value) -> Units.rotationsToRadians(value) / DriveConstants.driveRatio)
+            .mapToDouble(
+                (Double value) -> Units.rotationsToRadians(value) / DriveConstants.driveRatio)
             .toArray();
     inputs.odometryTurnPositions =
         turnPositionQueue.stream()
@@ -289,7 +285,8 @@ public class ModuleIOReal implements ModuleIO {
   }
 
   @Override
-  public void runDriveVelocitySetpoint(final double metersPerSecond, final double metersPerSecondSquared) {
+  public void runDriveVelocitySetpoint(
+      final double metersPerSecond, final double metersPerSecondSquared) {
     // Doesnt actually refresh drive velocity signal, but should be cached
     if (metersPerSecond == 0
         && metersPerSecondSquared == 0
@@ -297,7 +294,9 @@ public class ModuleIOReal implements ModuleIO {
       runDriveVoltage(0.0);
     } else {
       driveTalon.setControl(
-          driveCurrentVelocity.withVelocity(metersPerSecond).withFeedForward(metersPerSecondSquared * driveConfig.Slot0.kA));
+          driveCurrentVelocity
+              .withVelocity(metersPerSecond)
+              .withFeedForward(metersPerSecondSquared * driveConfig.Slot0.kA));
     }
   }
 
@@ -327,7 +326,8 @@ public class ModuleIOReal implements ModuleIO {
   }
 
   public double getAbsoluteEncoder() {
-    return normalizeAngle((absoluteEncoder.getAbsolutePosition() * 2*Math.PI) - absoluteEncoderOffset.getRadians());
+    return normalizeAngle(
+        (absoluteEncoder.getAbsolutePosition() * 2 * Math.PI) - absoluteEncoderOffset.getRadians());
   }
 
   public double normalizeAngle(double radians) {
@@ -337,9 +337,9 @@ public class ModuleIOReal implements ModuleIO {
   @Override
   public void stop() {
     var driveRequest = driveTalon.getAppliedControl();
-        if(driveRequest instanceof VoltageOut) {
-            driveTalon.setControl(new NeutralOut());
-        }
+    if (driveRequest instanceof VoltageOut) {
+      driveTalon.setControl(new NeutralOut());
+    }
     runTurnVoltage(0);
   }
 
@@ -349,5 +349,4 @@ public class ModuleIOReal implements ModuleIO {
       turnRelativeEncoder.setPosition(getAbsoluteEncoder());
     }
   }
-
 }

@@ -21,7 +21,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.util.Alert;
 import frc.util.LoggedTunableNumber;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
@@ -30,13 +29,13 @@ public class Module {
   private final int index;
 
   // private SimpleMotorFeedforward driveFeedforward;
-  
+
   private Rotation2d angleSetpoint = null; // Setpoint for closed loop control, null for open loop
   private Double velocitySetpoint = null; // Setpoint for closed loop control, null for open loop
   private Rotation2d turnRelativeOffset = null; // Relative + Offset = Absolute
   private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
   private static final String[] moduleNames = new String[] {"FL", "FR", "BL", "BR"};
-  
+
   private LoggedTunableNumber kPDrive = new LoggedTunableNumber("Drive/kPDrive");
   private LoggedTunableNumber kDDrive = new LoggedTunableNumber("Drive/kDDrive");
   private LoggedTunableNumber kSDrive = new LoggedTunableNumber("Drive/kSDrive");
@@ -106,7 +105,7 @@ public class Module {
         kPTurn.initDefault(0.0);
         kDTurn.initDefault(0.0);
         break;
-    }    
+    }
 
     io.setDrivePIDFF(kPDrive.get(), 0, kDDrive.get(), kSDrive.get(), kVDrive.get(), kADrive.get());
     io.setTurnPID(kPTurn.get(), 0, kDTurn.get());
@@ -120,7 +119,15 @@ public class Module {
     io.processInputs(inputs);
 
     LoggedTunableNumber.ifChanged(
-        hashCode(), () -> io.setDrivePIDFF(kPDrive.get(), 0, kDDrive.get(), kSDrive.get(), kVDrive.get(), kADrive.get()), kPDrive, kDDrive, kSDrive, kVDrive, kADrive);
+        hashCode(),
+        () ->
+            io.setDrivePIDFF(
+                kPDrive.get(), 0, kDDrive.get(), kSDrive.get(), kVDrive.get(), kADrive.get()),
+        kPDrive,
+        kDDrive,
+        kSDrive,
+        kVDrive,
+        kADrive);
     LoggedTunableNumber.ifChanged(
         hashCode(), () -> io.setTurnPID(kPTurn.get(), 0, kDTurn.get()), kPTurn, kDTurn);
 
@@ -133,8 +140,6 @@ public class Module {
     Logger.recordOutput(
         String.format("Drive/%s Module/Voltage Available", io.getModuleName()),
         Math.abs(inputs.driveAppliedVolts - RoboRioDataJNI.getVInVoltage()));
-
-
 
     // Calculate positions for odometry
     int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
@@ -154,10 +159,13 @@ public class Module {
     final var optimizedState = SwerveModuleState.optimize(setpoint, getAngle());
     inputs.targetPosition = optimizedState.angle;
     io.runTurnPositionSetpoint(optimizedState.angle.getRadians());
-    io.runDriveVelocitySetpoint(optimizedState.speedMetersPerSecond * Math.cos(optimizedState.angle.minus(inputs.turnPosition).getRadians()), (optimizedState.speedMetersPerSecond - lastSetpoint.speedMetersPerSecond) / 0.02);
+    io.runDriveVelocitySetpoint(
+        optimizedState.speedMetersPerSecond
+            * Math.cos(optimizedState.angle.minus(inputs.turnPosition).getRadians()),
+        (optimizedState.speedMetersPerSecond - lastSetpoint.speedMetersPerSecond) / 0.02);
 
     angleSetpoint = optimizedState.angle;
-  
+
     velocitySetpoint = optimizedState.speedMetersPerSecond;
 
     return optimizedState;
