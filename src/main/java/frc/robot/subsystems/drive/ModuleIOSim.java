@@ -132,6 +132,4 @@ public class ModuleIOSim implements ModuleIO {
   public String getModuleName() {
     return name;
   }
-
-  public void resetOffset() {}
 }

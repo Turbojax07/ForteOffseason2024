@@ -75,6 +75,4 @@ public interface ModuleIO {
   public abstract void stop();
 
   public abstract String getModuleName();
-
-  public abstract void resetOffset();
 }

@@ -342,11 +342,4 @@ public class ModuleIOReal implements ModuleIO {
     }
     runTurnVoltage(0);
   }
-
-  public void resetOffset() {
-    if (DriveConstants.wheelsStraight) {
-      absoluteEncoderOffset = Rotation2d.fromRadians(turnRelativeEncoder.getPosition());
-      turnRelativeEncoder.setPosition(getAbsoluteEncoder());
-    }
-  }
 }

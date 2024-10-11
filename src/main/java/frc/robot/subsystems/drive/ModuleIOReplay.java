@@ -34,6 +34,4 @@ public class ModuleIOReplay implements ModuleIO {
   public String getModuleName() {
     return null;
   }
-
-  public void resetOffset() {}
 }

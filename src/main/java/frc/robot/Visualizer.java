@@ -15,10 +15,10 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.climber.Climb;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.pivot2.Pivot;
-import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Visualizer extends SubsystemBase {
-  private Mechanism2d m_main;
+  @AutoLogOutput private Mechanism2d m_main;
 
   private MechanismLigament2d m_climberMech;
   private MechanismLigament2d m_intakeMech;
@@ -133,6 +133,6 @@ public class Visualizer extends SubsystemBase {
     m_pivotRelative.setAngle(Units.radiansToDegrees(m_pivot.getRelativeRadians()));
     m_pivotTarget.setAngle(Units.radiansToDegrees(m_pivot.getTargetRadians()));
 
-    Logger.recordOutput("Visualizer/FullRobot", m_main);
+    // Logger.recordOutput("Visualizer/FullRobot", m_main);
   }
 }
