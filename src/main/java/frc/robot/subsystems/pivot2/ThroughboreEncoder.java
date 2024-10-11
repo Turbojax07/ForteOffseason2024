@@ -12,7 +12,11 @@ public class ThroughboreEncoder {
     }
 
     public double getPosition() {
-        return (abs.getPosition() + offset) % (2 * Math.PI);
+        return (abs.getPosition() - offset) % (2 * Math.PI);
+    }
+
+    public double getAbsPosition() {
+        return abs.getPosition();
     }
 
     public void setOffset(double absOffset) {    

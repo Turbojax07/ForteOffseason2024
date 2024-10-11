@@ -47,19 +47,23 @@ public class PivotIOSparkMax implements PivotIO {
 		pivotEnc.setPosition(pivotAbs.abs.getPosition());
 
         pivot.burnFlash();
+
+		if ((Math.abs(pivotAbs.getPosition()) % (2 * Math.PI)) > 0.1) {
+			pivotAbs.setOffset(pivotAbs.getOffset() + pivotAbs.getPosition());
+		}
     }
 
 	@Override
 	public void processInputs(PivotIOInputsAutoLogged inputs) {
 		inputs.pivotPosition = Rotation2d.fromRadians(pivotAbs.getPosition());
-		inputs.pivotAbsolutePosition = Rotation2d.fromRadians(pivotAbs.abs.getPosition());
+		inputs.pivotAbsolutePosition = Rotation2d.fromRadians(pivotAbs.getPosition());
 		inputs.pivotRelativeEncoder = Rotation2d.fromRadians(pivotEnc.getPosition());
 		inputs.pivotVelocityRadPerSec = pivotEnc.getVelocity();
 		inputs.pivotAppliedVolts = pivot.getAppliedOutput() * pivot.getBusVoltage();
 		inputs.pivotCurrentAmps = pivot.getOutputCurrent();
 		inputs.pivotTempCelsius = pivot.getMotorTemperature();
 		inputs.pivotOffset = pivotAbs.getOffset();
-		inputs.pivotStalled = stallDebouncer.calculate((pivot.getOutputCurrent() > 20) && (pivotEnc.getVelocity() > ));
+		inputs.pivotStalled = stallDebouncer.calculate((pivot.getOutputCurrent() > 15) && (Math.abs(pivotEnc.getVelocity()) < 0.02));
 	}
 
 	@Override

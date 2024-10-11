@@ -218,13 +218,15 @@ public class RobotContainer {
                                 Commands.parallel(
                                                 m_feeder.setVoltage(() -> 0),
                                                 m_shooter.stopShooter(),
-                                                Commands.sequence(m_pivot.setPivotTarget(() -> ShooterConstants.down)
+                                                Commands.sequence(m_pivot.setPivotVoltage(() -> -1)))
                                                                 .until(() -> m_pivot.atSetpoint()
                                                                                 || m_pivot.isStalled())
                                                                 .andThen(
                                                                                 Commands.either(m_pivot.resetEncoder(),
                                                                                                 m_pivot.runZero(),
-                                                                                                () -> m_pivot.isStalled())))));
+                                                                                                () -> m_pivot.isStalled()).andThen(m_pivot.setPivotTarget(() -> m_pivot.getAngleRadians()).andThen(
+                                                                                                        m_pivot.setPivotVoltage(() -> 0))
+                                                                                                )));
 
                 // m_operator.rightBumper().whileTrue(
                 // m_pivot.runCurrentZeroing()
@@ -253,7 +255,9 @@ public class RobotContainer {
                                                                                 () -> Units.degreesToRadians(0.0)))));
 
                 m_operator.leftTrigger(0.1).onTrue(
-                                m_shooter.setRPM(() -> 5800, 0.3))
+                                Commands.parallel(m_shooter.setRPM(() -> 5800, 0.3),
+                                m_feeder.setRPM(() -> 2000),
+                                m_intake.setRollerRPM(() -> 2000)))
                                 .onFalse(m_shooter.stopShooter()
                                                 .andThen(m_pivot.setPivotTarget(() -> Units.degreesToRadians(0))));
 
