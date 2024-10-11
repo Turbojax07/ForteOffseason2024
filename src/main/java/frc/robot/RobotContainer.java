@@ -20,10 +20,12 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotMap;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.climber.Climb;
 import frc.robot.subsystems.climber.ClimbIOReplay;
 import frc.robot.subsystems.climber.ClimbIOSim;
@@ -45,10 +47,10 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOReplay;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOSparkMax;
-import frc.robot.subsystems.pivot.Pivot;
-import frc.robot.subsystems.pivot.PivotIOReplay;
-import frc.robot.subsystems.pivot.PivotIOSim;
-import frc.robot.subsystems.pivot.PivotIOSparkMax;
+import frc.robot.subsystems.pivot2.Pivot;
+import frc.robot.subsystems.pivot2.PivotIOReplay;
+import frc.robot.subsystems.pivot2.PivotIOSim;
+import frc.robot.subsystems.pivot2.PivotIOSparkMax;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIOReplay;
 import frc.robot.subsystems.shooter.ShooterIOSim;
@@ -191,7 +193,7 @@ public class RobotContainer {
                 m_operator.povUp().whileTrue(
                                 Commands.parallel(
                                                 m_intake.setIntakeDown(false),
-                                                m_feeder.setRPM(() -> 3000))
+                                                m_feeder.setRPM(() -> 2500))
                                                 .until(() -> m_feeder.feederBeambreakObstructed()))
                                 .onFalse(m_intake.setIntakeUp());
 
@@ -202,93 +204,60 @@ public class RobotContainer {
                                                 m_feeder.setRPM(() -> -3000)))
                                 .onFalse(m_intake.setIntakeUp());
 
-                // Right trigger for run intake forward
-                m_operator.rightTrigger(0.1).whileTrue(
-                                Commands.parallel(
-                                                m_intake.setRollerRPM(() -> 3000),
-                                                m_feeder.setRPM(() -> 3000))
-                                                .until(() -> m_feeder.feederBeambreakObstructed()))
-                                .onFalse(
-                                                Commands.parallel(
-                                                                m_intake.setRollerVoltage(() -> 0),
-                                                                m_feeder.setVoltage(() -> 0)).andThen(
-                                                                                Commands.parallel(
-                                                                                                m_feeder.setRPM(() -> -1000),
-                                                                                                m_intake.setRollerRPM(
-                                                                                                                () -> -1000),
-                                                                                                m_shooter.setRPM(
-                                                                                                                () -> -1000,
-                                                                                                                1))
-                                                                                                .until(() -> !m_feeder
-                                                                                                                .shooterBeambreakObstructed())
-                                                                                                .unless(() -> !m_feeder
-                                                                                                                .shooterBeambreakObstructed())));
-
-                // Right bumper for run intake backward
-                m_operator.rightBumper().whileTrue(
-                                Commands.parallel(
-                                                m_intake.setRollerRPM(() -> -3000),
-                                                m_feeder.setRPM(() -> -3000)))
-                                .onFalse(
-                                                Commands.parallel(
-                                                                m_intake.setRollerVoltage(() -> 0),
-                                                                m_feeder.setVoltage(() -> 0)));
-
                 // Y for shooter at subwoofer
                 m_operator.y().whileTrue(
                                 Commands.parallel(
                                                 m_pivot.setPivotTarget(() -> Units.degreesToRadians(45)),
-                                                m_shooter.setRPM(() -> 5500, 0.3)).until(() -> m_shooter.atSetpoint()) // DEMO: 2000
+                                                m_shooter.setRPM(() -> 5800, 0.3)).until(() -> m_shooter.atSetpoint())
                                                 .andThen(m_feeder.setRPM(() -> 3000)
                                                                 .until(() -> (!m_feeder.feederBeambreakObstructed()
                                                                                 && !m_feeder.shooterBeambreakObstructed()))));
 
                 // X for shooter at amp
-                
+                m_operator.leftBumper().whileTrue(
+                                Commands.parallel(
+                                                m_feeder.setVoltage(() -> 0),
+                                                m_shooter.stopShooter(),
+                                                Commands.sequence(m_pivot.setPivotVoltage(() -> -1)))
+                                                                .until(() -> m_pivot.atSetpoint()
+                                                                                || m_pivot.isStalled())
+                                                                .andThen(
+                                                                                Commands.either(m_pivot.resetEncoder(),
+                                                                                                m_pivot.runZero(),
+                                                                                                () -> m_pivot.isStalled()).andThen(m_pivot.setPivotTarget(() -> m_pivot.getAngleRadians()).andThen(
+                                                                                                        m_pivot.setPivotVoltage(() -> 0))
+                                                                                                )));
 
-                
+                // m_operator.rightBumper().whileTrue(
+                // m_pivot.runCurrentZeroing()
+                // );
 
                 // B for shooter at podium or feeding
                 m_operator.b().whileTrue(
                                 Commands.parallel(
                                                 m_pivot.setPivotTarget(() -> Units.degreesToRadians(20)),
-                                                m_shooter.setRPM(() -> 5500, 1)).until(() -> m_shooter.atSetpoint())); // DEMO: 2000, COMP: 5500
+                                                m_shooter.setRPM(() -> 5800, 1.0)).until(() -> m_shooter.atSetpoint())
+                                                .andThen(m_feeder.setRPM(() -> 2000)
+                                                                .until(() -> (!m_feeder.feederBeambreakObstructed()
+                                                                                && !m_feeder.shooterBeambreakObstructed()))));
 
                 // A for shooter at source
                 m_operator.a().whileTrue(
                                 Commands.parallel(
-                                                m_pivot.setPivotTarget(() -> Units.degreesToRadians(45)),
+                                                m_pivot.setPivotTarget(() -> Units.degreesToRadians(34)),
                                                 m_shooter.setRPM(() -> -1500, 1.0),
                                                 m_feeder.setRPM(() -> -1500),
                                                 m_intake.setRollerRPM(() -> -1000))
                                                 .until(() -> (m_feeder.feederBeambreakObstructed()
                                                                 && !m_feeder.shooterBeambreakObstructed()))
-                                                .andThen(Commands.parallel(
-                                                                m_shooter.stopShooter(),
+                                                .andThen(Commands.parallel(m_shooter.stopShooter(),
                                                                 m_pivot.setPivotTarget(
-                                                                                () -> Units.degreesToRadians(0))),
-                                                                m_feeder.setVoltage(() -> 0))
-                                                .andThen(
-                                                                Commands.parallel(
-                                                                                m_feeder.setRPM(() -> 1000),
-                                                                                m_intake.setRollerRPM(() -> 1000))
-                                                                                .until(() -> !m_feeder
-                                                                                                .shooterBeambreakObstructed())
-                                                                                .unless(() -> !m_feeder
-                                                                                                .shooterBeambreakObstructed())));
+                                                                                () -> Units.degreesToRadians(0.0)))));
 
-                // Left bumper for reset shooter
-                m_operator.leftBumper().whileTrue(
-                        Commands.parallel(
-                                m_pivot.setPivotTarget(() -> Units.degreesToRadians(0)),
-                                m_feeder.setVoltage(() -> 0),
-                                m_shooter.stopShooter()
-                        )
-                );
-
-                // Left trigger for shoot
                 m_operator.leftTrigger(0.1).onTrue(
-                                m_shooter.setRPM(() -> 5500, 0.3)) // DEMO: 3000, COMP: 5500
+                                Commands.parallel(m_shooter.setRPM(() -> 5800, 0.3),
+                                m_feeder.setRPM(() -> 2000),
+                                m_intake.setRollerRPM(() -> 2000)))
                                 .onFalse(m_shooter.stopShooter()
                                                 .andThen(m_pivot.setPivotTarget(() -> Units.degreesToRadians(0))));
 

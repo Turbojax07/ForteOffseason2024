@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.pivot;
+package frc.robot.subsystems.pivot2;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 
@@ -14,11 +14,7 @@ public class PivotIOReplay implements PivotIO {
 
     @Override
     public void setPivotVoltage(double volts) {}
-
-    @Override
-    public void setPivotTarget(double angle, ArmFeedforward ff) {}
-
-    @Override
-    public void setPivotPID(double kP, double kI, double kD) {}
     
+    @Override
+    public void resetEncoder() {}
 } 

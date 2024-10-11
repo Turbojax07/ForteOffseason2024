@@ -1,8 +1,10 @@
-package frc.robot.subsystems.pivot;
+package frc.robot.subsystems.pivot2;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -13,11 +15,8 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class PivotIOSim implements PivotIO {
-    private SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getNEO(1), ShooterConstants.pivotRatio, ShooterConstants.pivotMOI, Units.inchesToMeters(ShooterConstants.pivotLength), ShooterConstants.down, ShooterConstants.up, true, ShooterConstants.down);
-    
-
-    private ProfiledPIDController pivotPID = new ProfiledPIDController(ShooterConstants.kPPivotSim, 0.0, 0.0, new TrapezoidProfile.Constraints(ShooterConstants.maxPivotVelocity, ShooterConstants.maxPivotAccel));
-    
+    private SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getNEO(1), ShooterConstants.pivotRatio, ShooterConstants.pivotMOI, ShooterConstants.pivotLength, ShooterConstants.down, ShooterConstants.up, true, ShooterConstants.down); 
+	private Debouncer stallDebouncer = new Debouncer(ShooterConstants.stallTimeout, DebounceType.kRising);
 
 	@Override
 	public void processInputs(PivotIOInputsAutoLogged inputs) {
@@ -26,6 +25,7 @@ public class PivotIOSim implements PivotIO {
 		inputs.pivotPosition = Rotation2d.fromRadians(pivotSim.getAngleRads());
         inputs.pivotVelocityRadPerSec = Units.rotationsToRadians(pivotSim.getVelocityRadPerSec());
         inputs.pivotCurrentAmps = pivotSim.getCurrentDrawAmps();
+		inputs.pivotStalled = stallDebouncer.calculate(pivotSim.getCurrentDrawAmps() > 20);
 	}
 
 	@Override
@@ -34,14 +34,6 @@ public class PivotIOSim implements PivotIO {
 	}
 
 	@Override
-	public void setPivotTarget(double angle, ArmFeedforward ff) {
-		setPivotVoltage(pivotPID.calculate(pivotSim.getAngleRads(), angle) + ff.calculate(pivotPID.getSetpoint().position, pivotPID.getSetpoint().velocity));
-
-	}
-
-	@Override
-	public void setPivotPID(double kP, double kI, double kD) {
-		pivotPID = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(IntakeConstants.maxPivotVelocity, IntakeConstants.maxPivotAccel));
-
+	public void resetEncoder() {
 	}
 }

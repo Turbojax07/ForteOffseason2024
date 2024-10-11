@@ -16,7 +16,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.climber.Climb;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot2.Pivot;
 
 public class Visualizer extends SubsystemBase {
     private Mechanism2d m_main;
@@ -28,6 +28,7 @@ public class Visualizer extends SubsystemBase {
     private MechanismLigament2d m_climberTarget;
     private MechanismLigament2d m_intakeTarget;
     private MechanismLigament2d m_pivotTarget;
+    private MechanismLigament2d m_pivotRelative;
 
     private MechanismRoot2d m_climberRoot;
     private MechanismRoot2d m_intakeRoot;
@@ -57,6 +58,7 @@ public class Visualizer extends SubsystemBase {
         m_intakeTarget = m_intakeRoot.append(new MechanismLigament2d("Intake Target", Units.inchesToMeters(14.914264), 83.649627, 2, new Color8Bit(Color.kBlue)));
 
         m_pivotMech = m_pivotRoot.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(13.1001837), 12, 8, new Color8Bit(Color.kWhite)));
+        m_pivotRelative = m_pivotRoot.append(new MechanismLigament2d("Shooter Relative", Units.inchesToMeters(13.1001837), 12, 8, new Color8Bit(Color.kGray)));
         m_pivotTarget = m_pivotRoot.append(new MechanismLigament2d("Shooter Target", Units.inchesToMeters(13.1001837), 12, 2, new Color8Bit(Color.kBeige)));
 
         SmartDashboard.putData("Climb Up", (Sendable) m_climber.setExtensionCmd(() -> ClimbConstants.maxHeight));
@@ -80,6 +82,7 @@ public class Visualizer extends SubsystemBase {
         m_intakeTarget.setAngle(Units.radiansToDegrees(m_intake.getTargetRadians()));
 
         m_pivotMech.setAngle(Units.radiansToDegrees(m_pivot.getAngleRadians()));
+        m_pivotRelative.setAngle(Units.radiansToDegrees(m_pivot.getRelativeRadians()));
         m_pivotTarget.setAngle(Units.radiansToDegrees(m_pivot.getTargetRadians()));
 
         Logger.recordOutput("Visualizer/FullRobot", m_main);

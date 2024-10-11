@@ -14,6 +14,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -25,10 +26,6 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static final double loopPeriodSecs = 0.02;
-
-  public static final double LOOP_TIME = 0.13;
-  public static final double ROBOT_MASS = 49.8951607;
-
 
   public static final Mode currentMode = Mode.REAL;
 
@@ -262,26 +259,30 @@ public final class Constants {
 
   public static class ShooterConstants {
     public static final double pivotRatio = 496 / 3;
-    public static final double pivotMOI = 0.0022842632;
-    public static final double pivotLength = Units.inchesToMeters(7.01793315);
+    public static final double pivotLength = Units.inchesToMeters(7.5);
+    public static final double pivotMass = Units.lbsToKilograms(23);
+    public static final double pivotMOI = SingleJointedArmSim.estimateMOI(pivotLength, pivotMass);
+    // public static final double pivotMOI = .0001;
 
-    public static final double maxPivotVelocity = 10.5819313;
+    public static final double maxPivotVelocity = 20;
 	  public static final double maxPivotAccel = 5;
 
     public static final double pivotAbsConversion = Math.PI * 2.0;
     public static final double pivotEncConversion = 2.0 * Math.PI / pivotRatio;
     public static final double pivotOffset = 0.0;
     public static final double simOffset = 0.19;
+    public static final double pivotTolerance = 0.01;
+    public static final double stallTimeout = 0.0;
 
     public static final double down = 0.01;
     public static final double up = down + Math.PI/4;
     
     public static final double shooterMOI = 0.00920287973;
 
-    public static final int pivotCurrentLimit = 20;
+    public static final int pivotCurrentLimit = 25;
 
-    public static final double kGPivot = 0.00;
-    public static final double kVPivot = 0;
+    public static final double kGPivot = 0.381640625;
+    public static final double kVPivot = 0.875;
     public static final double kAPivot = 0.00;
     
     public static final double kVShooter = 0.0055; // COMP: 0.0055, DEMO: 0.0041875
@@ -291,14 +292,11 @@ public final class Constants {
     public static final double kIShooterReal = 0.00000;
     public static final double kSShooterReal = 0;
 
-    public static final double kPPivotReal = 1;
-    public static final double kPPivotSim = 100.0;  
+    public static final double kPPivot = 5.0;
     
     public static final double kPShooterSim = 0.5;
     public static final double kIShooterSim = 0.0;
     public static final double kSShooterSim = 0.5;
-
-    public static final double kPPivotReplay = 0.0;
     
     public static final double kPShooterReplay = 0.0;
     public static final double kIShooterReplay = 0.0;
