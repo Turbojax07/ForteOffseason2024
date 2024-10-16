@@ -193,4 +193,11 @@ public class Drive extends SubsystemBase {
   public Rotation2d getRotation() {
     return gyroIO.getYaw();
   }
+
+  public Command zeroGyro() {
+    return this.run(
+        () -> {
+          gyroIO.setYaw(0);
+        });
+  }
 }

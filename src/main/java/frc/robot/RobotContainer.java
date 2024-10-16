@@ -171,6 +171,8 @@ public class RobotContainer {
     // right trigger -> climb up
     m_driver.rightTrigger(0.1).onTrue(m_climber.setDutyCycle(1)).onFalse(m_climber.setDutyCycle(0));
 
+    m_driver.y().whileTrue(m_drive.zeroGyro());
+
     // Operator Controller
 
     // D-Pad Up for intake down, rollers forward, until note in feeder beambreak
@@ -245,7 +247,7 @@ public class RobotContainer {
         .a()
         .whileTrue(
             Commands.parallel(
-                    m_pivot.setPivotTarget(() -> Units.degreesToRadians(34)),
+                    m_pivot.setPivotTarget(() -> Units.degreesToRadians(40)),
                     m_shooter.setRPM(() -> -1500, 1.0),
                     m_feeder.setRPM(() -> -1500),
                     m_intake.setRollerRPM(() -> -1000))
@@ -276,7 +278,7 @@ public class RobotContainer {
   }
 
   private static double teleopAxisAdjustment(double x) {
-    return MathUtil.applyDeadband(Math.abs(Math.pow(x, 2)) * Math.signum(x), 0.02);
+    return MathUtil.applyDeadband(x, 0.02);
   }
 
   public Command getAutonomousCommand() {

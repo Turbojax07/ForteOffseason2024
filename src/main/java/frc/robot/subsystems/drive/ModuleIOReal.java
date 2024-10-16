@@ -73,7 +73,7 @@ public class ModuleIOReal implements ModuleIO {
   private final StatusSignal<Double> driveVelocity;
   private final StatusSignal<Double> driveAppliedVolts;
   private final StatusSignal<Double> driveCurrent;
-  // private int multiplier;
+  private int multiplier;
 
   private final VelocityVoltage driveCurrentVelocity =
       new VelocityVoltage(0.0).withEnableFOC(false);
@@ -93,7 +93,7 @@ public class ModuleIOReal implements ModuleIO {
         absoluteEncoderOffset =
             new Rotation2d(RobotMap.Drive.frontLeftOffset); // MUST BE CALIBRATED
         name = "FrontLeft";
-        // multiplier = -1;
+        multiplier = 1;
         break;
       case 1:
         driveTalon = new TalonFX(RobotMap.Drive.frontRightDrive);
@@ -104,7 +104,7 @@ public class ModuleIOReal implements ModuleIO {
         absoluteEncoderOffset =
             new Rotation2d(RobotMap.Drive.frontRightOffset); // MUST BE CALIBRATED
         name = "FrontRight";
-        // multiplier = 1;
+        multiplier = 1;
         break;
       case 2:
         driveTalon = new TalonFX(RobotMap.Drive.backLeftDrive);
@@ -114,7 +114,7 @@ public class ModuleIOReal implements ModuleIO {
         absoluteEncoder = new AnalogEncoder(RobotMap.Drive.backLeftEncoder);
         absoluteEncoderOffset = new Rotation2d(RobotMap.Drive.backLeftOffset); // MUST BE CALIBRATED
         name = "BackLeft";
-        // multiplier = 1;
+        multiplier = 1;
         break;
       case 3:
         driveTalon = new TalonFX(RobotMap.Drive.backRightDrive);
@@ -125,7 +125,7 @@ public class ModuleIOReal implements ModuleIO {
         absoluteEncoderOffset =
             new Rotation2d(RobotMap.Drive.backRightOffset); // MUST BE CALIBRATED
         name = "BackRight";
-        // multiplier = 1;
+        multiplier = 1;
         break;
       default:
         throw new RuntimeException("Invalid module index");
@@ -163,10 +163,7 @@ public class ModuleIOReal implements ModuleIO {
 
     turnRelativeEncoder = turnSparkMax.getEncoder();
 
-    turnRelativeEncoder.setPositionConversionFactor(DriveConstants.turnConversion);
     absoluteEncoder.setDistancePerRotation(2 * Math.PI);
-
-    turnRelativeEncoder.setVelocityConversionFactor(DriveConstants.turnConversion * 60);
     turnPID = turnSparkMax.getPIDController();
 
     turnSparkMax.restoreFactoryDefaults();
@@ -293,10 +290,11 @@ public class ModuleIOReal implements ModuleIO {
         && MathUtil.isNear(0.0, driveVelocity.getValueAsDouble(), 0.1)) {
       runDriveVoltage(0.0);
     } else {
-      driveTalon.setControl(
-          driveCurrentVelocity
-              .withVelocity(metersPerSecond)
-              .withFeedForward(metersPerSecondSquared * driveConfig.Slot0.kA));
+      runDriveVoltage(
+          Math.signum(metersPerSecond)
+              * Math.pow((metersPerSecond / DriveConstants.maxLinearVelocity), 2)
+              * 12.0
+              * multiplier);
     }
   }
 

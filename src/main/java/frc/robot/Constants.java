@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 public final class Constants {
   public static final double loopPeriodSecs = 0.02;
 
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -53,8 +53,8 @@ public final class Constants {
       public static final int backRightDrive = 7;
       public static final int backRightTurn = 8;
 
-      public static final boolean frontLeftDriveInvert = true;
-      public static final boolean frontRightDriveInvert = false;
+      public static final boolean frontLeftDriveInvert = false;
+      public static final boolean frontRightDriveInvert = true;
       public static final boolean backLeftDriveInvert = false; // true?
       public static final boolean backRightDriveInvert = true; // false?
 
@@ -68,7 +68,7 @@ public final class Constants {
       public static final int backLeftEncoder = 1;
       public static final int backRightEncoder = 0;
 
-      public static final double frontLeftOffset = -0.5107599496841431;
+      public static final double frontLeftOffset = 0.807;
       public static final double frontRightOffset = -0.5107599496841431;
       public static final double backLeftOffset = 1.8345500230789185;
       public static final double backRightOffset = 2.437732458114624;
@@ -122,8 +122,8 @@ public final class Constants {
     public static final double odometeryFrequency = 250;
     public static final double updateFrequency = 100;
 
-    // public static final double maxLinearVelocity = Units.feetToMeters(20.4);
-    public static final double maxLinearVelocity = Units.feetToMeters(1.4);
+    public static final double maxLinearVelocity = Units.feetToMeters(20.4);
+    // public static final double maxLinearVelocity = Units.feetToMeters(1.4);
     public static final double maxLinearAccel = 8.0;
 
     public static final double maxAngularVelocity = 10;
@@ -135,7 +135,7 @@ public final class Constants {
     public static double kVDriveReal = 1.93;
     public static double kADriveReal = 0.25;
 
-    public static double kPTurnReal = 1.5; // 1.5?
+    public static double kPTurnReal = 3; // 1.5?
     public static double kDTurnReal = 0.0;
 
     public static double kPDriveSim = 0.3;
