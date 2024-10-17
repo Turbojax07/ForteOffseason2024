@@ -3,6 +3,7 @@
     "types": {
       "/AdvantageKit/RealOutputs/Climb/Mechanism2d": "Mechanism2d",
       "/AdvantageKit/RealOutputs/Visualizer/FullRobot": "Mechanism2d",
+      "/AdvantageKit/RealOutputs/Visualizer/M_main": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Climb Down": "Command",
       "/SmartDashboard/Climb Up": "Command",
@@ -21,7 +22,8 @@
       "/SmartDashboard/Shooter 60": "Command",
       "/SmartDashboard/Shooter 75": "Command",
       "/SmartDashboard/Shooter 90": "Command",
-      "/SmartDashboard/Test": "Command"
+      "/SmartDashboard/Test": "Command",
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     },
     "windows": {
       "/AdvantageKit/RealOutputs/Visualizer/FullRobot": {

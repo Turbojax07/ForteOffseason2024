@@ -23,6 +23,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotMap;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIOReal;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIOReplay;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIOSim;
 import frc.robot.subsystems.climber.Climb;
 import frc.robot.subsystems.climber.ClimbIOReplay;
 import frc.robot.subsystems.climber.ClimbIOSim;
@@ -91,7 +94,8 @@ public class RobotContainer {
                 new ModuleIOReal(0),
                 new ModuleIOReal(1),
                 new ModuleIOReal(2),
-                new ModuleIOReal(3));
+                new ModuleIOReal(3),
+                new AprilTagVisionIOReal());
         m_climber = new Climb(new ClimbIOSparkMax());
         m_intake = new Intake(new IntakeIOSparkMax());
         m_feeder =
@@ -111,7 +115,8 @@ public class RobotContainer {
                 new ModuleIOSim("FrontLeft"),
                 new ModuleIOSim("FrontRight"),
                 new ModuleIOSim("BackLeft"),
-                new ModuleIOSim("BackRight"));
+                new ModuleIOSim("BackRight"),
+                new AprilTagVisionIOSim());
         m_climber = new Climb(new ClimbIOSim());
         m_intake = new Intake(new IntakeIOSim());
         m_feeder =
@@ -131,7 +136,8 @@ public class RobotContainer {
                 new ModuleIOReplay() {},
                 new ModuleIOReplay() {},
                 new ModuleIOReplay() {},
-                new ModuleIOReplay() {});
+                new ModuleIOReplay() {},
+                new AprilTagVisionIOReplay() {});
         m_climber = new Climb(new ClimbIOReplay());
         m_intake = new Intake(new IntakeIOReplay());
         m_feeder =

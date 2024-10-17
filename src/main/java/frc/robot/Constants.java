@@ -13,6 +13,15 @@
 
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
@@ -301,5 +310,29 @@ public final class Constants {
 
   public static class SimConstants {
     public static final double loopTime = 0.02;
+  }
+
+  public static class VisionConstants {
+    public static final Transform3d leftCamToRobot =
+        new Transform3d(
+            new Translation3d(12.161481, -12.050199, 9.756915),
+            new Rotation3d(
+                Units.degreesToRadians(90),
+                Units.degreesToRadians(25),
+                Units.degreesToRadians(35)));
+
+    public static final Transform3d rightCamToRobot =
+        new Transform3d(
+            new Translation3d(12.161481, 12.050199, 9.756915),
+            new Rotation3d(
+                Units.degreesToRadians(90),
+                Units.degreesToRadians(25),
+                -Units.degreesToRadians(35)));
+
+    public static final Matrix<N3, N1> singleTagStdDev =
+        VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
+    public static final Matrix<N3, N1> multiTagStdDev = VecBuilder.fill(0.5, 0.5, Double.MAX_VALUE);
+    public static final AprilTagFieldLayout aprilTagFieldLayout =
+        AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   }
 }

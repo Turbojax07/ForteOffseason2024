@@ -15,6 +15,7 @@ package frc.robot.subsystems.drive;
 
 import com.google.common.collect.Streams;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,6 +31,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIO;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIOInputsAutoLogged;
 import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -41,6 +44,12 @@ public class Drive extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
+
+  private final AprilTagVisionIO aprilTagVisionIO;
+  private final AprilTagVisionIOInputsAutoLogged aprilTagVisionInputs =
+      new AprilTagVisionIOInputsAutoLogged();
+  @AutoLogOutput public boolean useVision = true;
+
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
@@ -60,12 +69,14 @@ public class Drive extends SubsystemBase {
       ModuleIO flModuleIO,
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
-      ModuleIO brModuleIO) {
+      ModuleIO brModuleIO,
+      AprilTagVisionIO aprilTagVisionIO) {
     this.gyroIO = gyroIO;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
+    this.aprilTagVisionIO = aprilTagVisionIO;
 
     // Start threads (no-op for each if no signals have been created)
     HybridOdometryThread.getInstance().start();
@@ -126,6 +137,55 @@ public class Drive extends SubsystemBase {
       }
 
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+    }
+
+    aprilTagVisionIO.updatePose(getPose());
+    aprilTagVisionIO.updateInputs(aprilTagVisionInputs);
+    Logger.processInputs("Drive/AprilTagVision", aprilTagVisionInputs);
+
+    for (int i = 0; i < aprilTagVisionInputs.timestamps.length; i++) {
+      if ( // Bounds check the pose is actually on the field
+      aprilTagVisionInputs.timestamps[i] >= 1.0
+          && Math.abs(aprilTagVisionInputs.visionPoses[i].getZ()) < 0.2
+          && aprilTagVisionInputs.visionPoses[i].getX() > 0
+          && aprilTagVisionInputs.visionPoses[i].getX() < 16.5
+          && aprilTagVisionInputs.visionPoses[i].getY() > 0
+          && aprilTagVisionInputs.visionPoses[i].getY() < 8.5
+          && aprilTagVisionInputs.visionPoses[i].getRotation().getX() < 0.2
+          && aprilTagVisionInputs.visionPoses[i].getRotation().getY() < 0.2
+      //          && aprilTagVisionInputs
+      //                  .visionPoses[i]
+      //                  .toPose2d()
+      //                  .minus(poseEstimator.getEstimatedPosition())
+      //                  .getTranslation()
+      //                  .getNorm()
+      //              < 3.0 // todo replace this with multi-tag only and no distance cap
+      ) {
+        if (aprilTagVisionInputs.timestamps[i] > (Logger.getTimestamp() / 1.0e6)) {
+          aprilTagVisionInputs.timestamps[i] =
+              (Logger.getTimestamp() / 1.0e6) - aprilTagVisionInputs.latency[i];
+        }
+
+        Logger.recordOutput(
+            "Drive/AprilTagPose" + i, aprilTagVisionInputs.visionPoses[i].toPose2d());
+        Logger.recordOutput(
+            "Drive/AprilTagStdDevs" + i,
+            Arrays.copyOfRange(aprilTagVisionInputs.visionStdDevs, 3 * i, 3 * i + 3));
+        Logger.recordOutput("Drive/AprilTagTimestamps" + i, aprilTagVisionInputs.timestamps[i]);
+
+        if (useVision) {
+          poseEstimator.addVisionMeasurement(
+              aprilTagVisionInputs.visionPoses[i].toPose2d(),
+              aprilTagVisionInputs.timestamps[i],
+              VecBuilder.fill(
+                  aprilTagVisionInputs.visionStdDevs[3 * i],
+                  aprilTagVisionInputs.visionStdDevs[3 * i + 1],
+                  aprilTagVisionInputs.visionStdDevs[3 * i + 2]));
+        }
+      } else {
+        Logger.recordOutput("Drive/AprilTagPose" + i, new Pose2d());
+        Logger.recordOutput("Drive/AprilTagStdDevs" + i, new double[] {0.0, 0.0, 0.0});
+      }
     }
   }
 
