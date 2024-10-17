@@ -14,6 +14,9 @@
 package frc.robot.subsystems.drive;
 
 import com.google.common.collect.Streams;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -21,6 +24,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -47,6 +52,8 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition(),
         new SwerveModulePosition()
       };
+  private SwerveDrivePoseEstimator poseEstimator =
+      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
 
   public Drive(
       GyroIO gyroIO,
@@ -61,7 +68,8 @@ public class Drive extends SubsystemBase {
     modules[3] = new Module(brModuleIO, 3);
 
     // Start threads (no-op for each if no signals have been created)
-    SparkMaxOdometryThread.getInstance().start();
+    HybridOdometryThread.getInstance().start();
+    // SparkMaxOdometryThread.getInstance().start();
     // PhoenixOdometryThread.getInstance().start();
 
   }
@@ -116,6 +124,8 @@ public class Drive extends SubsystemBase {
         Twist2d twist = kinematics.toTwist2d(moduleDeltas);
         rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
       }
+
+      poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
     }
   }
 
@@ -199,5 +209,23 @@ public class Drive extends SubsystemBase {
         () -> {
           gyroIO.setYaw(0);
         });
+  }
+
+  @AutoLogOutput(key = "Odometry/Robot")
+  public Pose2d getPose() {
+    return poseEstimator.getEstimatedPosition();
+  }
+
+  public void setPose(Pose2d pose) {
+    poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+  }
+
+  public void addVisionMeasurement(Pose2d visionPose, double timestamp) {
+    poseEstimator.addVisionMeasurement(visionPose, timestamp);
+  }
+
+  public void addVisionMeasurement(
+      Pose2d visionPose, double timestamp, Matrix<N3, N1> visionMeasurementStdDevs) {
+    poseEstimator.addVisionMeasurement(visionPose, timestamp, visionMeasurementStdDevs);
   }
 }

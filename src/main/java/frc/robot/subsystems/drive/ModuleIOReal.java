@@ -195,10 +195,11 @@ public class ModuleIOReal implements ModuleIO {
 
     turnRelativeEncoder.setPosition(getAbsoluteEncoder());
 
-    timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
+    timestampQueue = HybridOdometryThread.getInstance().makeTimestampQueue();
+
     drivePosition = driveTalon.getPosition();
     drivePositionQueue =
-        PhoenixOdometryThread.getInstance().registerSignal(driveTalon, driveTalon.getPosition());
+        HybridOdometryThread.getInstance().registerSignal(driveTalon, driveTalon.getPosition());
     driveVelocity = driveTalon.getVelocity();
     driveAppliedVolts = driveTalon.getMotorVoltage();
     driveCurrent = driveTalon.getStatorCurrent();
@@ -208,7 +209,7 @@ public class ModuleIOReal implements ModuleIO {
     driveTalon.optimizeBusUtilization();
 
     turnPositionQueue =
-        SparkMaxOdometryThread.getInstance()
+        HybridOdometryThread.getInstance()
             .registerSignal(
                 () -> {
                   double value = turnRelativeEncoder.getPosition();

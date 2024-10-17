@@ -93,8 +93,12 @@ public class ModuleIOSim implements ModuleIO {
   @Override
   public void runDriveVelocitySetpoint(double velocityRadsPerSec, double feedForward) {
     runDriveVoltage(
-        feedForward
-            + driveFeedback.calculate(driveSim.getAngularVelocityRadPerSec(), velocityRadsPerSec));
+        //     feedForward
+        //         + driveFeedback.calculate(driveSim.getAngularVelocityRadPerSec(),
+        // velocityRadsPerSec));
+        Math.signum(velocityRadsPerSec)
+            * Math.pow((velocityRadsPerSec / DriveConstants.maxLinearVelocity), 2)
+            * 12.0);
   }
 
   @Override
