@@ -153,7 +153,7 @@ public final class Constants {
     public static double kVDriveSim = 2.0;
     public static double kADriveSim = 0.0;
 
-    public static double kPTurnSim = 100.0;
+    public static double kPTurnSim = 3.0;
     public static double kDTurnSim = 0.0;
 
     public static double kPDriveReplay = 0.0;
@@ -313,21 +313,25 @@ public final class Constants {
   }
 
   public static class VisionConstants {
-    public static final Transform3d leftCamToRobot =
-        new Transform3d(
-            new Translation3d(12.161481, -12.050199, 9.756915),
-            new Rotation3d(
-                Units.degreesToRadians(90),
-                Units.degreesToRadians(25),
-                Units.degreesToRadians(35)));
-
     public static final Transform3d rightCamToRobot =
         new Transform3d(
-            new Translation3d(12.161481, 12.050199, 9.756915),
+            new Translation3d(
+                Units.inchesToMeters(12.161481),
+                -Units.inchesToMeters(12.050199),
+                Units.inchesToMeters(9.756915)),
             new Rotation3d(
-                Units.degreesToRadians(90),
-                Units.degreesToRadians(25),
-                -Units.degreesToRadians(35)));
+                Units.degreesToRadians(0), -Units.degreesToRadians(25), -Units.degreesToRadians(35)));
+
+    public static final Transform3d leftCamToRobot =
+        new Transform3d(
+            new Translation3d(
+                Units.inchesToMeters(12.161481),
+                Units.inchesToMeters(12.050199),
+                Units.inchesToMeters(9.756915)),
+            new Rotation3d(
+                Units.degreesToRadians(0),
+                -Units.degreesToRadians(25),
+                Units.degreesToRadians(35)));
 
     public static final Matrix<N3, N1> singleTagStdDev =
         VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);

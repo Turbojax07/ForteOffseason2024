@@ -18,6 +18,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -31,6 +32,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIO;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIOInputsAutoLogged;
 import java.util.Arrays;
@@ -274,6 +276,16 @@ public class Drive extends SubsystemBase {
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
+  }
+
+  @AutoLogOutput(key = "Vision/Left Cam")
+  public Pose3d getLeftCamPose() {
+    return (new Pose3d(getPose()).transformBy(VisionConstants.leftCamToRobot));
+  }
+
+  @AutoLogOutput(key = "Vision/Right Cam")
+  public Pose3d getRightCamPose() {
+    return (new Pose3d(getPose()).transformBy(VisionConstants.rightCamToRobot));
   }
 
   public void setPose(Pose2d pose) {

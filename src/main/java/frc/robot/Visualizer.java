@@ -55,12 +55,12 @@ public class Visualizer extends SubsystemBase {
         .getRoot("Robot", Units.inchesToMeters(24 - (26.5 / 2)), Units.inchesToMeters(7))
         .append(
             new MechanismLigament2d(
-                "frame", Units.inchesToMeters(26 + 7.5), 0, 15, new Color8Bit(Color.kYellow)));
+                "frame", Units.inchesToMeters(26), 0, 2, new Color8Bit(Color.kYellow)));
 
     m_climberMech =
         m_climberRoot.append(
             new MechanismLigament2d(
-                "Climb", Units.inchesToMeters(17.25), 90, 8, new Color8Bit(Color.kFirstRed)));
+                "Climb", Units.inchesToMeters(17.25), 90, 4, new Color8Bit(Color.kFirstRed)));
     m_climberTarget =
         m_climberRoot.append(
             new MechanismLigament2d(
@@ -72,7 +72,7 @@ public class Visualizer extends SubsystemBase {
                 "Intake",
                 Units.inchesToMeters(14.914264),
                 83.649627,
-                8,
+                4,
                 new Color8Bit(Color.kFirstBlue)));
     m_intakeTarget =
         m_intakeRoot.append(
@@ -86,14 +86,14 @@ public class Visualizer extends SubsystemBase {
     m_pivotMech =
         m_pivotRoot.append(
             new MechanismLigament2d(
-                "Shooter", Units.inchesToMeters(13.1001837), 12, 8, new Color8Bit(Color.kWhite)));
+                "Shooter", Units.inchesToMeters(13.1001837), 12, 4, new Color8Bit(Color.kWhite)));
     m_pivotRelative =
         m_pivotRoot.append(
             new MechanismLigament2d(
                 "Shooter Relative",
                 Units.inchesToMeters(13.1001837),
                 12,
-                8,
+                4,
                 new Color8Bit(Color.kGray)));
     m_pivotTarget =
         m_pivotRoot.append(

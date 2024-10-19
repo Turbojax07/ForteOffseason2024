@@ -70,6 +70,41 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": {
+        "Robot": {
+          "color": [
+            206.58230590820313,
+            255.0,
+            0.0,
+            255.0
+          ]
+        },
+        "bottom": 1476,
+        "cameras": {
+          "color": [
+            255.0,
+            238.86074829101563,
+            0.0,
+            255.0
+          ]
+        },
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "visibleTargetPoses": {
+          "color": [
+            1.0,
+            0.0,
+            0.9113926887512207,
+            255.0
+          ]
+        },
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
       }
     }
   },
