@@ -36,7 +36,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 public final class Constants {
   public static final double loopPeriodSecs = 0.02;
 
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -77,10 +77,13 @@ public final class Constants {
       public static final int backLeftEncoder = 1;
       public static final int backRightEncoder = 0;
 
-      public static final double frontLeftOffset = 0.807;
-      public static final double frontRightOffset = -0.5107599496841431;
-      public static final double backLeftOffset = 1.8345500230789185;
-      public static final double backRightOffset = 2.437732458114624;
+      public static final double frontLeftOffset =
+          -Rotation2d.fromDegrees(159.32556120308095).getRadians();
+      public static final double frontRightOffset =
+          Rotation2d.fromDegrees(149.610761030337).getRadians();
+      public static final double backLeftOffset = -Rotation2d.fromDegrees(73.484655).getRadians();
+      public static final double backRightOffset =
+          -Rotation2d.fromDegrees(40.282253196).getRadians();
 
       public static final int gyro = 10;
     }
@@ -217,7 +220,7 @@ public final class Constants {
     public static final double rollerMOI = 0.011328;
 
     public static final double up = .25;
-    public static final double down = 2.1;
+    public static final double down = 2.2;
     public static final double simOffset = 1.27838411;
 
     public static final int pivotCurrentLimit = 30;

@@ -1,4 +1,11 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "window": {
+        "visible": false
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/AdvantageKit/RealOutputs/Climb/Mechanism2d": "Mechanism2d",
@@ -26,7 +33,7 @@
       "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     },
     "windows": {
-      "/AdvantageKit/RealOutputs/Visualizer/FullRobot": {
+      "/AdvantageKit/RealOutputs/Visualizer/M_main": {
         "window": {
           "visible": true
         }

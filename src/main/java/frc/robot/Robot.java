@@ -32,6 +32,8 @@ public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
 
+  private static final String LOG_DIRECTORY = "/home/lvuser/logs";
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -60,7 +62,7 @@ public class Robot extends LoggedRobot {
     switch (Constants.currentMode) {
       case REAL:
         // Running on a real robot, log to a USB stick ("/U/logs")
-        // Logger.addDataReceiver(new WPILOGWriter());
+        Logger.addDataReceiver(new WPILOGWriter(LOG_DIRECTORY));
         Logger.addDataReceiver(new NT4Publisher());
         break;
 
