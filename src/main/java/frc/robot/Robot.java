@@ -15,6 +15,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Arrays;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -32,7 +38,13 @@ public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
 
+  private static final boolean IS_PRACTICE = true;
   private static final String LOG_DIRECTORY = "/home/lvuser/logs";
+  private static final long MIN_FREE_SPACE =
+      IS_PRACTICE
+          ? 100000000
+          : // 100 MB
+          1000000000; // 1 GB
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -62,6 +74,7 @@ public class Robot extends LoggedRobot {
     switch (Constants.currentMode) {
       case REAL:
         // Running on a real robot, log to a USB stick ("/U/logs")
+        setupLog();
         Logger.addDataReceiver(new WPILOGWriter(LOG_DIRECTORY));
         Logger.addDataReceiver(new NT4Publisher());
         break;
@@ -90,6 +103,8 @@ public class Robot extends LoggedRobot {
     // and put our autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
   }
+
+  
 
   /** This function is called periodically during all modes. */
   @Override
@@ -159,4 +174,45 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+  void setupLog() {
+    // Check if the log directory exists
+    var directory = new File(LOG_DIRECTORY);
+    if (!directory.exists()) {
+      directory.mkdir();
+    }
+
+    // ensure that there is enough space on the roboRIO to log data
+    if (directory.getFreeSpace() < MIN_FREE_SPACE) {
+      System.out.println("ERROR: out of space!");
+      var files = directory.listFiles();
+      if (files == null) {
+        System.out.println("ERROR: Cannot delete, Files are NULL!");
+      } else {
+        // Sorting the files by name will ensure that the oldest files are deleted first
+        files = Arrays.stream(files).sorted().toArray(File[]::new);
+
+        long bytesToDelete = MIN_FREE_SPACE - directory.getFreeSpace();
+
+        for (File file : files) {
+          if (file.getName().endsWith(".wpilog")) {
+            try {
+              bytesToDelete -= Files.size(file.toPath());
+            } catch (IOException e) {
+              System.out.println("Failed to get size of file " + file.getName());
+              continue;
+            }
+            if (file.delete()) {
+              System.out.println("Deleted " + file.getName() + " to free up space");
+            } else {
+              System.out.println("Failed to delete " + file.getName());
+            }
+            if (bytesToDelete <= 0) {
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
 }
