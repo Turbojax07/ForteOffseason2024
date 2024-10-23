@@ -17,6 +17,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -51,7 +52,7 @@ public final class Constants {
 
   public static final boolean isTuning = false;
 
-  public static class RobotMap {
+public static class RobotMap {
     public static class Drive {
       public static final int frontLeftDrive = 1;
       public static final int frontLeftTurn = 2;
@@ -156,7 +157,7 @@ public final class Constants {
     public static double kVDriveSim = 2.0;
     public static double kADriveSim = 0.0;
 
-    public static double kPTurnSim = 3.0;
+    public static double kPTurnSim = 100.0;
     public static double kDTurnSim = 0.0;
 
     public static double kPDriveReplay = 0.0;
