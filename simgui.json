@@ -10,6 +10,7 @@
     "types": {
       "/AdvantageKit/RealOutputs/Climb/Mechanism2d": "Mechanism2d",
       "/AdvantageKit/RealOutputs/Visualizer/FullRobot": "Mechanism2d",
+      "/AdvantageKit/RealOutputs/Visualizer/M_main": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Climb Down": "Command",
       "/SmartDashboard/Climb Up": "Command",

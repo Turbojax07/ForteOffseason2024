@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 public final class Constants {
   public static final double loopPeriodSecs = 0.02;
 
-  public static final Mode currentMode = Mode.REAL;
+  public static final Mode currentMode = Mode.SIM;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -121,7 +121,7 @@ public final class Constants {
 
     public static final int driveSupplyCurrent = 50; // 70
     public static final int driveStatorCurrent = 90; // 120
-    public static final int turnCurrent = 30; // 30
+    public static final int turnCurrent = 40; // 30
 
     public static final double odometeryFrequency = 250;
     public static final double updateFrequency = 100;
@@ -130,7 +130,7 @@ public final class Constants {
     // public static final double maxLinearVelocity = Units.feetToMeters(1.4);
     public static final double maxLinearAccel = 8.0;
 
-    public static final double maxAngularVelocity = 10;
+    public static final double maxAngularVelocity = 20;
     public static final double maxAngularAccel = 10;
 
     public static double kPDriveReal = 2.0;
@@ -139,7 +139,7 @@ public final class Constants {
     public static double kVDriveReal = 1.93;
     public static double kADriveReal = 0.25;
 
-    public static double kPTurnReal = 3; // 1.5?
+    public static double kPTurnReal = 2.5; // 1.5?
     public static double kDTurnReal = 0.0;
 
     public static double kPDriveSim = 0.3;
@@ -216,7 +216,7 @@ public final class Constants {
     public static final double simOffset = 1.27838411;
 
     public static final int pivotCurrentLimit = 30;
-    public static final int rollerCurrentLimit = 70;
+    public static final int rollerCurrentLimit = 60;
 
     public static final double kGPivot = 0.5;
     public static final double kVPivot = 1.06;
@@ -265,7 +265,7 @@ public final class Constants {
     // public static final double pivotMOI = .0001;
 
     public static final double maxPivotVelocity = 20;
-    public static final double maxPivotAccel = 5;
+    public static final double maxPivotAccel = 10;
 
     public static final double pivotAbsConversion = Math.PI * 2.0;
     public static final double pivotEncConversion = 2.0 * Math.PI / pivotRatio;
@@ -279,10 +279,10 @@ public final class Constants {
 
     public static final double shooterMOI = 0.00920287973;
 
-    public static final int pivotCurrentLimit = 25;
+    public static final int pivotCurrentLimit = 15;
 
-    public static final double kGPivot = 0.381640625;
-    public static final double kVPivot = 0.875;
+    public static final double kGPivot = 0.38;
+    public static final double kVPivot = 0.8;
     public static final double kAPivot = 0.00;
 
     public static final double kVShooter = 0.0055; // COMP: 0.0055, DEMO: 0.0041875
@@ -292,7 +292,7 @@ public final class Constants {
     public static final double kIShooterReal = 0.00000;
     public static final double kSShooterReal = 0;
 
-    public static final double kPPivot = 5.0;
+    public static final double kPPivot = 3.0;
 
     public static final double kPShooterSim = 0.5;
     public static final double kIShooterSim = 0.0;

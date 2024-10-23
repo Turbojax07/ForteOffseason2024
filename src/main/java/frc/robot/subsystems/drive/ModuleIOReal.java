@@ -188,14 +188,14 @@ public class ModuleIOReal implements ModuleIO {
           PeriodicFrame.kStatus2, (int) (1000.0 / DriveConstants.odometeryFrequency));
     }
 
+    turnRelativeEncoder.setPosition(getAbsoluteEncoder());
+
     turnPID.setPositionPIDWrappingEnabled(true);
     turnPID.setPositionPIDWrappingMinInput(-Math.PI);
     turnPID.setPositionPIDWrappingMaxInput(Math.PI);
 
     turnSparkMax.burnFlash();
     turnSparkMax.setCANTimeout(0);
-
-    turnRelativeEncoder.setPosition(getAbsoluteEncoder());
 
     timestampQueue = HybridOdometryThread.getInstance().makeTimestampQueue();
 
@@ -225,7 +225,7 @@ public class ModuleIOReal implements ModuleIO {
 
   @Override
   public void processInputs(ModuleIOInputsAutoLogged inputs) {
-    if (iLoveRev % 50 == 0) {
+    if (iLoveRev % 25 == 0) {
       turnRelativeEncoder.setPosition(getAbsoluteEncoder());
     }
 

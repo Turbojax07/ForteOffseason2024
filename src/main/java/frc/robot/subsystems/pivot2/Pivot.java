@@ -19,6 +19,7 @@ import org.littletonrobotics.junction.Logger;
 public class Pivot extends SubsystemBase {
   public PivotIO io;
   public PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
+  boolean overshoot;
 
   private ArmFeedforward pivotFF =
       new ArmFeedforward(
@@ -45,15 +46,25 @@ public class Pivot extends SubsystemBase {
   public void periodic() {
     io.processInputs(inputs);
     Logger.processInputs("Shooter/Pivot", inputs);
+    overshoot =
+        (inputs.pivotPosition.getRadians() > inputs.pivotTargetPosition.getRadians())
+            && (inputs.pivotTargetPosition.getRadians() != 0);
+
+    // if (overshoot) {
+    //   io.setPivotVoltage(
+    //       pivotPID.calculate(
+    //           inputs.pivotPosition.getRadians(), inputs.pivotTargetPosition.getRadians()));
+    // }
+    Logger.recordOutput("Test/Overshoot", overshoot);
   }
 
   public Command setPivotTarget(DoubleSupplier radians) {
     return this.run(
         () -> {
           double volts =
-              pivotPID.calculate(inputs.pivotPosition.getRadians(), radians.getAsDouble())
-                  + pivotFF.calculate(
-                      pivotPID.getSetpoint().position, pivotPID.getSetpoint().velocity);
+              pivotPID.calculate(inputs.pivotPosition.getRadians(), radians.getAsDouble());
+          // + pivotFF.calculate(
+          //     pivotPID.getSetpoint().position, pivotPID.getSetpoint().velocity);
 
           io.setPivotVoltage(volts);
           inputs.pivotAppliedVolts = volts;
