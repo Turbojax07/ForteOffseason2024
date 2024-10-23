@@ -40,6 +40,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotMap;
 import java.util.OptionalDouble;
 import java.util.Queue;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Module IO implementation for SparkMax drive motor controller, SparkMax turn motor controller (NEO
@@ -74,6 +75,8 @@ public class ModuleIOReal implements ModuleIO {
   private final StatusSignal<Double> driveAppliedVolts;
   private final StatusSignal<Double> driveCurrent;
   private int multiplier;
+
+  private int iLoveRev = 0;
 
   private final VelocityVoltage driveCurrentVelocity =
       new VelocityVoltage(0.0).withEnableFOC(false);
@@ -178,7 +181,6 @@ public class ModuleIOReal implements ModuleIO {
       turnSparkMax.setSmartCurrentLimit(30);
       turnSparkMax.enableVoltageCompensation(12.0);
 
-      turnRelativeEncoder.setPosition(0.0);
       turnRelativeEncoder.setMeasurementPeriod(10);
       turnRelativeEncoder.setAverageDepth(2);
 
@@ -223,6 +225,10 @@ public class ModuleIOReal implements ModuleIO {
 
   @Override
   public void processInputs(ModuleIOInputsAutoLogged inputs) {
+    if (iLoveRev % 50 == 0) {
+      turnRelativeEncoder.setPosition(getAbsoluteEncoder());
+    }
+
     BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
 
     inputs.drivePositionRad =
@@ -252,6 +258,9 @@ public class ModuleIOReal implements ModuleIO {
     timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();
+
+    Logger.recordOutput("Test/" + name + "/GetAbsoluteEncoder", getAbsoluteEncoder());
+    iLoveRev++;
   }
 
   @Override
