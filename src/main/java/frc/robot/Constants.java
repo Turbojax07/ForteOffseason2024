@@ -281,8 +281,8 @@ public final class Constants {
 
     public static final int pivotCurrentLimit = 15;
 
-    public static final double kGPivot = 0.38;
-    public static final double kVPivot = 0.8;
+    public static final double kGPivot = 0.381640625;
+    public static final double kVPivot = 0.875;
     public static final double kAPivot = 0.00;
 
     public static final double kVShooter = 0.0055; // COMP: 0.0055, DEMO: 0.0041875
@@ -292,7 +292,7 @@ public final class Constants {
     public static final double kIShooterReal = 0.00000;
     public static final double kSShooterReal = 0;
 
-    public static final double kPPivot = 3.0;
+    public static final double kPPivot = 2.0;
 
     public static final double kPShooterSim = 0.5;
     public static final double kIShooterSim = 0.0;
