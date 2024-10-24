@@ -62,11 +62,9 @@ public class Pivot extends SubsystemBase {
     return this.run(
         () -> {
           double volts =
-              pivotPID.calculate(
-                  inputs.pivotPosition.getRadians(),
-                  radians.getAsDouble()
-                      + pivotFF.calculate(
-                          pivotPID.getSetpoint().position, pivotPID.getSetpoint().velocity));
+              pivotPID.calculate(inputs.pivotPosition.getRadians(), radians.getAsDouble())
+          + pivotFF.calculate(
+              pivotPID.getSetpoint().position, pivotPID.getSetpoint().velocity);
 
           io.setPivotVoltage(volts);
           inputs.pivotAppliedVolts = volts;
