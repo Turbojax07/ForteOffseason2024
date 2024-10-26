@@ -35,8 +35,8 @@ public class ShooterIOSparkMax implements ShooterIO {
     left.setIdleMode(IdleMode.kCoast);
     right.setIdleMode(IdleMode.kCoast);
 
-    left.setSmartCurrentLimit(40);
-    right.setSmartCurrentLimit(40);
+    left.setSmartCurrentLimit(ShooterConstants.flywheelCurrent);
+    right.setSmartCurrentLimit(ShooterConstants.flywheelCurrent);
 
     left.setInverted(true);
 
