@@ -322,12 +322,12 @@ public class RobotContainer {
     return MathUtil.applyDeadband(x, 0.02);
   }
 
-public Command getAutonomousCommand() {
+  public Command getAutonomousCommand() {
     // TODO Auto-generated method stub
     return null;
-}
+  }
 
-//   public Command getAutonomousCommand() {
-//     return ;
-//   }
+  //   public Command getAutonomousCommand() {
+  //     return ;
+  //   }
 }
