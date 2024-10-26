@@ -14,6 +14,7 @@ import com.revrobotics.SparkPIDController.ArbFFUnits;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.Constants.RobotMap;
+import frc.robot.Constants.ShooterConstants;
 
 /** Add your docs here. */
 public class ShooterIOSparkMax implements ShooterIO {
