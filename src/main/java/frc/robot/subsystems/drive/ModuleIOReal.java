@@ -29,7 +29,6 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import edu.wpi.first.math.MathUtil;
@@ -38,8 +37,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotMap;
-import java.util.OptionalDouble;
-import java.util.Queue;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -67,10 +64,10 @@ public class ModuleIOReal implements ModuleIO {
   private final AnalogEncoder absoluteEncoder;
   private final SparkPIDController turnPID;
 
-  private final Queue<Double> timestampQueue;
+  // private final Queue<Double> timestampQueue;
 
   private final StatusSignal<Double> drivePosition;
-  private final Queue<Double> drivePositionQueue;
+  // private final Queue<Double> drivePositionQueue;
   private final StatusSignal<Double> driveVelocity;
   private final StatusSignal<Double> driveAppliedVolts;
   private final StatusSignal<Double> driveCurrent;
@@ -81,7 +78,7 @@ public class ModuleIOReal implements ModuleIO {
   private final VelocityVoltage driveCurrentVelocity =
       new VelocityVoltage(0.0).withEnableFOC(false);
 
-  private final Queue<Double> turnPositionQueue;
+  // private final Queue<Double> turnPositionQueue;
 
   private Rotation2d absoluteEncoderOffset;
 
@@ -197,11 +194,11 @@ public class ModuleIOReal implements ModuleIO {
     turnSparkMax.burnFlash();
     turnSparkMax.setCANTimeout(0);
 
-    timestampQueue = HybridOdometryThread.getInstance().makeTimestampQueue();
+    // timestampQueue = HybridOdometryThread.getInstance().makeTimestampQueue();
 
     drivePosition = driveTalon.getPosition();
-    drivePositionQueue =
-        HybridOdometryThread.getInstance().registerSignal(driveTalon, driveTalon.getPosition());
+    // drivePositionQueue =
+    //     HybridOdometryThread.getInstance().registerSignal(driveTalon, driveTalon.getPosition());
     driveVelocity = driveTalon.getVelocity();
     driveAppliedVolts = driveTalon.getMotorVoltage();
     driveCurrent = driveTalon.getStatorCurrent();
@@ -210,17 +207,17 @@ public class ModuleIOReal implements ModuleIO {
     BaseStatusSignal.setUpdateFrequencyForAll(50.0, driveVelocity, driveAppliedVolts, driveCurrent);
     driveTalon.optimizeBusUtilization();
 
-    turnPositionQueue =
-        HybridOdometryThread.getInstance()
-            .registerSignal(
-                () -> {
-                  double value = turnRelativeEncoder.getPosition();
-                  if (turnSparkMax.getLastError() == REVLibError.kOk) {
-                    return OptionalDouble.of(value);
-                  } else {
-                    return OptionalDouble.empty();
-                  }
-                });
+    // turnPositionQueue =
+    //     HybridOdometryThread.getInstance()
+    //         .registerSignal(
+    //             () -> {
+    //               double value = turnRelativeEncoder.getPosition();
+    //               if (turnSparkMax.getLastError() == REVLibError.kOk) {
+    //                 return OptionalDouble.of(value);
+    //               } else {
+    //                 return OptionalDouble.empty();
+    //               }
+    //             });
   }
 
   @Override
@@ -244,20 +241,20 @@ public class ModuleIOReal implements ModuleIO {
     inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
     inputs.turnCurrentAmps = new double[] {turnSparkMax.getOutputCurrent()};
 
-    inputs.odometryTimestamps =
-        timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
-    inputs.odometryDrivePositionsRad =
-        drivePositionQueue.stream()
-            .mapToDouble(
-                (Double value) -> Units.rotationsToRadians(value) / DriveConstants.driveRatio)
-            .toArray();
-    inputs.odometryTurnPositions =
-        turnPositionQueue.stream()
-            .map((Double value) -> Rotation2d.fromRotations(value / DriveConstants.turnRatio))
-            .toArray(Rotation2d[]::new);
-    timestampQueue.clear();
-    drivePositionQueue.clear();
-    turnPositionQueue.clear();
+    // inputs.odometryTimestamps =
+    //     timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+    // inputs.odometryDrivePositionsRad =
+    //     drivePositionQueue.stream()
+    //         .mapToDouble(
+    //             (Double value) -> Units.rotationsToRadians(value) / DriveConstants.driveRatio)
+    //         .toArray();
+    // inputs.odometryTurnPositions =
+    //     turnPositionQueue.stream()
+    //         .map((Double value) -> Rotation2d.fromRotations(value / DriveConstants.turnRatio))
+    //         .toArray(Rotation2d[]::new);
+    // timestampQueue.clear();
+    // drivePositionQueue.clear();
+    // turnPositionQueue.clear();
 
     Logger.recordOutput("Test/" + name + "/GetAbsoluteEncoder", getAbsoluteEncoder());
     iLoveRev++;

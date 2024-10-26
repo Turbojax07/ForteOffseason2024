@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.climber.Climb;
@@ -103,10 +102,6 @@ public class Visualizer extends SubsystemBase {
                 12,
                 2,
                 new Color8Bit(Color.kBeige)));
-
-    SmartDashboard.putData(
-        "Climb Up", (Sendable) m_climber.setExtensionCmd(() -> ClimbConstants.maxHeight));
-    SmartDashboard.putData("Climb Down", (Sendable) m_climber.setExtensionCmd(() -> 0));
 
     SmartDashboard.putData(
         "Intake Up", (Sendable) m_intake.setPivotTarget(() -> IntakeConstants.up));

@@ -203,7 +203,20 @@ public class RobotContainer {
                         .until(
                             () ->
                                 (!m_feeder.feederBeambreakObstructed()
-                                    && !m_feeder.shooterBeambreakObstructed()))));
+                                    && !m_feeder.shooterBeambreakObstructed()))))
+        .onFalse(
+            Commands.parallel(
+                    m_feeder.setVoltage(() -> 0),
+                    m_shooter.stopShooter(),
+                    Commands.sequence(m_pivot.setPivotVoltage(() -> -1)))
+                .until(() -> m_pivot.atSetpoint() || m_pivot.isStalled())
+                .andThen(
+                    Commands.either(
+                            m_pivot.resetEncoder(), m_pivot.runZero(), () -> m_pivot.isStalled())
+                        .andThen(
+                            m_pivot
+                                .setPivotTarget(() -> m_pivot.getAngleRadians())
+                                .andThen(m_pivot.setPivotVoltage(() -> 0)))));
 
     // X for shooter at amp
     m_operator
@@ -240,7 +253,20 @@ public class RobotContainer {
                         .until(
                             () ->
                                 (!m_feeder.feederBeambreakObstructed()
-                                    && !m_feeder.shooterBeambreakObstructed()))));
+                                    && !m_feeder.shooterBeambreakObstructed()))))
+        .onFalse(
+            Commands.parallel(
+                    m_feeder.setVoltage(() -> 0),
+                    m_shooter.stopShooter(),
+                    Commands.sequence(m_pivot.setPivotVoltage(() -> -1)))
+                .until(() -> m_pivot.atSetpoint() || m_pivot.isStalled())
+                .andThen(
+                    Commands.either(
+                            m_pivot.resetEncoder(), m_pivot.runZero(), () -> m_pivot.isStalled())
+                        .andThen(
+                            m_pivot
+                                .setPivotTarget(() -> m_pivot.getAngleRadians())
+                                .andThen(m_pivot.setPivotVoltage(() -> 0)))));
 
     // A for shooter at source
     m_operator
@@ -258,7 +284,20 @@ public class RobotContainer {
                 .andThen(
                     Commands.parallel(
                         m_shooter.stopShooter(),
-                        m_pivot.setPivotTarget(() -> Units.degreesToRadians(0.0)))));
+                        m_pivot.setPivotTarget(() -> Units.degreesToRadians(0.0)))))
+        .onFalse(
+            Commands.parallel(
+                    m_feeder.setVoltage(() -> 0),
+                    m_shooter.stopShooter(),
+                    Commands.sequence(m_pivot.setPivotVoltage(() -> -1)))
+                .until(() -> m_pivot.atSetpoint() || m_pivot.isStalled())
+                .andThen(
+                    Commands.either(
+                            m_pivot.resetEncoder(), m_pivot.runZero(), () -> m_pivot.isStalled())
+                        .andThen(
+                            m_pivot
+                                .setPivotTarget(() -> m_pivot.getAngleRadians())
+                                .andThen(m_pivot.setPivotVoltage(() -> 0)))));
 
     m_operator
         .leftTrigger(0.1)
