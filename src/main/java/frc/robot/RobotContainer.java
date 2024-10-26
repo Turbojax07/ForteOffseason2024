@@ -13,11 +13,20 @@
 
 package frc.robot;
 
+import javax.swing.text.StyleContext.SmallAttributeSet;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -282,6 +291,24 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    Pose2d endPose =
+        m_drive
+            .getPose()
+            .plus(
+                new Transform2d(
+                    m_drive.getPose().getX() + Units.feetToMeters(2),
+                    m_drive.getPose().getY(),
+                    m_drive.getRotation()));
+
+    Logger.recordOutput("Initial Pose", m_drive.getPose());
+    Logger.recordOutput("Desired Pose", endPose);
+
+    return AutoBuilder.pathfindToPose(
+        endPose,
+        new PathConstraints(
+            DriveConstants.maxLinearVelocity,
+            DriveConstants.maxLinearAccel,
+            DriveConstants.maxAngularVelocity,
+            DriveConstants.maxAngularAccel));
   }
 }

@@ -14,6 +14,9 @@
 package frc.robot.subsystems.drive;
 
 import com.google.common.collect.Streams;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -27,6 +30,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -38,6 +44,8 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
+  private final Field2d field = new Field2d();
+
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -53,7 +61,8 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition()
       };
   private SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+      new SwerveDrivePoseEstimator(
+          kinematics, rawGyroRotation, lastModulePositions, new Pose2d(1.4, 6, new Rotation2d()));
 
   public Drive(
       GyroIO gyroIO,
@@ -72,9 +81,27 @@ public class Drive extends SubsystemBase {
     // SparkMaxOdometryThread.getInstance().start();
     // PhoenixOdometryThread.getInstance().start();
 
+    AutoBuilder.configureHolonomic(
+        this::getPose,
+        this::setPose,
+        this::getVelocity,
+        this::setVelocity,
+        new HolonomicPathFollowerConfig(
+            DriveConstants.maxLinearVelocity,
+            DriveConstants.trackWidth / 2.0,
+            new ReplanningConfig()),
+        () ->
+            (DriverStation.getAlliance().isPresent())
+                ? ((DriverStation.getAlliance().get().equals(Alliance.Blue)) ? false : true)
+                : false,
+        this);
   }
 
   public void periodic() {
+    field.setRobotPose(getPose());
+
+    SmartDashboard.putData(field);
+
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.processInputs(gyroInputs);
     for (var module : modules) {
@@ -159,34 +186,31 @@ public class Drive extends SubsystemBase {
   }
 
   public Command runVoltageTeleopFieldRelative(Supplier<ChassisSpeeds> speeds) {
-    return this.run(
-        () -> {
-          var allianceSpeeds =
-              ChassisSpeeds.fromFieldRelativeSpeeds(speeds.get(), gyroInputs.yawPosition);
-          // Calculate module setpoints
-          ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(allianceSpeeds, 0.02);
-          SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
-          SwerveDriveKinematics.desaturateWheelSpeeds(
-              setpointStates, DriveConstants.maxLinearVelocity);
+    return this.run(() -> setVelocity(speeds.get()));
+  }
 
-          Logger.recordOutput("Drive/Target Speeds", discreteSpeeds);
-          Logger.recordOutput("Drive/Speed Error", discreteSpeeds.minus(getVelocity()));
-          Logger.recordOutput(
-              "Drive/Target Chassis Speeds Field Relative",
-              ChassisSpeeds.fromRobotRelativeSpeeds(discreteSpeeds, getRotation()));
+  public void setVelocity(ChassisSpeeds speeds) {
+    var allianceSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, gyroInputs.yawPosition);
+    // Calculate module setpoints
+    ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(allianceSpeeds, 0.02);
+    SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, DriveConstants.maxLinearVelocity);
 
-          // Send setpoints to modules
-          SwerveModuleState[] optimizedSetpointStates =
-              Streams.zip(
-                      Arrays.stream(modules),
-                      Arrays.stream(setpointStates),
-                      (m, s) -> m.runSetpoint(s))
-                  .toArray(SwerveModuleState[]::new);
+    Logger.recordOutput("Drive/Target Speeds", discreteSpeeds);
+    Logger.recordOutput("Drive/Speed Error", discreteSpeeds.minus(getVelocity()));
+    Logger.recordOutput(
+        "Drive/Target Chassis Speeds Field Relative",
+        ChassisSpeeds.fromRobotRelativeSpeeds(discreteSpeeds, getRotation()));
 
-          // Log setpoint states
-          Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
-          Logger.recordOutput("SwerveStates/SetpointsOptimized", optimizedSetpointStates);
-        });
+    // Send setpoints to modules
+    SwerveModuleState[] optimizedSetpointStates =
+        Streams.zip(
+                Arrays.stream(modules), Arrays.stream(setpointStates), (m, s) -> m.runSetpoint(s))
+            .toArray(SwerveModuleState[]::new);
+
+    // Log setpoint states
+    Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
+    Logger.recordOutput("SwerveStates/SetpointsOptimized", optimizedSetpointStates);
   }
 
   @AutoLogOutput(key = "Odometry/Velocity")
