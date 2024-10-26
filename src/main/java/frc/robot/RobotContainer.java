@@ -235,6 +235,8 @@ public class RobotContainer {
                                 .setPivotTarget(() -> m_pivot.getAngleRadians())
                                 .andThen(m_pivot.setPivotVoltage(() -> 0)))));
 
+    m_operator.povLeft().whileTrue(m_intake.setIntakeUp());
+
     // m_operator.rightBumper().whileTrue(
     // m_pivot.runCurrentZeroing()
     // );
@@ -320,7 +322,12 @@ public class RobotContainer {
     return MathUtil.applyDeadband(x, 0.02);
   }
 
-  public Command getAutonomousCommand() {
+public Command getAutonomousCommand() {
+    // TODO Auto-generated method stub
     return null;
-  }
+}
+
+//   public Command getAutonomousCommand() {
+//     return ;
+//   }
 }
