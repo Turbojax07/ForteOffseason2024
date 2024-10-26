@@ -279,7 +279,7 @@ public final class Constants {
 
     public static final double shooterMOI = 0.00920287973;
 
-    public static final int pivotCurrentLimit = 20
+    public static final int pivotCurrentLimit = 20;
     public static final int flywheelCurrent = 40;
 
     public static final double kGPivot = 0.381640625;
