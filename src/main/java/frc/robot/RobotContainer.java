@@ -276,8 +276,8 @@ public class RobotContainer {
         .whileTrue(
             Commands.parallel(
                     m_pivot.setPivotTarget(() -> Units.degreesToRadians(40)),
-                    m_shooter.setRPM(() -> -1500, 1.0),
-                    m_feeder.setRPM(() -> -1500),
+                    m_shooter.setRPM(() -> -1000, 1.0),
+                    m_feeder.setRPM(() -> -1000),
                     m_intake.setRollerRPM(() -> -1000))
                 .until(
                     () ->
