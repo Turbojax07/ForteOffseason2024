@@ -22,10 +22,4 @@ public class ClimbIOReplay implements ClimbIO {
   public void resetEncoder() {
     resetEncoder(0.0);
   }
-
-  @Override
-  public void setSimpleFF(double kFF) {}
-
-  @Override
-  public void setFF(double kS, double kG, double kV, double kA) {}
 }

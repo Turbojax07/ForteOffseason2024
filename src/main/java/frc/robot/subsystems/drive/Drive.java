@@ -77,7 +77,7 @@ public class Drive extends SubsystemBase {
     modules[3] = new Module(brModuleIO, 3);
 
     // Start threads (no-op for each if no signals have been created)
-    HybridOdometryThread.getInstance().start();
+    // HybridOdometryThread.getInstance().start();
     // SparkMaxOdometryThread.getInstance().start();
     // PhoenixOdometryThread.getInstance().start();
 

@@ -17,21 +17,17 @@ public interface ClimbIO {
 
   public abstract void processInputs(final ClimbIOInputsAutoLogged inputs);
 
-  public abstract void setTargetMeters(final double meters);
-
   public abstract void setVoltage(final double voltage);
 
   public abstract void setOpenLoopDutyCycle(final double dutyCycle);
 
   public abstract void stop();
 
-  public abstract void setPID(double kP, double kI, double kD);
+  // public abstract void setPID(double kP, double kI, double kD);
 
-  public void setSimpleFF(double kFF);
+  // public void setSimpleFF(double kFF);
 
-  public void setFF(double kS, double kG, double kV, double kA);
+  // public void setFF(double kS, double kG, double kV, double kA);
 
   public abstract void resetEncoder(final double position);
-
-  public abstract void resetEncoder();
 }

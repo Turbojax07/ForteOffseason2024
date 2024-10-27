@@ -63,12 +63,14 @@ public class Pivot extends SubsystemBase {
         () -> {
           double volts =
               pivotPID.calculate(inputs.pivotPosition.getRadians(), radians.getAsDouble())
-          + pivotFF.calculate(
-              pivotPID.getSetpoint().position, pivotPID.getSetpoint().velocity);
+                  + pivotFF.calculate(
+                      pivotPID.getSetpoint().position, pivotPID.getSetpoint().velocity);
 
           io.setPivotVoltage(volts);
           inputs.pivotAppliedVolts = volts;
           inputs.pivotTargetPosition = Rotation2d.fromRadians(radians.getAsDouble());
+          Logger.recordOutput("Test/positionSetpoint", radians.getAsDouble());
+          Logger.recordOutput("Test/position", inputs.pivotPosition.getRadians());
         });
   }
 
