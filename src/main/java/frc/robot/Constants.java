@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 public final class Constants {
   public static final double loopPeriodSecs = 0.02;
 
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -119,8 +119,8 @@ public final class Constants {
     public static final double turnConversion = 2 * Math.PI / turnRatio;
     public static final double turnVelocityConversion = turnConversion / 60;
 
-    public static final int driveSupplyCurrent = 50; // 70
-    public static final int driveStatorCurrent = 90; // 120
+    public static final int driveSupplyCurrent = 30; // 70
+    public static final int driveStatorCurrent = 50; // 120
     public static final int turnCurrent = 40; // 30
 
     public static final double odometeryFrequency = 250;
@@ -216,7 +216,7 @@ public final class Constants {
     public static final double simOffset = 1.27838411;
 
     public static final int pivotCurrentLimit = 30;
-    public static final int rollerCurrentLimit = 60;
+    public static final int rollerCurrentLimit = 80;
 
     public static final double kGPivot = 0.5;
     public static final double kVPivot = 1.06;
@@ -279,7 +279,8 @@ public final class Constants {
 
     public static final double shooterMOI = 0.00920287973;
 
-    public static final int pivotCurrentLimit = 15;
+    public static final int pivotCurrentLimit = 20;
+    public static final int flywheelCurrent = 40;
 
     public static final double kGPivot = 0.381640625;
     public static final double kVPivot = 0.875;
@@ -292,7 +293,7 @@ public final class Constants {
     public static final double kIShooterReal = 0.00000;
     public static final double kSShooterReal = 0;
 
-    public static final double kPPivot = 2.0;
+    public static final double kPPivot = 5.0;
 
     public static final double kPShooterSim = 0.5;
     public static final double kIShooterSim = 0.0;

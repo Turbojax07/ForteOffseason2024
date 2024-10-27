@@ -47,12 +47,6 @@ public class ClimbIOSim implements ClimbIO {
     inputs.climberCurrentAmps = sim.getCurrentDrawAmps();
   }
 
-  @Override
-  public void setTargetMeters(final double meters) {
-    setVoltage(
-        pid.calculate(sim.getPositionMeters(), meters) + ff.calculate(pid.getSetpoint().velocity));
-  }
-
   public void setOpenLoopDutyCycle(final double dutyCycle) {
     setVoltage(dutyCycle * 12);
   }
@@ -70,16 +64,4 @@ public class ClimbIOSim implements ClimbIO {
 
   @Override
   public void stop() {}
-
-  @Override
-  public void setPID(double kP, double kI, double kD) {}
-
-  @Override
-  public void resetEncoder() {}
-
-  @Override
-  public void setSimpleFF(double kFF) {}
-
-  @Override
-  public void setFF(double kS, double kG, double kV, double kA) {}
 }
